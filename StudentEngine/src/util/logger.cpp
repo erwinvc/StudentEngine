@@ -89,7 +89,7 @@ public:
 			}
 		} else {
 			ImGuiListClipper clipper;
-			clipper.Begin(m_lineOffsets.size());
+			clipper.Begin((int)m_lineOffsets.size());
 			while (clipper.Step()) {
 				for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++) {
 					const char* line_start = buf + m_lineOffsets[line_no];
@@ -165,7 +165,7 @@ void Logger::Initialize() {
 
 	m_inputThread = GetThreadManager()->RegisterThread("Console input", HandleInput);
 	m_outputThread = GetThreadManager()->RegisterThread("Console output", HandleQueue);
-	m_imGuiLog = NEW(ImGuiLog());
+	m_imGuiLog = new ImGuiLog();
 
 	LOG("[~2Logging~x] Console allocated");
 }
@@ -258,19 +258,6 @@ void Logger::Message(int color, const char* type, const char* fmt, ...) {
 
 	AddToQueue(color, buffer, type, time(nullptr));
 }
-void Logger::MessageTimed(int time, int color, const char* type, const char* fmt, ...) {
-	if (GetApp()->GetFrameCount() % time == 0) {
-		char buffer[0xffff] = { 0 };
-		va_list va_alist;
-		va_start(va_alist, fmt);
-		vsprintf_s(buffer, fmt, va_alist);
-		va_end(va_alist);
-
-		String str = buffer;
-		str += to_string(GetApp()->GetFrameCount());
-		Message(color, type, str.c_str());
-	}
-}
 
 void Logger::ForceEmptyQueue() {
 	m_outputThread->Shutdown();
@@ -303,7 +290,7 @@ void Logger::Cleanup() {
 	if (!m_allocated) return;
 	LOG("[~gLogging~x] Deallocating console");
 	ForceEmptyQueue();
-	DELETE(m_imGuiLog);
+	delete m_imGuiLog;
 	PostMessage(GetConsoleWindow(), WM_CLOSE, 0, 0);
 }
 

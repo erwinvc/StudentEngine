@@ -19,41 +19,15 @@ String Format(String_t fmt, ...) {
 }
 
 namespace Utils {
-	void setPositionInFrontOfCam(Vector3& dest, const Camera* cam, float distance) {
-		const float x = cam->m_position.x;
-		const float y = cam->m_position.y;
-		const float z = cam->m_position.z;
-
-		dest.x = x + Math::Sin(cam->m_rotation.yaw) * distance * Math::Abs(Math::Cos(cam->m_rotation.pitch));
-		dest.y = y - Math::Sin(cam->m_rotation.pitch) * distance;
-		dest.z = z - Math::Cos(cam->m_rotation.yaw) * distance * Math::Abs(Math::Cos(cam->m_rotation.pitch));
-	}
-
-	String FlipStringHorizontal(const String& toFlip, int x, int y) {
-		int size = x * y;
-		String newStr;
-		newStr.reserve(size);
-		for (int yy = 0; yy < y; yy++) {
-			for (int xx = 0; xx < x; xx++) {
-				newStr[xx + (yy * y)] = toFlip[((x - 1) - xx) + (yy * y)];
-			}
-		}
-		newStr[size] = 0x00;
-		return newStr;
-	}
-
-	String FlipStringVertical(const String& toFlip, int x, int y) {
-		int size = x * y;
-		String newStr;
-		newStr.reserve(size);
-		for (int yy = 0; yy < y; yy++) {
-			for (int xx = 0; xx < x; xx++) {
-				newStr[xx + (yy * y)] = toFlip[xx + ((y - yy - 1) * y)];
-			}
-		}
-		newStr[size] = 0x00;
-		return newStr;
-	}
+	//void setPositionInFrontOfCam(Vector3& dest, const Camera* cam, float distance) {
+	//	const float x = cam->m_position.x;
+	//	const float y = cam->m_position.y;
+	//	const float z = cam->m_position.z;
+	//
+	//	dest.x = x + Math::Sin(cam->m_rotation.yaw) * distance * Math::Abs(Math::Cos(cam->m_rotation.pitch));
+	//	dest.y = y - Math::Sin(cam->m_rotation.pitch) * distance;
+	//	dest.z = z - Math::Cos(cam->m_rotation.yaw) * distance * Math::Abs(Math::Cos(cam->m_rotation.pitch));
+	//}
 }
 
 namespace GLUtils {
