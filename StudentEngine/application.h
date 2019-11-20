@@ -2,6 +2,8 @@
 
 class App : public Singleton<App> {
 private:
+	AsyncQueue<function<void()>> m_queue;
+
 	bool m_initialized = false;
 	Window* m_window = nullptr;
 	Timer m_timer;
@@ -13,7 +15,10 @@ private:
 	float m_lastFrameTime = 0;
 	int m_fps = 0;
 
+	void HandleQueue();
+
 public:
+	AssetRef<Window> GetWindow() { return m_window; }
 	void OnWindowClose();
 	void OnResize(int width, int height);
 
@@ -23,6 +28,16 @@ public:
 	void Render();
 	void Cleanup();
 
+	void QueueTask(function<void()> task) {
+		m_queue.Add(task);
+	}
+
+	template<typename T>
+	inline T GetWidth() { return m_window->GetWidth<T>(); }
+
+	template<typename T>
+	inline T GetHeight() { return m_window->GetHeight<T>(); }
+	
 protected:
 	App() {}
 	~App() {}

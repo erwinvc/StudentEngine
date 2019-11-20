@@ -77,9 +77,28 @@ using namespace std;
 #include "util/timer.h"
 #include "util/glError.h"
 
+#include "assets/texture/textureParameters.h"
+
+#include "graphics/buffers/bufferLayout.h"
+#include "graphics/buffers/frameBuffer.h"
+#include "graphics/buffers/indexBuffer.h"
+#include "graphics/buffers/vertexBuffer.h"
+#include "graphics/buffers/vertexArray.h"
+
+#include "graphics/shaders/shaderUniformBuffer.h"
+#include "graphics/shaders/shader.h"
+#include "graphics/shaders/shaderManager.h"
+
+#include "assets/assetBase.h"
+#include "assets/texture/texture.h"
+
+#include "graphics/renderingPipeling.h"
+
 #include "imgui/imGuiManager.h"
 
 #include "util/math/groundRaycast.h"
+
+#include "assets/assetWatcher.h"
 
 #include "graphics/glCallbackManager.h"
 #include "graphics/window.h"

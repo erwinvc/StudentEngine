@@ -32,10 +32,10 @@ void App::Initialize() {
 	glfwWindowHint(GLFW_SAMPLES, 8);
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
-	m_window = new Window("Emerald", 1920, 1080);
+	m_window = new Window("StudentEngine", 1920, 1080);
 
 	m_window->MakeContextCurrent();
-	m_window->ClearColor(Color(0.5f, 0.7f, 1.0f, 1.0f));
+	m_window->ClearColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
 	m_window->SetVSync(true);
 
 	if (glewInit() != GLEW_OK) {
@@ -56,14 +56,21 @@ void App::Initialize() {
 	GetGLFiberManager()->AddFiber("Main", [] {GetApp()->Run(); });
 	//GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
 
+	GetAssetWatcher()->Initialize();
 	GetImGuiManager()->Initialize(m_window);
 	m_window->Show();
 
 	m_initialized = true;
 
-
 	while (m_running) {
 		GetGLFiberManager()->Tick();
+	}
+}
+
+void App::HandleQueue() {
+	function<void()> task;
+	if (m_queue.TryToGet(task)) {
+		task();
 	}
 }
 
@@ -88,7 +95,7 @@ void App::Run() {
 		Render();
 		frames++;
 		if (glfwGetTime() - timer > 1.0) {
-			m_window->SetTitle(Format_t("Emerald | UPS: %d FPS: %d", updates, frames));
+			m_window->SetTitle(Format_t("StudentEngine | UPS: %d FPS: %d", updates, frames));
 			m_fps = frames;
 			timer++;
 			updates = frames = 0;
@@ -105,11 +112,9 @@ void App::Update(TimeStep time) {
 }
 
 void App::Render() {
-	m_window->ClearColor(Color(0, 0, 0, 1));
-
 	GetImGuiManager()->Begin();
 	ImGui::ShowDemoWindow();
-	if (ImGui::Begin("Emerald###Window", &m_ImGuiOpen, ImVec2(576, 680), -1)) {
+	if (ImGui::Begin("StudentEngine###Window", &m_ImGuiOpen, ImVec2(576, 680), -1)) {
 		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 			//GetStateManager()->OnStateImGUI();
 			//GetFrameBufferManager()->OnImGUI();
@@ -132,6 +137,9 @@ void App::Render() {
 		resizeBuffer = Vector2I(-1, -1);
 	}
 
+	GetAssetWatcher()->HandleQueue();
+	HandleQueue();
+	
 	//GetAssetWatcher()->HandleQueue();
 
 	m_window->SwapBuffers();
