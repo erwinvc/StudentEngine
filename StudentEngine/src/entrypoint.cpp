@@ -3,8 +3,7 @@
 int main() {
 	srand((uint)time(NULL));
 	Logger::Initialize();
-
-	LOG("test");
+	GetApp()->Initialize();
+	GetApp()->Cleanup();
 	Logger::Cleanup();
-	std::cin.get();
 }

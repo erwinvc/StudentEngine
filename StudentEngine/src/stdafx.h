@@ -77,4 +77,10 @@ using namespace std;
 #include "util/timer.h"
 #include "util/glError.h"
 
+#include "imgui/imGuiManager.h"
+
 #include "util/math/groundRaycast.h"
+
+#include "graphics/glCallbackManager.h"
+#include "graphics/window.h"
+#include "application.h"
