@@ -107,3 +107,4 @@ using namespace std;
 #include "graphics/glCallbackManager.h"
 #include "graphics/window.h"
 #include "application.h"
+#include "editorWindow.h"

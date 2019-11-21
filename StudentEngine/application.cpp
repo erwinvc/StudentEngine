@@ -116,16 +116,9 @@ void App::Update(TimeStep time) {
 
 void App::Render() {
 	GetImGuiManager()->Begin();
-	ImGui::ShowDemoWindow();
-	if (ImGui::Begin("StudentEngine###Window", &m_ImGuiOpen, ImVec2(576, 680), -1)) {
-		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
-			//GetStateManager()->OnStateImGUI();
-			//GetFrameBufferManager()->OnImGUI();
-			//GetShaderManager()->OnImGUI();
-			ImGui::EndTabBar();
-		}
-		ImGui::End();
-	}
+	
+	GetEditorWindow()->OnImGui();
+
 	//GetStateManager()->OnImGUI();
 	GetImGuiManager()->End();
 
