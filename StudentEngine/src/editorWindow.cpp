@@ -45,6 +45,7 @@ void editorWindow::CreateDockingSpace() {
 			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.3f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.3f, nullptr, &m_dockspaceCenter);
 			m_dockspaceBottom = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Down, 0.2f, nullptr, &m_dockspaceCenter);
+			m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
 
 			ImGui::DockBuilderFinish(m_dockspaceCenter);
 		}
@@ -87,7 +88,6 @@ void editorWindow::CreateEditorWindows() {
 	ImGui::End();
 
 	// Drag 'n Drop
-	m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
 	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
 
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
