@@ -98,7 +98,11 @@ using namespace std;
 
 #include "util/math/groundRaycast.h"
 
+#include "assets/loadjobs/assetLoadJob.h"
+#include "assets/loadjobs/textureLoadJob.h"
+
 #include "assets/assetWatcher.h"
+#include "assets/assetManager.h"
 
 #include "graphics/glCallbackManager.h"
 #include "graphics/window.h"

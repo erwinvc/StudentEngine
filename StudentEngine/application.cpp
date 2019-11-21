@@ -57,6 +57,8 @@ void App::Initialize() {
 	//GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
 
 	GetAssetWatcher()->Initialize();
+	GetAssetManager()->Initialize();
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetImGuiManager()->Initialize(m_window);
 	m_window->Show();
 
@@ -109,6 +111,7 @@ void App::Update(TimeStep time) {
 	//GetStateManager()->Update(time);
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
+	GetAssetManager()->Update();
 }
 
 void App::Render() {
