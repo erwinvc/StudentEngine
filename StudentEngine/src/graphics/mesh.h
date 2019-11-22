@@ -6,7 +6,7 @@ protected:
 	ManagedRef<IndexBuffer> m_ibo;
 
 public:
-	Mesh(ManagedRef<VertexArray>& vao, ManagedRef<IndexBuffer>& ibo) : m_vao(vao), m_ibo(ibo) {}
+	Mesh(ManagedRef<VertexArray> vao, ManagedRef<IndexBuffer> ibo) : m_vao(vao), m_ibo(ibo) {}
 	virtual ~Mesh() {}
 
 	void Bind() {
@@ -35,7 +35,7 @@ public:
 	}
 
 	AssetRef<Mesh> Copy() {
-		return new Mesh(m_vao, m_ibo, m_material);
+		return new Mesh(m_vao, m_ibo);
 	}
 
 	inline ManagedRef<VertexArray> GetVAO() { return m_vao; }

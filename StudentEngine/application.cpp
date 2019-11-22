@@ -60,6 +60,9 @@ void App::Initialize() {
 	GetAssetManager()->Initialize();
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetImGuiManager()->Initialize(m_window);
+	m_pipeline = new RenderingPipeline();
+	m_pipeline->Initialize();
+
 	m_window->Show();
 
 	m_initialized = true;
@@ -94,7 +97,7 @@ void App::Run() {
 			m_frameCount++;
 		}
 		delta += (time - updateTimer) / updateTick;
-		Render();
+		Draw();
 		frames++;
 		if (glfwGetTime() - timer > 1.0) {
 			m_window->SetTitle(Format_t("StudentEngine | UPS: %d FPS: %d", updates, frames));
@@ -111,12 +114,15 @@ void App::Update(TimeStep time) {
 	//GetStateManager()->Update(time);
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
+	//
+	m_pipeline->Update(time);
 	GetAssetManager()->Update();
 }
 
-void App::Render() {
+void App::Draw() {
+	m_pipeline->Draw();
 	GetImGuiManager()->Begin();
-	
+
 	GetEditorWindow()->OnImGui();
 
 	//GetStateManager()->OnImGUI();
@@ -135,7 +141,7 @@ void App::Render() {
 
 	GetAssetWatcher()->HandleQueue();
 	HandleQueue();
-	
+
 	//GetAssetWatcher()->HandleQueue();
 
 	m_window->SwapBuffers();
@@ -144,5 +150,6 @@ void App::Render() {
 
 void App::Cleanup() {
 	GetThreadManager()->Cleanup();
+	delete m_pipeline;
 	delete m_window;
 }

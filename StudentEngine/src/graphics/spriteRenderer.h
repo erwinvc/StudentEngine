@@ -26,29 +26,33 @@ public:
 
 	Shader* m_shader;
 
-	InstancedRenderer<Vertex> m_instancedRenderer;
+	InstancedRenderer<Vertex>* m_instancedRenderer;
 
 	SpriteRenderer() {
-		Mesh* mesh = new Mesh(new VertexArray(), new IndexBuffer({ 0, 1, 2, 0, 2, 3 }, 6));
+		uint indices[] = { 0, 1, 2, 0, 2, 3 };
+		Mesh* mesh = new Mesh(new VertexArray(), new IndexBuffer(indices, 6));
 		m_instancedRenderer = new InstancedRenderer<Vertex>(mesh, MAX_SPRITES, m_layout);
 		delete mesh;
 
-		m_shader = new Shader("res/shaders/");
-		m_shader->LoadShader("res/shaders/");
+		m_shader = GetShaderManager()->Create("Sprite", "res/shaders/sprite");
 	}
 	~SpriteRenderer() {
 		delete m_instancedRenderer;
 	}
 
+	void Submit(const Sprite& sprite)
+	{
+	}
+
 	void Begin() {
-		m_instancedRenderer.Begin();
+		m_instancedRenderer->Begin();
 	}
 
 	void End() {
-		m_instancedRenderer.End();
+		m_instancedRenderer->End();
 	}
 
 	void Draw() {
-		m_instancedRenderer.Draw();
+		m_instancedRenderer->Draw();
 	}
 };

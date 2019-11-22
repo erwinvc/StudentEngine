@@ -10,8 +10,7 @@ void editorWindow::OnImGui() {
 	CreateEditorWindows();
 }
 
-void editorWindow::End() {
-}
+void editorWindow::End() {}
 
 void editorWindow::CreateDockingSpace() {
 	//Create initial docking window
@@ -69,12 +68,24 @@ void editorWindow::CreateEditorWindows() {
 		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 
 			//fancy texture render pipeline here
+			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+			ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
+
+			//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+			if (viewportSize.x > 0 && viewportSize.y > 0)
+				GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+			//GetCamera()->UpdateProjectionMatrix();
+
+			//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
+			GetRenderingPipeline()->m_camera->SetViewport(pos.x - parentPos.x, pos.y - parentPos.y + 19, viewportSize.x, viewportSize.y);
+			ImGui::Image((void*)GetRenderingPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
 			ImGui::EndTabBar();
 		}
 	}
 	ImGui::End();
-	
+
 	// Hierarchy
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	ImGui::Begin("Hierarchy", nullptr, window_flags2);
@@ -101,6 +112,6 @@ void editorWindow::CreateEditorWindows() {
 	// Throwing the logger in there for debugging purposes (for now)
 	ImGui::SetNextWindowDockID(m_dockspaceBottom, ImGuiCond_Always);
 	Logger::OnImGui();
-	
+
 	ImGui::PopStyleVar(3);
 }

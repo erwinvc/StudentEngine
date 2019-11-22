@@ -3,6 +3,7 @@
 class App : public Singleton<App> {
 private:
 	AsyncQueue<function<void()>> m_queue;
+	void HandleQueue();
 
 	bool m_initialized = false;
 	Window* m_window = nullptr;
@@ -15,9 +16,9 @@ private:
 	float m_lastFrameTime = 0;
 	int m_fps = 0;
 
-	void HandleQueue();
-
 public:
+	RenderingPipeline* m_pipeline;
+
 	AssetRef<Window> GetWindow() { return m_window; }
 	void OnWindowClose();
 	void OnResize(int width, int height);
@@ -25,7 +26,7 @@ public:
 	void Initialize();
 	void Run();
 	void Update(TimeStep time);
-	void Render();
+	void Draw();
 	void Cleanup();
 
 	void QueueTask(function<void()> task) {
@@ -45,3 +46,4 @@ protected:
 };
 
 inline App* GetApp() { return App::GetInstance(); }
+inline RenderingPipeline* GetRenderingPipeline() { return GetApp()->m_pipeline; }

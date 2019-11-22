@@ -92,7 +92,13 @@ using namespace std;
 #include "assets/assetBase.h"
 #include "assets/texture/texture.h"
 
-#include "graphics/renderingPipeling.h"
+#include "graphics/mesh.h"
+#include "graphics/instancedRenderer.h"
+#include "graphics/sprite.h"
+#include "graphics/spriteRenderer.h"
+#include "graphics/camera/camera.h"
+#include "graphics/camera/orthographicCamera.h"
+#include "graphics/renderingPipeline.h"
 
 #include "imgui/imGuiManager.h"
 

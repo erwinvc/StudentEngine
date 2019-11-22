@@ -14,8 +14,9 @@ private:
 	BufferLayout m_layout;
 
 	void Initialize() {
-		ASSERT(m_mesh, "InstancedRenderer mesh is a null pointer");
-		m_mesh = new Mesh(new VertexArray(), new IndexBuffer({ 0, 1, 2, 0, 2, 3 }, 6));
+		//ASSERT(m_mesh, "InstancedRenderer mesh is a null pointer");
+		uint indices[] = { 0, 1, 2, 0, 2, 3 };
+		m_mesh = new Mesh(new VertexArray(), new IndexBuffer(indices, 6));
 		m_offsets = new T[m_maxObjects];
 		m_offsetsBuffer = new VertexBuffer((float*)m_offsets, m_maxObjects, m_layout, GL_DYNAMIC_DRAW);
 		m_mesh->GetVAO()->AddBuffer(m_offsetsBuffer);
@@ -85,5 +86,9 @@ public:
 	}
 
 	InstancedRenderer(AssetRef<Mesh> mesh, int maxObjects, const BufferLayout& layout) : m_started(false), m_ended(true), m_maxObjects(maxObjects), m_layout(layout), m_mesh(mesh->Copy()) { Initialize(); }
-	~InstancedRenderer() { delete[] m_offsets; DELETE(m_mesh); }
+	~InstancedRenderer()
+	{
+		delete[] m_offsets;
+		delete m_mesh;
+	}
 };
