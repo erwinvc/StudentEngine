@@ -58,7 +58,7 @@ using namespace std;
 #include "util/math/vector3.h"
 #include "util/math/vector4.h"
 #include "util/math/matrix4.h"
-#include "util/math/rect.h"
+#include "util/math/Rectangle.h"
 #include "util/math/math.h"
 #include "util/math/transform.h"
 
@@ -113,4 +113,5 @@ using namespace std;
 #include "graphics/glCallbackManager.h"
 #include "graphics/window.h"
 #include "application.h"
+#include "editorManager.h"
 #include "editorWindow.h"

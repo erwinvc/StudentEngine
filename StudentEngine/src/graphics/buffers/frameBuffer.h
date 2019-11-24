@@ -128,7 +128,7 @@ public:
 		Utils::RemoveFromVector(m_frameBuffers, fbo.Get());
 	}
 
-	void OnImGUI();
+	void OnImGui();
 	inline AssetRef<Texture> GetSelectedTexture() { return m_selectedTexture; }
 
 	void SetSelectedTexture(AssetRef<Texture> texture) {

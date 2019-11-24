@@ -7,16 +7,15 @@ private:
 	bool m_ended;
 	AssetRef<Mesh> m_mesh = nullptr;
 	const int m_maxObjects = 0;
+	const int m_indicesCount = 0;
 	ManagedRef<VertexBuffer> m_offsetsBuffer = nullptr;
 	int m_amount = 0;
 	T* m_offsets = nullptr;
 	T* m_buffer = nullptr;
+	uint32* m_indexBuffer = nullptr;
 	BufferLayout m_layout;
 
 	void Initialize() {
-		//ASSERT(m_mesh, "InstancedRenderer mesh is a null pointer");
-		uint indices[] = { 0, 1, 2, 0, 2, 3 };
-		m_mesh = new Mesh(new VertexArray(), new IndexBuffer(indices, 6));
 		m_offsets = new T[m_maxObjects];
 		m_offsetsBuffer = new VertexBuffer((float*)m_offsets, m_maxObjects, m_layout, GL_DYNAMIC_DRAW);
 		m_mesh->GetVAO()->AddBuffer(m_offsetsBuffer);
@@ -35,18 +34,12 @@ public:
 		m_offsetsBuffer->Unbind();
 	}
 
-	void Submit(T* data, int size) {
-		memcpy(m_buffer, data, size * sizeof(T));
-		m_buffer += size;
-		m_amount += size;
+	void Submit(T& data) {
+		*m_buffer = data;
+		m_buffer++;
 	}
 
-	void Submit(T& offset) {
-		if (m_amount >= m_maxObjects) return;
-		*m_buffer = offset;
-		m_buffer++;
-		m_amount++;
-	}
+	void AddOne() { m_amount++; }
 
 	void End() {
 		ASSERT(m_started, "Call InstancedRenderer::Begin before calling InstancedRenderer::End");
@@ -80,15 +73,20 @@ public:
 		m_mesh->DrawInstanced(m_amount, mode);
 	}
 
+	//void Draw(uint mode = GL_TRIANGLES) {
+	//	ASSERT(m_ended, "Call InstancedRenderer::End before calling InstancedRenderer::Draw");
+	//	m_mesh->DrawInstanced(m_amount, mode);
+	//}
+
 	void Draw(uint mode = GL_TRIANGLES) {
 		ASSERT(m_ended, "Call InstancedRenderer::End before calling InstancedRenderer::Draw");
 		m_mesh->DrawInstanced(m_amount, mode);
 	}
 
-	InstancedRenderer(AssetRef<Mesh> mesh, int maxObjects, const BufferLayout& layout) : m_started(false), m_ended(true), m_maxObjects(maxObjects), m_layout(layout), m_mesh(mesh->Copy()) { Initialize(); }
-	~InstancedRenderer()
-	{
+	InstancedRenderer(AssetRef<Mesh> mesh, int maxObjects, int indicesCount, const BufferLayout& layout) : m_started(false), m_ended(true), m_maxObjects(maxObjects), m_indicesCount(indicesCount), m_layout(layout), m_mesh(mesh->Copy()) { Initialize(); }
+	~InstancedRenderer() {
 		delete[] m_offsets;
+		delete[] m_indexBuffer;
 		delete m_mesh;
 	}
 };

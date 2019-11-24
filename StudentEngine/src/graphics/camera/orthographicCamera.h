@@ -19,6 +19,6 @@ public:
 
 	void UpdateProjectionMatrix() {
 		//m_projectionMatrix = Matrix4::Orthographic(m_left, m_right, m_bottom, m_top, m_near, m_far);
-		m_projectionMatrix = Matrix4::Orthographic(0, m_viewPort.x, 0, m_viewPort.y, -1.0f, 1.0f);
+		m_projectionMatrix = Matrix4::Orthographic(0, m_viewPort.z, 0, m_viewPort.w, -1.0f, 1.0f);
 	}
 };

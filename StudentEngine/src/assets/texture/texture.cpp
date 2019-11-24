@@ -47,12 +47,12 @@ Texture::~Texture() {
 	Cleanup();
 }
 
-void Texture::Bind(uint slot) {
+void Texture::Bind(uint slot) const {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
 }
 
-void Texture::Unbind(uint slot) {
+void Texture::Unbind(uint slot) const {
 	glBindTexture(GL_TEXTURE_2D, slot);
 }
 

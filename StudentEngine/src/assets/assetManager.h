@@ -36,6 +36,7 @@ public:
 			AssetLoadJob* currentLoadJob;
 			if (m_processAssetQueue.TryToGet(currentLoadJob)) {
 				currentLoadJob->processAsset(m_assets);
+				//#TODO delete job when finished
 			}
 		}
 	}
@@ -48,6 +49,13 @@ public:
 	template <class T>
 	void AddToProcessQueue(T* assetLoadJob) {
 		m_processAssetQueue.Add(assetLoadJob);
+	}
+
+	template<typename T>
+	AssetRef<T> Get(const String& name) {
+		T* asset = (T*)m_assets[name];
+		if (asset == nullptr) LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x not found", name.c_str(), typeid(T).name());
+		return asset;
 	}
 };
 

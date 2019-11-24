@@ -67,12 +67,12 @@ namespace TextureUtils {
 		int size = channelCount * width * height;
 
 		if (data) {
-			//LOG("[~gTexture~x] Loaded ~1%s", path.c_str());
+			LOG("[~gTexture~x] Loaded ~1%s", path.c_str());
 			LoadedTexture textureData = { data, (uint)width, (uint)height, channelCount, size };
 			callback(textureData);
 			stbi_image_free(data);
 			return true;
-		} //else LOG_ERROR("[~gTexture~x] Failed to load ~1%s", path.c_str());
+		} else LOG_ERROR("[~gTexture~x] Failed to load ~1%s", path.c_str());
 		return false;
 	}
 }

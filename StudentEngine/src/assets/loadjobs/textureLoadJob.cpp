@@ -17,7 +17,7 @@ void TextureLoadJob::loadAsset() {
 		m_width = data.m_width;
 		m_height = data.m_height;
 		m_channelCount = data.m_channelCount;
-		int size = data.m_size;
+		int size = m_height * m_width * 4;
 		m_data = new byte[size];
 		memcpy(m_data, data.m_data, size);
 	});
@@ -26,6 +26,6 @@ void TextureLoadJob::loadAsset() {
 
 void TextureLoadJob::processAsset(map<String, AssetBase*>& assets) {
 	if (m_data != nullptr) {
-		assets[m_id] = new Texture(m_width, m_height, m_data, m_params);
+		assets[m_id] = new Texture(m_width, m_height, m_data, false, m_params);
 	}
 }

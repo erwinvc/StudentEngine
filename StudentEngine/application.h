@@ -17,8 +17,6 @@ private:
 	int m_fps = 0;
 
 public:
-	RenderingPipeline* m_pipeline;
-
 	AssetRef<Window> GetWindow() { return m_window; }
 	void OnWindowClose();
 	void OnResize(int width, int height);
@@ -46,4 +44,3 @@ protected:
 };
 
 inline App* GetApp() { return App::GetInstance(); }
-inline RenderingPipeline* GetRenderingPipeline() { return GetApp()->m_pipeline; }

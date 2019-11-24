@@ -19,8 +19,8 @@ public:
 
 	void SetData(byte* data);
 	uint GetHandle() { return m_textureID; }
-	void Bind(uint slot = 0);
-	void Unbind(uint slot = 0);
+	void Bind(uint slot = 0) const;
+	void Unbind(uint slot = 0) const;
 	void Resize(int width, int height);
 
 	inline const int32 GetWidth() const { return m_width; }

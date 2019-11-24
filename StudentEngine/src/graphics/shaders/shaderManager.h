@@ -35,7 +35,7 @@ public:
 			}
 		}
 	}
-	void OnImGUI() {
+	void OnImGui() {
 		if (ImGui::BeginTabItem("Shaders")) {
 			static int currentlySelectedShader = 0;
 			if (ImGui::BeginCombo("Shader", m_shadersVector[currentlySelectedShader]->m_name.c_str())) {

@@ -63,7 +63,7 @@ AssetRef<Texture> FrameBuffer::AddBuffer(const String& name, const TextureParame
 	return texture;
 }
 
-void FrameBufferManager::OnImGUI() {
+void FrameBufferManager::OnImGui() {
 	if (ImGui::BeginTabItem("Framebuffers")) {
 		ImGui::Columns(3, NULL, false);
 		vector<String> m_fboTextureNames;
@@ -78,7 +78,7 @@ void FrameBufferManager::OnImGUI() {
 
 			int selected = (int)fbo->GetScale();
 			static String_t scales[] = { "Full", "Half", "Quarter", "One Fifth" };
-			if (ImGui::Combo(Format_t("Scale##%d", index++), &selected, scales, NUMOF(scales))) fbo->SetScale(FBOScale(selected));
+			if (ImGui::Combo(Format_t("Scale##%d", index++), &selected, scales, (int)NUMOF(scales))) fbo->SetScale(FBOScale(selected));
 			int i = 0;
 			for (AssetRef<Texture>& tex : fbo->GetTextures()) {
 				if (!fbo->HasDepth() && i == 0) {

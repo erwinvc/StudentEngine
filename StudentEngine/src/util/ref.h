@@ -24,7 +24,8 @@ public:
 		return *this;
 	}
 
-	operator T*() { return m_object; }
+	operator T* () { return m_object; }
+	operator T* () const { return m_object; }
 	//operator const T*() { return m_object; }
 
 	~AssetRef() {

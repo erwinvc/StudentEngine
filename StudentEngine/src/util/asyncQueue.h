@@ -45,6 +45,6 @@ public:
 
 	int Size() {
 		unique_lock <mutex> lock(m_lock);
-		return m_queue.size();
+		return (int)m_queue.size();
 	}
 };

@@ -54,15 +54,15 @@ void App::Initialize() {
 
 	GetGLFiberManager()->Initialize();
 	GetGLFiberManager()->AddFiber("Main", [] {GetApp()->Run(); });
-	//GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
+	GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
 
 	GetAssetWatcher()->Initialize();
 	GetAssetManager()->Initialize();
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png"));
 	GetImGuiManager()->Initialize(m_window);
-	m_pipeline = new RenderingPipeline();
-	m_pipeline->Initialize();
-
+	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
+	GetPipeline()->Initialize();
 	m_window->Show();
 
 	m_initialized = true;
@@ -115,13 +115,27 @@ void App::Update(TimeStep time) {
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
 	//
-	m_pipeline->Update(time);
-	GetAssetManager()->Update();
+	GetPipeline()->Update(time);
+	//GetAssetManager()->Update();
 }
 
 void App::Draw() {
-	m_pipeline->Draw();
+	GetPipeline()->Begin();
+	GetEditorManager()->Draw();
+	GetPipeline()->End();
 	GetImGuiManager()->Begin();
+
+
+	
+	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(576, 680), ImGuiWindowFlags_NoDocking)) {
+		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
+			GetPipeline()->OnImGui();
+			GetFrameBufferManager()->OnImGui();
+			GetShaderManager()->OnImGui();
+			ImGui::EndTabBar();
+		}
+	}
+	ImGui::End();
 
 	GetEditorWindow()->OnImGui();
 
@@ -134,7 +148,7 @@ void App::Draw() {
 		glViewport(0, 0, width, height);
 		m_window->SetWidth(width);
 		m_window->SetHeight(height);
-		//GetFrameBufferManager()->OnResize(width, height);
+		GetFrameBufferManager()->OnResize(width, height);
 		//GetStateManager()->OnResize(width, height);
 		resizeBuffer = Vector2I(-1, -1);
 	}
@@ -150,6 +164,5 @@ void App::Draw() {
 
 void App::Cleanup() {
 	GetThreadManager()->Cleanup();
-	delete m_pipeline;
 	delete m_window;
 }

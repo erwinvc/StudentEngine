@@ -62,30 +62,37 @@ void editorWindow::CreateEditorWindows() {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
+	static ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 	// Main viewport
-	if (ImGui::Begin("Editor Window###Window", nullptr, window_flags2)) {
+	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
 		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 
 			//fancy texture render pipeline here
 			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-
+			ImVec2    win_region = ImGui::GetContentRegionAvail();
+			ImVec2 w_pos = ImGui::GetCursorPos(), c_pos = ImGui::GetWindowPos();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
+			//#TODO Fix this mess
+			//if (ImGui::GetCurrentWindowRead()->ParentWindow) {
+				//ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
 
-			//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-			if (viewportSize.x > 0 && viewportSize.y > 0)
-				GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-			//GetCamera()->UpdateProjectionMatrix();
+				//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+				//if (viewportSize.x > 0 && viewportSize.y > 0)
+				//	GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+				//GetCamera()->UpdateProjectionMatrix();
 
-			//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
-			GetRenderingPipeline()->m_camera->SetViewport(pos.x - parentPos.x, pos.y - parentPos.y + 19, viewportSize.x, viewportSize.y);
-			ImGui::Image((void*)GetRenderingPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
+				//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
+				GetPipeline()->m_camera->SetViewport(pos.x, pos.y, viewportSize.x, viewportSize.y);
+				ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
+			//}
 			ImGui::EndTabBar();
 		}
 	}
 	ImGui::End();
 
+	//ImGui::Begin("Awindow", nullptr, ImVec2(576, 680), ImGuiWindowFlags_NoDocking);
+//ImGui::End();
+//
 	// Hierarchy
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	ImGui::Begin("Hierarchy", nullptr, window_flags2);
@@ -93,6 +100,7 @@ void editorWindow::CreateEditorWindows() {
 		if (ImGui::TreeNode("Child GameObject")) { ImGui::TreePop(); }
 		ImGui::TreePop();
 	}
+	GetPipeline()->GetSpriteRenderer()->OnImGui();
 	ImGui::BulletText("Camera");
 	ImGui::BulletText("Player");
 	ImGui::BulletText("etc.");
