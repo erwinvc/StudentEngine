@@ -73,7 +73,7 @@ public:
 		vertices[0].m_color = color;
 		//Top right
 		vertices[1].m_position = Vector3(x + w / 2, y + h / 2, 0);
-		vertices[1].m_uv = Vector2(0.0f, 0.0f);
+		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_materialID = 0;
 		vertices[1].m_color = color;
@@ -85,7 +85,7 @@ public:
 		vertices[2].m_color = color;
 		//Bottom left
 		vertices[3].m_position = Vector3(x - w / 2, y - h / 2, 0);
-		vertices[3].m_uv = Vector2(1.0f, 1.0f);
+		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_materialID = 0;
 		vertices[3].m_color = color;

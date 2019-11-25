@@ -20,10 +20,10 @@ void SpriteRenderer::Draw() {
 		float s2 = Math::Sin(tim) * 200;
 		float c2 = Math::Cos(tim) * 200;
 		Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, GetPipeline()->m_camera->GetViewport().z, GetPipeline()->m_camera->GetViewport().w, Color(0.1f, 0.1f, 0.1f, 1.0f), m_whiteTexture);
-		Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, 400.0f, 400.0f, Color::White(), tex);
-		Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 200 + s, GetPipeline()->m_camera->GetViewport().w / 2 + 50, 400.0f, 400.0f, Color::Green(), tex);
-		Rect(GetPipeline()->m_camera->GetViewport().z / 2 + s2 + 25.0f, GetPipeline()->m_camera->GetViewport().w / 2 - 100 + c, 400.0f, 400.0f, Color::Red(), tex);
-		Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 100, GetPipeline()->m_camera->GetViewport().w / 2 + c2, 400.0f, 400.0f, Color(1.0f, 0.0f, 0.4f, 0.3f), tex);
+		Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, 600.0f, 200.0f, Color::White(), tex);
+		Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 200 + s, GetPipeline()->m_camera->GetViewport().w / 2 + 50, 600.0f, 200.0f, Color::Green(), tex);
+		Rect(GetPipeline()->m_camera->GetViewport().z / 2 + s2 + 25.0f, GetPipeline()->m_camera->GetViewport().w / 2 - 100 + c, 600.0f, 200.0f, Color::Red(), tex);
+		Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 100, GetPipeline()->m_camera->GetViewport().w / 2 + c2, 600.0f, 200.0f, Color(1.0f, 0.0f, 0.4f, 0.3f), tex);
 	}
 
 	for (uint32 i = 0; i < m_textures.size(); i++) {

@@ -77,8 +77,8 @@ void editorWindow::CreateEditorWindows() {
 				//ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
 
 				//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-				//if (viewportSize.x > 0 && viewportSize.y > 0)
-				//	GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+				if (viewportSize.x > 0 && viewportSize.y > 0)
+					GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
 				//GetCamera()->UpdateProjectionMatrix();
 
 				//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 

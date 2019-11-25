@@ -59,7 +59,7 @@ void App::Initialize() {
 	GetAssetWatcher()->Initialize();
 	GetAssetManager()->Initialize();
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetImGuiManager()->Initialize(m_window);
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
 	GetPipeline()->Initialize();
