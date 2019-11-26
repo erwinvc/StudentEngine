@@ -3,6 +3,7 @@
 class editorWindow : public Singleton<editorWindow> {
 private:
 	float m_time = 0;
+	bool inEditorMode = true;
 
 
 	//RenderWindow
@@ -14,6 +15,8 @@ private:
 
 	void CreateDockingSpace();
 	void CreateEditorWindows();
+	void CreateTemporaryPlayMode();
+	void CreateViewport();
 	//void RenderGUI();
 
 public:

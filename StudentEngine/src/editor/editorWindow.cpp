@@ -1,16 +1,31 @@
 #include "stdafx.h"
 
-void editorWindow::Initialize() {
-
-}
+void editorWindow::Initialize() {}
+void editorWindow::End() {}
 
 void editorWindow::OnImGui() {
-	CreateDockingSpace();
 
-	CreateEditorWindows();
+	if (inEditorMode) {
+		CreateDockingSpace();
+
+		CreateEditorWindows();
+	} else {
+
+		CreateTemporaryPlayMode();
+	}
 }
 
-void editorWindow::End() {}
+
+void editorWindow::CreateTemporaryPlayMode() {
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("Return to Edit")) {
+			inEditorMode = true;
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+}
+
 
 void editorWindow::CreateDockingSpace() {
 	//Create initial docking window
@@ -56,7 +71,24 @@ void editorWindow::CreateDockingSpace() {
 }
 
 void editorWindow::CreateEditorWindows() {
-	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
+	// Menu Bar
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit")) {
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Windows")) {
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Enter Play Mode")) {
+			inEditorMode = false;
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -64,27 +96,12 @@ void editorWindow::CreateEditorWindows() {
 
 	static ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 	// Main viewport
+	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
 		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 
-			//fancy texture render pipeline here
-			ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-			ImVec2    win_region = ImGui::GetContentRegionAvail();
-			ImVec2 w_pos = ImGui::GetCursorPos(), c_pos = ImGui::GetWindowPos();
-			ImVec2 pos = ImGui::GetCursorScreenPos();
-			//#TODO Fix this mess
-			//if (ImGui::GetCurrentWindowRead()->ParentWindow) {
-				//ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
-
-				//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-				if (viewportSize.x > 0 && viewportSize.y > 0)
-					GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-				//GetCamera()->UpdateProjectionMatrix();
-
-				//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
-				GetPipeline()->m_camera->SetViewport(pos.x, pos.y, viewportSize.x, viewportSize.y);
-				ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
-			//}
+			CreateViewport();
+			
 			ImGui::EndTabBar();
 		}
 	}
@@ -122,4 +139,25 @@ void editorWindow::CreateEditorWindows() {
 	Logger::OnImGui();
 
 	ImGui::PopStyleVar(3);
+}
+
+void editorWindow::CreateViewport() {
+	//fancy texture render pipeline here
+	ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+	ImVec2    win_region = ImGui::GetContentRegionAvail();
+	ImVec2 w_pos = ImGui::GetCursorPos(), c_pos = ImGui::GetWindowPos();
+	ImVec2 pos = ImGui::GetCursorScreenPos();
+	//#TODO Fix this mess
+	//if (ImGui::GetCurrentWindowRead()->ParentWindow) {
+		//ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
+
+		//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+	if (viewportSize.x > 0 && viewportSize.y > 0)
+		GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
+	//GetCamera()->UpdateProjectionMatrix();
+
+	//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
+	GetPipeline()->m_camera->SetViewport(pos.x, pos.y, viewportSize.x, viewportSize.y);
+	ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
+	//}
 }
