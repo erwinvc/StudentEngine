@@ -113,5 +113,6 @@ using namespace std;
 #include "graphics/glCallbackManager.h"
 #include "graphics/window.h"
 #include "application.h"
-#include "editorManager.h"
-#include "editorWindow.h"
+#include "gameObject/gameObject.h"
+#include "editor/editorManager.h"
+#include "editor/editorWindow.h"
