@@ -91,10 +91,10 @@ using namespace std;
 
 #include "assets/assetBase.h"
 #include "assets/texture/texture.h"
+#include "assets/sprite.h"
 
 #include "graphics/mesh.h"
 #include "graphics/instancedRenderer.h"
-#include "graphics/sprite.h"
 #include "graphics/spriteRenderer.h"
 #include "graphics/camera/camera.h"
 #include "graphics/camera/orthographicCamera.h"
@@ -114,5 +114,6 @@ using namespace std;
 #include "graphics/window.h"
 #include "application.h"
 #include "gameObject/gameObject.h"
+#include "editor/hierarchy.h"
 #include "editor/editorManager.h"
 #include "editor/editorWindow.h"
