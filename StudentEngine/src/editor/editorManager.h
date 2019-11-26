@@ -2,10 +2,12 @@
 
 class EditorManager : public Singleton<EditorManager> {
 private:
-	vector<GameObject> m_hierarchy;
+	Hierarchy m_hierarchy;
 public:
 	void Initialize();
 	void Draw();
+
+	inline Hierarchy& GetHierarchy() { return m_hierarchy; }
 };
 
 inline EditorManager* GetEditorManager() { return EditorManager::GetInstance(); }
