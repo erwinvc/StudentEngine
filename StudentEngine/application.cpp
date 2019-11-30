@@ -61,6 +61,7 @@ void App::Initialize() {
 	GetAssetManager()->ForceLoadAsset<Texture>(new TextureLoadJob("White", 1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
+	GetAssetManager()->ProcessInitialQueue();
 	GetImGuiManager()->Initialize(m_window);
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
 	m_pipeline = new RenderingPipeline();
@@ -124,7 +125,7 @@ void App::Update(TimeStep time) {
 	m_pipeline->Update(time);
 	GetEditorManager()->Update(time);
 	GetEditorWindow()->Update(time);
-	//GetAssetManager()->Update();
+	GetAssetManager()->Update();
 }
 
 void App::Draw() {
