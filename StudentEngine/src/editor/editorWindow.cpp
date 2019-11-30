@@ -46,9 +46,8 @@ void editorWindow::OnImGui() {
 void editorWindow::CreateTemporaryPlayMode() {
 	CreateViewport();
 	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("Return to Edit")) {
+		if (ImGui::Button("Return to Edit")) {
 			inEditorMode = true;
-			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
@@ -111,9 +110,8 @@ void editorWindow::CreateEditorWindows() {
 		if (ImGui::BeginMenu("Windows")) {
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Enter Play Mode")) {
+		if (ImGui::Button("Enter Play Mode")) {
 			inEditorMode = false;
-			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
