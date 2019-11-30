@@ -63,6 +63,9 @@ void App::Initialize() {
 	GetImGuiManager()->Initialize(m_window);
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
 	GetPipeline()->Initialize();
+
+	GetMouse()->Initialize(m_window);
+	GetKeyboard()->Initialize(m_window);
 	m_window->Show();
 
 	m_initialized = true;
@@ -110,18 +113,20 @@ void App::Run() {
 }
 
 void App::Update(TimeStep time) {
-	//GetMouse()->Update();
+	GetMouse()->Update();
 	//GetStateManager()->Update(time);
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
 	//
 	GetPipeline()->Update(time);
+	GetEditorWindow()->Update(time);
 	//GetAssetManager()->Update();
 }
 
 void App::Draw() {
 	GetPipeline()->Begin();
 	GetEditorManager()->Draw();
+	GetEditorWindow()->Draw();
 	GetPipeline()->End();
 	GetImGuiManager()->Begin();
 

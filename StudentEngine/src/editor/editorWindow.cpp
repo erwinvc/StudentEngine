@@ -1,8 +1,36 @@
 #include "stdafx.h"
-
+Vector2 pos;
 void editorWindow::Initialize() {}
-void editorWindow::End() {}
-
+void editorWindow::Update(const TimeStep& time) {
+	Vector3 ray = GroundRaycast::GetMousePosition();
+	pos = GroundRaycast::GetGroundPosition(ray, 1.0f);
+}
+float tim = 0;
+Texture* m_whiteTexture;
+bool once = true;
+void editorWindow::Draw() {
+	Texture* tex = GetAssetManager()->Get<Texture>("Logo");
+	tim += 0.02f;
+	float a = Math::Sin(tim);
+	if (once) {
+		m_whiteTexture = new Texture(1, 1, (uint8*)Color::White().ToColor8(), false, TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
+		once = false;
+	}
+	if (tex) {
+		tim += 0.00125f;
+		float s = Math::Sin(tim) * 200;
+		float c = Math::Cos(tim) * 200;
+		tim += 0.00075f;
+		float s2 = Math::Sin(tim) * 200;
+		float c2 = Math::Cos(tim) * 200;
+		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, GetPipeline()->m_camera->GetViewport().z, GetPipeline()->m_camera->GetViewport().w, Color(0.1f, 0.1f, 0.1f, 1.0f), m_whiteTexture);
+		GetPipeline()->GetSpriteRenderer()->Rect(pos.x, pos.y, 100, a*100, Color::White(), m_whiteTexture);
+		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, 600.0f, 200.0f, Color::White(), tex);
+		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 200 + s, GetPipeline()->m_camera->GetViewport().w / 2 + 50, 600.0f, 200.0f, Color::Green(), tex);
+		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2 + s2 + 25.0f, GetPipeline()->m_camera->GetViewport().w / 2 - 100 + c, 600.0f, 200.0f, Color::Red(), tex);
+		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 100, GetPipeline()->m_camera->GetViewport().w / 2 + c2, 600.0f, 200.0f, Color(1.0f, 0.0f, 0.4f, 0.3f), tex);
+	}
+}
 void editorWindow::OnImGui() {
 
 	if (inEditorMode) {
@@ -10,13 +38,13 @@ void editorWindow::OnImGui() {
 
 		CreateEditorWindows();
 	} else {
-
 		CreateTemporaryPlayMode();
 	}
 }
 
 
 void editorWindow::CreateTemporaryPlayMode() {
+	CreateViewport();
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Return to Edit")) {
 			inEditorMode = true;
@@ -41,6 +69,7 @@ void editorWindow::CreateDockingSpace() {
 
 	ImGui::Begin("Dock", nullptr, window_flags);
 
+	m_mainWindowPos = ImGui::GetWindowPos();
 	ImGui::PopStyleVar(3);
 
 	// Create docking space
@@ -101,7 +130,7 @@ void editorWindow::CreateEditorWindows() {
 		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 
 			CreateViewport();
-			
+
 			ImGui::EndTabBar();
 		}
 	}
@@ -142,22 +171,17 @@ void editorWindow::CreateEditorWindows() {
 }
 
 void editorWindow::CreateViewport() {
-	//fancy texture render pipeline here
-	ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-	ImVec2    win_region = ImGui::GetContentRegionAvail();
-	ImVec2 w_pos = ImGui::GetCursorPos(), c_pos = ImGui::GetWindowPos();
-	ImVec2 pos = ImGui::GetCursorScreenPos();
-	//#TODO Fix this mess
-	//if (ImGui::GetCurrentWindowRead()->ParentWindow) {
-		//ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
+	ImGuiViewport* viewport = ImGui::GetWindowViewport();
+	ImGuiContext& g = *GImGui;
 
-		//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-	if (viewportSize.x > 0 && viewportSize.y > 0)
-		GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-	//GetCamera()->UpdateProjectionMatrix();
+	ImVec2    actualWindowSize = ImGui::GetContentRegionAvail();
+	ImVec2    actualWindowPosition = ImGui::GetWindowPos();
+	actualWindowPosition.x -= m_mainWindowPos.x;
+	actualWindowPosition.y -= m_mainWindowPos.y;
 
-	//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
-	GetPipeline()->m_camera->SetViewport(pos.x, pos.y, viewportSize.x, viewportSize.y);
-	ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
-	//}
+	if (viewport->Size.x > 0 && viewport->Size.y > 0)
+		GetFrameBufferManager()->OnResize((uint)actualWindowSize.x, (uint)actualWindowSize.y);
+
+	GetPipeline()->m_camera->SetViewport(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
+	ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }

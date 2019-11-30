@@ -77,6 +77,9 @@ using namespace std;
 #include "util/timer.h"
 #include "util/glError.h"
 
+#include "graphics/glCallbackManager.h"
+#include "graphics/window.h"
+
 #include "assets/texture/textureParameters.h"
 
 #include "graphics/buffers/bufferLayout.h"
@@ -92,6 +95,9 @@ using namespace std;
 #include "assets/assetBase.h"
 #include "assets/texture/texture.h"
 #include "assets/sprite.h"
+
+#include "input/keyboard.h"
+#include "input/mouse.h"
 
 #include "graphics/mesh.h"
 #include "graphics/instancedRenderer.h"
@@ -110,8 +116,6 @@ using namespace std;
 #include "assets/assetWatcher.h"
 #include "assets/assetManager.h"
 
-#include "graphics/glCallbackManager.h"
-#include "graphics/window.h"
 #include "application.h"
 #include "gameObject/gameObject.h"
 #include "editor/hierarchy.h"
