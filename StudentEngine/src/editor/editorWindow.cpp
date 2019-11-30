@@ -1,35 +1,10 @@
 #include "stdafx.h"
-Vector2 pos;
 void editorWindow::Initialize() {}
 void editorWindow::Update(const TimeStep& time) {
-	Vector3 ray = GroundRaycast::GetMousePosition();
-	pos = GroundRaycast::GetGroundPosition(ray, 1.0f);
+
 }
-float tim = 0;
-Texture* m_whiteTexture;
-bool once = true;
+
 void editorWindow::Draw() {
-	Texture* tex = GetAssetManager()->Get<Texture>("Logo");
-	tim += 0.02f;
-	float a = Math::Sin(tim);
-	if (once) {
-		m_whiteTexture = new Texture(1, 1, (uint8*)Color::White().ToColor8(), false, TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
-		once = false;
-	}
-	if (tex) {
-		tim += 0.00125f;
-		float s = Math::Sin(tim) * 200;
-		float c = Math::Cos(tim) * 200;
-		tim += 0.00075f;
-		float s2 = Math::Sin(tim) * 200;
-		float c2 = Math::Cos(tim) * 200;
-		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, GetPipeline()->m_camera->GetViewport().z, GetPipeline()->m_camera->GetViewport().w, Color(0.1f, 0.1f, 0.1f, 1.0f), m_whiteTexture);
-		GetPipeline()->GetSpriteRenderer()->Rect(pos.x, pos.y, 100, a*100, Color::White(), m_whiteTexture);
-		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2, GetPipeline()->m_camera->GetViewport().w / 2, 600.0f, 200.0f, Color::White(), tex);
-		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 200 + s, GetPipeline()->m_camera->GetViewport().w / 2 + 50, 600.0f, 200.0f, Color::Green(), tex);
-		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2 + s2 + 25.0f, GetPipeline()->m_camera->GetViewport().w / 2 - 100 + c, 600.0f, 200.0f, Color::Red(), tex);
-		GetPipeline()->GetSpriteRenderer()->Rect(GetPipeline()->m_camera->GetViewport().z / 2 - 100, GetPipeline()->m_camera->GetViewport().w / 2 + c2, 600.0f, 200.0f, Color(1.0f, 0.0f, 0.4f, 0.3f), tex);
-	}
 }
 void editorWindow::OnImGui() {
 
@@ -146,7 +121,6 @@ void editorWindow::CreateEditorWindows() {
 		if (ImGui::TreeNode("Child GameObject")) { ImGui::TreePop(); }
 		ImGui::TreePop();
 	}
-	GetPipeline()->GetSpriteRenderer()->OnImGui();
 	ImGui::BulletText("Camera");
 	ImGui::BulletText("Player");
 	ImGui::BulletText("etc.");
@@ -182,6 +156,6 @@ void editorWindow::CreateViewport() {
 	if (viewport->Size.x > 0 && viewport->Size.y > 0)
 		GetFrameBufferManager()->OnResize((uint)actualWindowSize.x, (uint)actualWindowSize.y);
 
-	GetPipeline()->m_camera->SetViewport(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
-	ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
+	GetApp()->GetPipeline()->m_camera->SetViewport(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
+	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }

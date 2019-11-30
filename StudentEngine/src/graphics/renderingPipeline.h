@@ -1,11 +1,6 @@
 #pragma once
 
-class RenderingPipeline : public Singleton<RenderingPipeline> {
-protected:
-	RenderingPipeline() {}
-	~RenderingPipeline();
-	friend Singleton;
-
+class RenderingPipeline {
 private:
 	bool m_initialized = false;
 	bool m_wireframe = false;
@@ -16,6 +11,8 @@ private:
 	AssetRef<Texture> m_finalTexture;
 
 public:
+	RenderingPipeline(){}
+	~RenderingPipeline();
 	AssetRef<OrthographicCamera> m_camera;
 
 	Texture* GetFinalTexture() const { return m_finalTexture; }
@@ -25,10 +22,8 @@ public:
 	void Begin();
 	void End();
 	void OnImGui();
+
+	inline void Rect(float x, float y, float w, float h, const Color& color, const Texture* texture = nullptr) {
+		m_spriteRenderer->Rect(x, y, w, h, color, texture);
+	}
 };
-
-inline RenderingPipeline* GetPipeline() { return RenderingPipeline::GetInstance(); }
-
-namespace Draw {
-	void Rect(float x, float y, float w, float h, const Color& color) { GetPipeline()->GetSpriteRenderer()->Rect(x, y, w, h, color); }
-}

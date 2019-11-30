@@ -1,6 +1,5 @@
 #pragma once
-class AssetManager : public Singleton<AssetManager>
-{
+class AssetManager : public Singleton<AssetManager> {
 private:
 	bool m_initialized;
 	map<String, AssetBase*> m_assets;
@@ -55,6 +54,15 @@ public:
 	AssetRef<T> Get(const String& name) {
 		T* asset = (T*)m_assets[name];
 		if (asset == nullptr) LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x not found", name.c_str(), typeid(T).name());
+		return asset;
+	}
+
+	template<typename T>
+	AssetRef<T> ForceLoadAsset(AssetLoadJob* loader) {
+		loader->loadAsset(false);
+		loader->processAsset(m_assets);
+		T* asset = (T*)m_assets[loader->GetID()];
+		delete loader;
 		return asset;
 	}
 };

@@ -1,12 +1,13 @@
 #pragma once
 
+class RenderingPipeline;
+
 class SpriteRenderer {
 public:
 	struct Vertex {
 		Vector3 m_position;
 		Vector2 m_uv;
 		float m_textureID;
-		float m_materialID;
 		Color m_color;
 	};
 
@@ -21,15 +22,15 @@ public:
 		{VertexBufferDataType::Float3, "vsPos", 0},
 		{VertexBufferDataType::Float2, "vsUv", 0},
 		{VertexBufferDataType::Float, "vsTextureID", 0},
-		{VertexBufferDataType::Float, "vsMaterialID", 0},
 		{VertexBufferDataType::Float4, "vsColor", 0}
 	};
 
 	Shader* m_shader;
 
 	InstancedRenderer<Vertex>* m_instancedRenderer;
-
-	SpriteRenderer() {
+	Texture* m_defaultTexture;
+	
+	SpriteRenderer(Texture* defaultTexture) : m_defaultTexture(defaultTexture) {
 		uint32* indicesBuffer = new uint32[INDICES_SIZE];
 
 		//Hardcoded
@@ -69,25 +70,21 @@ public:
 		vertices[0].m_position = Vector3(x - w / 2, y + h / 2, 0);
 		vertices[0].m_uv = Vector2(0.0f, 1.0f);
 		vertices[0].m_textureID = textureSlot;
-		vertices[0].m_materialID = 0;
 		vertices[0].m_color = color;
 		//Top right
 		vertices[1].m_position = Vector3(x + w / 2, y + h / 2, 0);
 		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
-		vertices[1].m_materialID = 0;
 		vertices[1].m_color = color;
 		//Bottom right
 		vertices[2].m_position = Vector3(x + w / 2, y - h / 2, 0);
 		vertices[2].m_uv = Vector2(1.0f, 0.0f);
 		vertices[2].m_textureID = textureSlot;
-		vertices[2].m_materialID = 0;
 		vertices[2].m_color = color;
 		//Bottom left
 		vertices[3].m_position = Vector3(x - w / 2, y - h / 2, 0);
 		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
-		vertices[3].m_materialID = 0;
 		vertices[3].m_color = color;
 		m_instancedRenderer->Submit(vertices[0]);
 		m_instancedRenderer->Submit(vertices[1]);
@@ -95,10 +92,49 @@ public:
 		m_instancedRenderer->Submit(vertices[3]);
 		m_instancedRenderer->AddOne();
 	}
+
+	void Line(float x0, float y0, float x1, float y1, Color color, float size) {
+		float textureSlot = 0.0f;
+		Vector2 normal = Vector2(y1 - y0, -(x1 - x0)).Normalize() * size;
+
+		Vertex vertices[4] = { 0 };
+
+		Vector3 vertex = Vector3(x0 + normal.x, y0 + normal.y, 0.0f);
+		vertices[0].m_position = vertex;
+		vertices[0].m_uv = Vector2(0.0f, 1.0f);
+		vertices[0].m_textureID = textureSlot;
+		vertices[0].m_color = color;
+
+		vertex = Vector3(x1 + normal.x, y1 + normal.y, 0.0f);
+		vertices[1].m_position = vertex;
+		vertices[1].m_uv = Vector2(1.0f, 1.0f);
+		vertices[1].m_textureID = textureSlot;
+		vertices[1].m_color = color;
+
+		vertex = Vector3(x1 - normal.x, y1 - normal.y, 0.0f);
+		vertices[2].m_position = vertex;
+		vertices[2].m_uv = Vector2(1.0f, 0.0f);
+		vertices[2].m_textureID = textureSlot;
+		vertices[2].m_color = color;
+
+		vertex = Vector3(x0 - normal.x, y0 - normal.y, 0.0f);
+		vertices[3].m_position = vertex;
+		vertices[3].m_uv = Vector2(0.0f, 0.0f);
+		vertices[3].m_textureID = textureSlot;
+		vertices[3].m_color = color;
+
+		m_instancedRenderer->Submit(vertices[0]);
+		m_instancedRenderer->Submit(vertices[1]);
+		m_instancedRenderer->Submit(vertices[2]);
+		m_instancedRenderer->Submit(vertices[3]);
+		m_instancedRenderer->AddOne();
+	}
+	
 	void Sprite(const Sprite& sprite) {
 	}
 
 	void Begin() {
+		SubmitTexture(m_defaultTexture);
 		m_instancedRenderer->Begin();
 	}
 
@@ -106,14 +142,7 @@ public:
 		m_instancedRenderer->End();
 	}
 
-	void OnImGui() {
-		//ImGui::SliderFloat2("1", (float*)&pos1, 0, 1);
-		//ImGui::SliderFloat2("2", (float*)&pos2, 0, 1);
-		//ImGui::SliderFloat2("3", (float*)&pos3, 0, 1);
-		//ImGui::SliderFloat2("4", (float*)&pos4, 0, 1);
-	}
-
-	void Draw();
+	void Draw(const RenderingPipeline* pipeline);
 private:
 	float SubmitTexture(const Texture* texture) {
 		float result = 0.0f;

@@ -58,12 +58,15 @@ void App::Initialize() {
 
 	GetAssetWatcher()->Initialize();
 	GetAssetManager()->Initialize();
+	GetAssetManager()->ForceLoadAsset<Texture>(new TextureLoadJob("White", 1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetImGuiManager()->Initialize(m_window);
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
-	GetPipeline()->Initialize();
+	m_pipeline = new RenderingPipeline();
+	m_pipeline->Initialize();
 
+	GetEditorManager()->Initialize();
 	GetMouse()->Initialize(m_window);
 	GetKeyboard()->Initialize(m_window);
 	m_window->Show();
@@ -118,23 +121,23 @@ void App::Update(TimeStep time) {
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
 	//
-	GetPipeline()->Update(time);
+	m_pipeline->Update(time);
+	GetEditorManager()->Update(time);
 	GetEditorWindow()->Update(time);
 	//GetAssetManager()->Update();
 }
 
 void App::Draw() {
-	GetPipeline()->Begin();
-	GetEditorManager()->Draw();
-	GetEditorWindow()->Draw();
-	GetPipeline()->End();
+	m_pipeline->Begin();
+	GetEditorManager()->Draw(m_pipeline);
+	m_pipeline->End();
 	GetImGuiManager()->Begin();
 
 
 	
 	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(576, 680), ImGuiWindowFlags_NoDocking)) {
 		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
-			GetPipeline()->OnImGui();
+			m_pipeline->OnImGui();
 			GetFrameBufferManager()->OnImGui();
 			GetShaderManager()->OnImGui();
 			ImGui::EndTabBar();
@@ -169,5 +172,6 @@ void App::Draw() {
 
 void App::Cleanup() {
 	GetThreadManager()->Cleanup();
+	delete m_pipeline;
 	delete m_window;
 }
