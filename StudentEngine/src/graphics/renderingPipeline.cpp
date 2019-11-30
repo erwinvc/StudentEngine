@@ -23,7 +23,6 @@ void RenderingPipeline::Begin() {
 }
 
 void RenderingPipeline::End() {
-
 	m_finalFBO->Bind();
 	m_finalFBO->Clear();
 	m_spriteRenderer->End();

@@ -12,7 +12,7 @@ public:
 	};
 
 	vector<const Texture*> m_textures;
-	const int MAX_SPRITES = 60000;
+	const int MAX_SPRITES = 50000;
 	const int SPRITE_SIZE = sizeof(Vertex) * 4;
 	const int BUFFER_SIZE = SPRITE_SIZE * MAX_SPRITES;
 	const int INDICES_SIZE = MAX_SPRITES * 6;
@@ -86,54 +86,41 @@ public:
 		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_color = color;
-		m_instancedRenderer->Submit(vertices[0]);
-		m_instancedRenderer->Submit(vertices[1]);
-		m_instancedRenderer->Submit(vertices[2]);
-		m_instancedRenderer->Submit(vertices[3]);
-		m_instancedRenderer->AddOne();
+
+		m_instancedRenderer->Submit(vertices);
 	}
 
-	void Line(float x0, float y0, float x1, float y1, Color color, float size) {
+	void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
 		float textureSlot = 0.0f;
 		Vector2 normal = Vector2(y1 - y0, -(x1 - x0)).Normalize() * size;
 
 		Vertex vertices[4] = { 0 };
 
-		Vector3 vertex = Vector3(x0 + normal.x, y0 + normal.y, 0.0f);
-		vertices[0].m_position = vertex;
+		vertices[0].m_position = Vector3(x0 + normal.x, y0 + normal.y, 0.0f);
 		vertices[0].m_uv = Vector2(0.0f, 1.0f);
 		vertices[0].m_textureID = textureSlot;
 		vertices[0].m_color = color;
 
-		vertex = Vector3(x1 + normal.x, y1 + normal.y, 0.0f);
-		vertices[1].m_position = vertex;
+		vertices[1].m_position = Vector3(x1 + normal.x, y1 + normal.y, 0.0f);
 		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_color = color;
-
-		vertex = Vector3(x1 - normal.x, y1 - normal.y, 0.0f);
-		vertices[2].m_position = vertex;
+		
+		vertices[2].m_position = Vector3(x1 - normal.x, y1 - normal.y, 0.0f);
 		vertices[2].m_uv = Vector2(1.0f, 0.0f);
 		vertices[2].m_textureID = textureSlot;
 		vertices[2].m_color = color;
 
-		vertex = Vector3(x0 - normal.x, y0 - normal.y, 0.0f);
-		vertices[3].m_position = vertex;
+		vertices[3].m_position = Vector3(x0 - normal.x, y0 - normal.y, 0.0f);
 		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_color = color;
 
-		m_instancedRenderer->Submit(vertices[0]);
-		m_instancedRenderer->Submit(vertices[1]);
-		m_instancedRenderer->Submit(vertices[2]);
-		m_instancedRenderer->Submit(vertices[3]);
-		m_instancedRenderer->AddOne();
+		m_instancedRenderer->Submit(vertices);
 	}
 	
-	void Sprite(const Sprite& sprite) {
-	}
-
 	void Begin() {
+		m_textures.clear();
 		SubmitTexture(m_defaultTexture);
 		m_instancedRenderer->Begin();
 	}
@@ -142,7 +129,7 @@ public:
 		m_instancedRenderer->End();
 	}
 
-	void Draw(const RenderingPipeline* pipeline);
+	void Draw(RenderingPipeline* pipeline);
 private:
 	float SubmitTexture(const Texture* texture) {
 		float result = 0.0f;

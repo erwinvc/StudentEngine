@@ -100,19 +100,18 @@ void editorWindow::CreateEditorWindows() {
 	// Main viewport
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
-		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
-
-			CreateViewport();
-
-			ImGui::EndTabBar();
+		if (ImGui::IsWindowFocused()) {
+			ImGui::GetIO().WantCaptureMouse = false;
+			ImGui::GetIO().WantCaptureKeyboard = false;
 		}
+		CreateViewport();
 	}
 	ImGui::End();
 
 	//ImGui::Begin("Awindow", nullptr, ImVec2(576, 680), ImGuiWindowFlags_NoDocking);
-//ImGui::End();
-//
-	// Hierarchy
+	//ImGui::End();
+	//
+		// Hierarchy
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	ImGui::Begin("Hierarchy", nullptr, window_flags2);
 	if (ImGui::TreeNode("GameObject")) {
@@ -147,7 +146,7 @@ void editorWindow::CreateViewport() {
 	ImGuiContext& g = *GImGui;
 
 	ImVec2    actualWindowSize = ImGui::GetContentRegionAvail();
-	ImVec2    actualWindowPosition = ImGui::GetWindowPos();
+	ImVec2    actualWindowPosition = ImGui::GetCursorScreenPos();
 	actualWindowPosition.x -= m_mainWindowPos.x;
 	actualWindowPosition.y -= m_mainWindowPos.y;
 
