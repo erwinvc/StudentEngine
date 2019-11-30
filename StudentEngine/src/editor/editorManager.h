@@ -4,13 +4,18 @@ class EditorManager : public Singleton<EditorManager> {
 private:
 	Hierarchy m_hierarchy;
 	Vector2 m_mouseRayPosition;
-	Texture* m_whiteTexture;
 	GameObject* m_sample;
 
-	void UpdateSelected();
+	void UpdateSelected(const TimeStep& time);
+	
 public:
-	GameObject* AddGameObject(GameObject* gameObject) {
-		return m_hierarchy.AddGameObject(gameObject);
+	static Texture* g_logo;
+	static Texture* g_buttonGizmo;
+	static Texture* g_arrowGizmo;
+	static Texture* g_squareGizmo;
+	
+	GameObject& AddGameObject(GameObject* gameObject) {
+		return *m_hierarchy.AddGameObject(gameObject);
 	}
 	void Initialize();
 	void Update(const TimeStep& time);

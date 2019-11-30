@@ -10,10 +10,14 @@ public:
 		return gameObject;
 	}
 
-	void Draw(RenderingPipeline* pipeline, Color& editorColor) {
+	void Draw(RenderingPipeline* pipeline) {
 		for (auto gObj : m_gameObjects) {
 			gObj->Draw(pipeline);
-			if (gObj == m_selected) m_selected->EditorDraw(pipeline, editorColor);
+			if (gObj == m_selected) EditorGameObject::Draw(pipeline, m_selected);
 		}
+	}
+
+	bool UpdateSelected(const TimeStep& time, Vector2 mousePosition) {
+		return m_selected ? EditorGameObject::Update(m_selected, time, mousePosition) : false;
 	}
 };

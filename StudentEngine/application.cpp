@@ -59,6 +59,9 @@ void App::Initialize() {
 	GetAssetWatcher()->Initialize();
 	GetAssetManager()->Initialize();
 	GetAssetManager()->ForceLoadAsset<Texture>(new TextureLoadJob("White", 1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/squareGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetAssetManager()->ProcessInitialQueue();
@@ -136,7 +139,7 @@ void App::Draw() {
 
 
 	
-	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(576, 680), ImGuiWindowFlags_NoDocking)) {
+	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
 		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 			m_pipeline->OnImGui();
 			GetFrameBufferManager()->OnImGui();

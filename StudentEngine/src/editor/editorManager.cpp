@@ -1,34 +1,49 @@
 #include "stdafx.h"
+Texture* EditorManager::g_logo;
+Texture* EditorManager::g_buttonGizmo;
+Texture* EditorManager::g_arrowGizmo;
+Texture* EditorManager::g_squareGizmo;
 
 //Color colors[1000000];
 void EditorManager::Initialize() {
 	//for (int i = 0; i < 1000000; i++) {
 	//	colors[i] = Color::RandomPrimary();
 	//}
-	m_whiteTexture = GetAssetManager()->Get<Texture>("Logo");
+	g_buttonGizmo = GetAssetManager()->Get<Texture>("ButtonGizmo");
+	g_arrowGizmo = GetAssetManager()->Get<Texture>("ArrowGizmo");
+	g_squareGizmo = GetAssetManager()->Get<Texture>("SquareGizmo");
+	g_logo = GetAssetManager()->Get<Texture>("Logo");
 
-	m_sample = AddGameObject(new GameObject(Vector2(GetApp()->GetPipeline()->m_camera->GetViewport().z / 2, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2), Vector2(500, 500), m_whiteTexture));
-	AddGameObject(new GameObject(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2), Vector2(500, 500), m_whiteTexture))->m_sprite.m_color = Color(0.1f, 0.1f, 0.1f, 1.0f);
+	//m_sample = &AddGameObject(new GameObject("Object 1"))
+	//	.SetSize(Vector2(500, 200))
+	//	.SetPosition(Vector2(GetApp()->GetPipeline()->m_camera->GetViewport().z / 2, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2));
+
+	AddGameObject(new GameObject("Object 2"))
+		.SetSize(Vector2(500, 500))
+		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2))
+		.SetTexture(g_logo);
 }
+
 static float offset = 0;
 float a = 0;
 static float m_selectedOutlineValue = 0;
 
 void EditorManager::Update(const TimeStep& time) {
-	m_selectedOutlineValue += time.GetSeconds() * 2;
+	m_selectedOutlineValue += time.GetSeconds();
 	Vector3 ray = GroundRaycast::GetMousePosition(GetApp()->GetPipeline()->m_camera);
 	m_mouseRayPosition = GroundRaycast::GetGroundPosition(GetApp()->GetPipeline()->m_camera, ray, 1.0f);
 	//m_sample->m_transform.m_position = m_mouseRayPosition;
+	//m_sample->SetRotation(Math::Sin(m_selectedOutlineValue));
+	//a += 0.5f * time.GetSeconds();
+	//m_sample->m_transform.m_position.x = Math::Sin(a) * 100 + 500;
+	//m_sample->m_sprite.m_color = Color(0.1f, 0.1f, 0.1f, 1.0);
 
-	a += 0.5f * time.GetSeconds();
-	m_sample->m_transform.m_position.x = Math::Sin(a) * 100 + 500;
-	m_sample->m_sprite.m_color = Color(0.1f, 0.1f, 0.1f, 1.0);
-
-	UpdateSelected();
-	offset+= time.GetSeconds() * 5;
+	UpdateSelected(time);
+	offset += time.GetSeconds() * 5;
 }
 
-void EditorManager::UpdateSelected() {
+void EditorManager::UpdateSelected(const TimeStep& time) {
+	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		for (int i = m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
 			GameObject*& gObj = m_hierarchy.m_gameObjects[i];
@@ -43,7 +58,7 @@ void EditorManager::UpdateSelected() {
 
 
 void EditorManager::Draw(RenderingPipeline* pipeline) {
-	m_hierarchy.Draw(pipeline, Color::Mix(Color(1.0f, 0.4f, 0.0f), Color(0.5f, 0.0f, 0.0f), Math::Map(Math::Sin(m_selectedOutlineValue), -1.0f, 1.0f, 0.0f, 1.0f)));
+	m_hierarchy.Draw(pipeline);
 
 	//int count = 0;
 	//float scale = 2.5f;

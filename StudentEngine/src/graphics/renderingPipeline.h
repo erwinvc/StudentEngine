@@ -23,8 +23,8 @@ public:
 	void End();
 	void OnImGui();
 
-	inline void Rect(float x, float y, float w, float h, const Color& color = Color::White(), const Texture* texture = nullptr) {
-		m_spriteRenderer->Rect(x, y, w, h, color, texture);
+	inline void Rect(float x, float y, float w, float h, float rotation, const Color& color = Color::White(), const Texture* texture = nullptr) {
+		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture);
 	}
 
 	inline void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {

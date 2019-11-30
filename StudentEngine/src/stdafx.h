@@ -118,6 +118,7 @@ using namespace std;
 
 #include "application.h"
 #include "gameObject/gameObject.h"
+#include "gameObject/editorGameObject.h"
 #include "editor/hierarchy.h"
 #include "editor/editorManager.h"
 #include "editor/editorWindow.h"

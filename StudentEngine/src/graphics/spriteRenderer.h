@@ -29,7 +29,7 @@ public:
 
 	InstancedRenderer<Vertex>* m_instancedRenderer;
 	Texture* m_defaultTexture;
-	
+
 	SpriteRenderer(Texture* defaultTexture) : m_defaultTexture(defaultTexture) {
 		uint32* indicesBuffer = new uint32[INDICES_SIZE];
 
@@ -62,27 +62,28 @@ public:
 		delete m_instancedRenderer;
 	}
 
-	void Rect(float x, float y, float w, float h, const Color& color, const Texture* texture = nullptr) {
+	void Rect(float x, float y, float w, float h, float rotation, const Color& color, const Texture* texture = nullptr) {
 		float textureSlot = 0.0f;
 		if (texture) textureSlot = SubmitTexture(texture);
 		Vertex vertices[4] = { 0 };
+		Matrix4 rot = Matrix4::Rotate(rotation, Vector3::ZAxis());
 		//Top left
-		vertices[0].m_position = Vector3(x - w / 2, y + h / 2, 0);
+		vertices[0].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(-w / 2, h / 2));
 		vertices[0].m_uv = Vector2(0.0f, 1.0f);
 		vertices[0].m_textureID = textureSlot;
 		vertices[0].m_color = color;
 		//Top right
-		vertices[1].m_position = Vector3(x + w / 2, y + h / 2, 0);
+		vertices[1].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, h / 2));
 		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_color = color;
 		//Bottom right
-		vertices[2].m_position = Vector3(x + w / 2, y - h / 2, 0);
+		vertices[2].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, -h / 2));
 		vertices[2].m_uv = Vector2(1.0f, 0.0f);
 		vertices[2].m_textureID = textureSlot;
 		vertices[2].m_color = color;
 		//Bottom left
-		vertices[3].m_position = Vector3(x - w / 2, y - h / 2, 0);
+		vertices[3].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(-w / 2, -h / 2));
 		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_color = color;
@@ -105,7 +106,7 @@ public:
 		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_color = color;
-		
+
 		vertices[2].m_position = Vector3(x1 - normal.x, y1 - normal.y, 0.0f);
 		vertices[2].m_uv = Vector2(1.0f, 0.0f);
 		vertices[2].m_textureID = textureSlot;
@@ -118,7 +119,7 @@ public:
 
 		m_instancedRenderer->Submit(vertices);
 	}
-	
+
 	void Begin() {
 		m_textures.clear();
 		SubmitTexture(m_defaultTexture);
