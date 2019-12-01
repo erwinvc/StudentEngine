@@ -19,6 +19,8 @@ void ImGuiManager::Initialize(Window* window) {
 	ImGui_ImplGlfw_InitForOpenGL(window->GetHandle(), false);
 	ImGui_ImplOpenGL3_Init("#version 410");
 
+	GetEditorWindow()->Initialize();
+
 	GetGLCallbackManager()->AddOnMouseButtonCallback([](int button, int action, int mods) {
 		ImGuiIO& io = ImGui::GetIO();
 		if (action == GLFW_PRESS) io.MouseDown[button] = true;

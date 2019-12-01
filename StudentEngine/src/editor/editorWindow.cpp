@@ -1,13 +1,20 @@
 #include "stdafx.h"
 
-void editorWindow::Initialize() {}
+void editorWindow::Initialize() {
+	// TODO: objs was what was used to initially develop the hierarchy interactions
+	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
+	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
+
+	//objs = vector<GameObject*>();
+	objs.push_back(new GameObject("Player"));
+	objs.push_back(new GameObject("Enemy"));
+	objs.push_back(new GameObject("Camera"));
+}
 void editorWindow::End() {}
 
 void editorWindow::OnImGui() {
-
 	if (inEditorMode) {
 		CreateDockingSpace();
-
 		CreateEditorWindows();
 	} else {
 
@@ -15,12 +22,11 @@ void editorWindow::OnImGui() {
 	}
 }
 
-
 void editorWindow::CreateTemporaryPlayMode() {
 	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("Return to Edit")) {
+		if (ImGui::Button("Return to Edit")) {
 			inEditorMode = true;
-			ImGui::EndMenu();
+			//ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
@@ -45,6 +51,7 @@ void editorWindow::CreateDockingSpace() {
 
 	// Create docking space
 	ImGuiIO& io = ImGui::GetIO();
+	io.FontGlobalScale = 1.5;
 	ImGuiID dockspace_id;
 	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
@@ -82,55 +89,43 @@ void editorWindow::CreateEditorWindows() {
 		if (ImGui::BeginMenu("Windows")) {
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Enter Play Mode")) {
+		if (ImGui::Button("Enter Play Mode")) {
 			inEditorMode = false;
-			ImGui::EndMenu();
+			//ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
 	}
 
-
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	//ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 10);
 
 	static ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 	// Main viewport
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
-		if (ImGui::BeginTabBar("Tab", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
-
-			CreateViewport();
-			
-			ImGui::EndTabBar();
-		}
+		CreateViewport();
 	}
 	ImGui::End();
 
-	//ImGui::Begin("Awindow", nullptr, ImVec2(576, 680), ImGuiWindowFlags_NoDocking);
-//ImGui::End();
-//
 	// Hierarchy
-	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
-	ImGui::Begin("Hierarchy", nullptr, window_flags2);
-	if (ImGui::TreeNode("GameObject")) {
-		if (ImGui::TreeNode("Child GameObject")) { ImGui::TreePop(); }
-		ImGui::TreePop();
-	}
-	GetPipeline()->GetSpriteRenderer()->OnImGui();
-	ImGui::BulletText("Camera");
-	ImGui::BulletText("Player");
-	ImGui::BulletText("etc.");
-	ImGui::End();
+	CreateSceneOverview(window_flags2);
 
 	// Drag 'n Drop
 	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
 
+	//ImGuiContext* context = ImGui::GetCurrentContext();
+	//context->FontBaseSize = 50;
+
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
-		if (ImGui::Button("Sprite")) {}
-		if (ImGui::Button("GameObject")) {}
-		if (ImGui::Button("Scripts...")) {}
-		if (ImGui::Button("Stuff")) {}
+		if (ImGui::Button("Sprite", ImVec2(100,100))) {}
+		ImGui::SameLine();
+		if (ImGui::Button("GameObject", ImVec2(100, 100))) {}
+		ImGui::SameLine();
+		if (ImGui::Button("Scripts...", ImVec2(100, 100))) {}
+		ImGui::SameLine();
+		if (ImGui::Button("Stuff", ImVec2(100, 100))) {}
 	}
 	ImGui::End();
 
@@ -139,6 +134,114 @@ void editorWindow::CreateEditorWindows() {
 	Logger::OnImGui();
 
 	ImGui::PopStyleVar(3);
+}
+
+void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
+	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
+	ImGui::Begin("Hierarchy", nullptr, flags);
+
+	// TODO: Actual object types
+	if (ImGui::TreeNode("Game Objects")) {
+		ImGui::SameLine(ImGui::GetContentRegionAvail().x - 25);
+		if (ImGui::Selectable("+"))
+			AddItem();
+
+		for (size_t i = 0; i < objs.size(); i++) {
+			//ImGui::Selectable("\uf557" + objs[i].m_name.c_str());
+			String title = ("\uf557 " + objs[i]->m_name);
+
+			//Since all objects remain in the objs/hierachy class, we skip over those that have parents to prevent duplicates
+			if (objs[i]->HasParent())
+				continue;
+
+			DisplaySceneChild(i, (objs[i]->m_children.size() > 0));
+		}
+
+		ImGui::TreePop();
+	}
+	ImGui::End();
+}
+
+void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
+	String title = ("\uf557 " + objs[index]->m_name);
+	if (hasChildren) {
+		for (size_t i = 0; i < objs[index]->m_children.size(); i++) {
+			//title = ("\uf557 " + objs[index]->m_children[i]->m_name);
+			if (ImGui::TreeNode(title.c_str())) {
+
+				for (size_t child = 0; child < objs[index]->m_children.size(); child++) {
+					if (objs[index]->HasParent())
+						continue;
+					// A convoluted way of finding the index of the child in the hierachy (and not in the child-list of the current object)
+					vector<GameObject*>::iterator childIndexInHierarchy = find(objs.begin(), objs.end(), objs[index]->m_children[child]);
+					int childIndex = distance(objs.begin(), childIndexInHierarchy);
+
+					DisplaySceneChild(childIndex, (objs[childIndex]->m_children.size() > 0));
+				}
+
+				ImGui::TreePop();
+			}
+		}
+	} else {
+		if (ImGui::Selectable(title.c_str()))
+			OnItemSelect(objs[index]);
+	}
+
+	//Right Click 
+	if (ImGui::BeginPopupContextItem(nullptr, 1)) {
+		if (settingNewParent) {
+			if (ImGui::Selectable("Confirm Parent")) {
+				SettingNewParent(index, childObjIndex);
+			}
+			if (ImGui::Selectable("Cancel Setting Parent")) {
+				ToggleSettingNewParent();
+			}
+		} else {
+			if (ImGui::Selectable("Delete")) {
+				OnItemDelete(index);
+			}
+			if (ImGui::Selectable("Set parent")) {
+				childObjIndex = index;
+				ToggleSettingNewParent();
+			}
+		}
+		/*if (ImGui::Selectable("Rename")) {
+			ImGui::OpenPopup("Rename Item?");
+			//OnItemRename(i);
+		}*/
+
+		ImGui::EndPopup();
+	}
+
+	//TODO: line 2628 in imgui_demo.cpp for debugging dragging
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
+	ImGui::Selectable("\uf557 \uf557");
+}
+
+void editorWindow::OnItemSelect(GameObject* obj) {
+	LOG("%s", obj->m_name.c_str());
+}
+
+void editorWindow::OnItemDelete(int index) {
+	objs.erase(objs.begin() + index);
+}
+
+void editorWindow::OnItemRename(int index) {
+}
+
+void editorWindow::ToggleSettingNewParent() {
+	settingNewParent = !settingNewParent;
+}
+
+void editorWindow::SettingNewParent(int parent, int child) {
+	objs[parent]->AddChild(objs[child]);
+	ToggleSettingNewParent();
+
+	LOG("%i", objs[parent]->m_children.size());
+}
+
+void editorWindow::AddItem() {
+	objs.push_back(new GameObject("New GameObject"));
 }
 
 void editorWindow::CreateViewport() {

@@ -1,10 +1,14 @@
 #pragma once
 
+
 class editorWindow : public Singleton<editorWindow> {
 private:
 	float m_time = 0;
 	bool inEditorMode = true;
+	bool settingNewParent = false;
+	int childObjIndex = -1;
 
+	vector<GameObject*> objs;
 
 	//RenderWindow
 	ImGuiID m_dockspaceCenter;
@@ -17,6 +21,16 @@ private:
 	void CreateEditorWindows();
 	void CreateTemporaryPlayMode();
 	void CreateViewport();
+	void CreateSceneOverview(ImGuiWindowFlags flags);
+
+
+	void DisplaySceneChild(int index, bool hasChildren);
+	void OnItemSelect(GameObject* obj);
+	void OnItemDelete(int index);
+	void OnItemRename(int index);
+	void ToggleSettingNewParent();
+	void SettingNewParent(int parent, int child);
+	void AddItem();
 	//void RenderGUI();
 
 public:
