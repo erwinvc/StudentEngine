@@ -125,4 +125,7 @@ using namespace std;
 #include "editor/editorWindow.h"
 #include "util/undo.h"
 
+#include "states/baseState.h"
+#include "states/editState.h"
+#include "states/playState.h"
 #include "states/stateManager.h"

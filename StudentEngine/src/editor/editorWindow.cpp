@@ -37,7 +37,7 @@ void editorWindow::CreateTemporaryPlayMode() {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::Button("Return to Edit")) {
 				inEditorMode = true;
-				GetStateManager()->SetState(EDIT);
+				GetStateManager()->SetState<EditState>();
 			}
 		}
 		ImGui::EndMainMenuBar();
@@ -105,7 +105,7 @@ void editorWindow::CreateEditorWindows() {
 		}
 		if (ImGui::Button("Enter Play Mode")) {
 			inEditorMode = false;
-			GetStateManager()->SetState(PLAY);
+			GetStateManager()->SetState<PlayState>();
 		}
 		ImGui::EndMainMenuBar();
 	}

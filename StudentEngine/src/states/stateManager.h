@@ -1,19 +1,30 @@
 #pragma once
-
-enum State : int {
-	EDIT = 0,
-	PLAY = 1
-};
-
 class StateManager : public Singleton<StateManager>
 {
 private:
 	bool m_initialized;
-	State m_state;
+	BaseState* m_state;
+
+	template<typename T>
+	T* CreateState() {
+		return new T();
+	}
 public:
 	void Initialize();
-	void SetState(State newState);
-	State GetState();
+	BaseState* GetState();
+
+	template<typename T>
+	void SetState() {
+		BaseState* newState = CreateState<T>();
+		if (newState != nullptr) {
+			if (m_state != nullptr) {
+				m_state->ExitState();
+			}
+			delete m_state;
+			m_state = newState;
+			m_state->EnterState();
+		}
+	}
 };
 
 static StateManager* GetStateManager() {
