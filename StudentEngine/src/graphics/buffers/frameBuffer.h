@@ -82,7 +82,6 @@ public:
 		GL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	}
 	void Clear() const {
-		GL(glClearColor(m_color.R, m_color.G, m_color.B, m_color.A));
 		GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
 
@@ -93,7 +92,10 @@ public:
 	FBOScale GetScale() const { return m_scale; }
 	uint GetHandle() const { return m_fbo; }
 	bool HasDepth() const { return m_hasDepth; }
-	void SetClearColor(Color& color) { m_color = color; }
+	void SetClearColor(Color& color) {
+		m_color = color;
+		GL(glClearColor(m_color.R, m_color.G, m_color.B, m_color.A));
+	}
 	vector<AssetRef<Texture>>& GetTextures() { return m_textures; }
 	vector<String>& GetTextureNames() { return m_textureNames; }
 	AssetRef<Texture> GetDepthTexture() { return m_textures[0]; }

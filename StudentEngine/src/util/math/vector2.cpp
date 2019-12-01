@@ -177,6 +177,12 @@ bool Vector2::operator>=(const Vector2& other) const {
 	return x >= other.x && y >= other.y;
 }
 
+float Vector2::SqrDistance(const Vector2& other) const {
+	float a = x - other.x;
+	float b = y - other.y;
+	return a * a + b * b;
+}
+
 float Vector2::Distance(const Vector2& other) const {
 	float a = x - other.x;
 	float b = y - other.y;

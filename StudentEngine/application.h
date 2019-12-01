@@ -7,6 +7,7 @@ private:
 
 	bool m_initialized = false;
 	Window* m_window = nullptr;
+	RenderingPipeline* m_pipeline;
 	Timer m_timer;
 
 	bool m_running = true;
@@ -36,7 +37,11 @@ public:
 
 	template<typename T>
 	inline T GetHeight() { return m_window->GetHeight<T>(); }
-	
+
+	RenderingPipeline* GetPipeline() {
+		return m_pipeline;
+	}
+
 protected:
 	App() {}
 	~App() {}

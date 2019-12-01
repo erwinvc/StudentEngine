@@ -1,8 +1,8 @@
 #pragma once
-class AssetManager : public Singleton<AssetManager>
-{
+class AssetManager : public Singleton<AssetManager> {
 private:
 	bool m_initialized;
+	int m_activeJobs;
 	map<String, AssetBase*> m_assets;
 	AssetRef<Thread> m_loadingThread;
 	bool m_loadingThreadActive;
@@ -14,6 +14,7 @@ private:
 		while (m_loadingThreadActive) {
 			if (m_loadAssetQueue.Size() != 0) {
 				AssetLoadJob* currentLoadJob;
+
 				if (m_loadAssetQueue.TryToGet(currentLoadJob)) {
 					currentLoadJob->loadAsset();
 				}
@@ -28,6 +29,7 @@ public:
 		m_loadingThreadActive = true;
 		m_loadingThread = GetThreadManager()->RegisterThread("AssetManager LoadJobs", []() {GetInstance()->ExecuteLoadJobs(); });
 		m_initialized = true;
+		m_activeJobs = 0;
 	}
 
 	void Update() {
@@ -36,7 +38,8 @@ public:
 			AssetLoadJob* currentLoadJob;
 			if (m_processAssetQueue.TryToGet(currentLoadJob)) {
 				currentLoadJob->processAsset(m_assets);
-				//#TODO delete job when finished
+				m_activeJobs--;
+				delete currentLoadJob;
 			}
 		}
 	}
@@ -44,6 +47,7 @@ public:
 	template <class T>
 	void AddToLoadQueue(T* assetLoadJob) {
 		m_loadAssetQueue.Add(assetLoadJob);
+		m_activeJobs++;
 	}
 
 	template <class T>
@@ -51,10 +55,25 @@ public:
 		m_processAssetQueue.Add(assetLoadJob);
 	}
 
+	void ProcessInitialQueue() {
+		while (m_activeJobs != 0) {
+			Update();
+		}
+	}
+
 	template<typename T>
 	AssetRef<T> Get(const String& name) {
 		T* asset = (T*)m_assets[name];
 		if (asset == nullptr) LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x not found", name.c_str(), typeid(T).name());
+		return asset;
+	}
+
+	template<typename T>
+	AssetRef<T> ForceLoadAsset(AssetLoadJob* loader) {
+		loader->loadAsset(false);
+		loader->processAsset(m_assets);
+		T* asset = (T*)m_assets[loader->GetID()];
+		delete loader;
 		return asset;
 	}
 };

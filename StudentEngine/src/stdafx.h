@@ -67,7 +67,8 @@ using namespace std;
 #include "util/singleton.h"
 #include "util/fileSystem.h"
 #include "util/utils.h"
-#include "util/asyncQueue.h"
+#include "util/datastructures/asyncQueue.h"
+#include "util/datastructures/doublyLinkedList.h"
 #include "util/thread/threadManager.h"
 #include "util/thread/threadPool.h"
 #include "util/logger.h"
@@ -76,6 +77,9 @@ using namespace std;
 #include "util/timestep.h"
 #include "util/timer.h"
 #include "util/glError.h"
+
+#include "graphics/glCallbackManager.h"
+#include "graphics/window.h"
 
 #include "assets/texture/textureParameters.h"
 
@@ -92,6 +96,9 @@ using namespace std;
 #include "assets/assetBase.h"
 #include "assets/texture/texture.h"
 #include "assets/sprite.h"
+
+#include "input/keyboard.h"
+#include "input/mouse.h"
 
 #include "graphics/mesh.h"
 #include "graphics/instancedRenderer.h"
@@ -110,10 +117,12 @@ using namespace std;
 #include "assets/assetWatcher.h"
 #include "assets/assetManager.h"
 
-#include "graphics/glCallbackManager.h"
-#include "graphics/window.h"
 #include "application.h"
 #include "gameObject/gameObject.h"
+#include "gameObject/editorGameObject.h"
 #include "editor/hierarchy.h"
 #include "editor/editorManager.h"
 #include "editor/editorWindow.h"
+#include "util/undo.h"
+
+#include "states/stateManager.h"

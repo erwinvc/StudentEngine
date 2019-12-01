@@ -1,5 +1,6 @@
 #pragma once
 
+class Window;
 class GLCallbackManager : public Singleton<GLCallbackManager> {
 private:
 	GLCallbackManager() {}

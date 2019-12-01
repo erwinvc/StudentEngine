@@ -7,7 +7,9 @@ void RenderingPipeline::Initialize() {
 	m_camera = new OrthographicCamera();
 	m_camera->SetViewport(0, 0, 1920, 1080);
 
-	m_spriteRenderer = new SpriteRenderer();
+	Texture* defaultTexture = GetAssetManager()->Get<Texture>("White");
+	
+	m_spriteRenderer = new SpriteRenderer(defaultTexture);
 }
 
 void RenderingPipeline::Update(const TimeStep time) {
@@ -21,12 +23,11 @@ void RenderingPipeline::Begin() {
 }
 
 void RenderingPipeline::End() {
-
 	m_finalFBO->Bind();
 	m_finalFBO->Clear();
 	m_spriteRenderer->End();
 	GLUtils::EnableBlending();
-	m_spriteRenderer->Draw();
+	m_spriteRenderer->Draw(this);
 	GLUtils::DisableBlending();
 	if (m_wireframe) GL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 

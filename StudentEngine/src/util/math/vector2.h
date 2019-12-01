@@ -42,13 +42,9 @@ struct Vector2 {
 	bool operator!=(const Vector2& other) const;
 
 	Vector2& operator+=(const Vector2& other);
-	Vector2& operator+=(const Vector2I& other);
 	Vector2& operator-=(const Vector2& other);
-	Vector2& operator-=(const Vector2I& other);
 	Vector2& operator*=(const Vector2& other);
-	Vector2& operator*=(const Vector2I& other);
 	Vector2& operator/=(const Vector2& other);
-	Vector2& operator/=(const Vector2I& other);
 
 	Vector2& operator+=(float value);
 	Vector2& operator-=(float value);
@@ -63,6 +59,7 @@ struct Vector2 {
 	float Magnitude() const;
 	Vector2& Normalize();
 	Vector2 Normalized() const;
+	float SqrDistance(const Vector2& other) const;
 	float Distance(const Vector2& other) const;
 	float Dot(const Vector2& other) const;
 };

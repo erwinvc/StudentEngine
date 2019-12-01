@@ -10,7 +10,7 @@ public:
 	Color8() : R(0), G(0), B(0), A(0) {}
 	Color8(uint8 r, uint8 g, uint8 b, uint8 a) : R(r), G(g), B(b), A(a) {}
 
-	operator uint8*() const { return (uint8*)this; }
+	operator uint8* () const { return (uint8*)this; }
 };
 
 class Color {
@@ -31,15 +31,14 @@ public:
 	static Color Transparent() { return Color(0, 0, 0, 0); }
 	static Color NormalMap() { return Color(0.5f, 0.5f, 1); }
 
-union
-	{
-	struct {
-		float R;
-		float G;
-		float B;
-		float A;
-	};
-	float values[4];
+	union {
+		struct {
+			float R;
+			float G;
+			float B;
+			float A;
+		};
+		float values[4];
 	};
 
 	Color() : R(0), G(0), B(0), A(0) {}
@@ -102,6 +101,13 @@ union
 		return Color(col1.R - col2.R, col1.G - col2.G, col1.B - col2.B, col1.A - col2.A);
 	}
 
+	bool operator==(const Color& other) const {
+		return this->R == other.R && this->G == other.G && this->B == other.B && this->A == other.A;
+	}
+	
+	bool operator!=(const Color& other) const {
+		return !(*this == other);
+	}
 
 	static Color& Random(float min = 0) {
 		float rr = Math::RandomFloat(0, 1);
@@ -113,12 +119,12 @@ union
 
 	static Color RandomPrimary() {
 		switch (Math::RandomInt(0, 5)) {
-		case 0: return Red();
-		case 1: return Green();
-		case 2: return Blue();
-		case 3: return Yellow();
-		case 4: return Magenta();
-		case 5: return Cyan();
+			case 0: return Red();
+			case 1: return Green();
+			case 2: return Blue();
+			case 3: return Yellow();
+			case 4: return Magenta();
+			case 5: return Cyan();
 		}
 		return White();
 	}

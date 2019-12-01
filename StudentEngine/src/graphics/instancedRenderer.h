@@ -34,12 +34,11 @@ public:
 		m_offsetsBuffer->Unbind();
 	}
 
-	void Submit(T& data) {
-		*m_buffer = data;
-		m_buffer++;
+	void Submit(T data[4]) {
+		memcpy(m_buffer, data, sizeof(T) * 4);
+		m_buffer += 4;
+		m_amount+= m_indicesCount;
 	}
-
-	void AddOne() { m_amount++; }
 
 	void End() {
 		ASSERT(m_started, "Call InstancedRenderer::Begin before calling InstancedRenderer::End");
@@ -67,20 +66,11 @@ public:
 		m_ended = true;
 	}
 
-	void Draw(AssetRef<Shader> shader, uint mode = GL_TRIANGLES) {
-		ASSERT(m_ended, "Call InstancedRenderer::End before calling InstancedRenderer::Draw");
-		m_mesh->GetMaterial()->Bind(shader);
-		m_mesh->DrawInstanced(m_amount, mode);
-	}
-
-	//void Draw(uint mode = GL_TRIANGLES) {
-	//	ASSERT(m_ended, "Call InstancedRenderer::End before calling InstancedRenderer::Draw");
-	//	m_mesh->DrawInstanced(m_amount, mode);
-	//}
-
 	void Draw(uint mode = GL_TRIANGLES) {
 		ASSERT(m_ended, "Call InstancedRenderer::End before calling InstancedRenderer::Draw");
-		m_mesh->DrawInstanced(m_amount, mode);
+		GL(glDisable(GL_DEPTH_TEST));
+		m_mesh->DrawCount(m_amount, mode);
+		GL(glEnable(GL_DEPTH_TEST));
 	}
 
 	InstancedRenderer(AssetRef<Mesh> mesh, int maxObjects, int indicesCount, const BufferLayout& layout) : m_started(false), m_ended(true), m_maxObjects(maxObjects), m_indicesCount(indicesCount), m_layout(layout), m_mesh(mesh->Copy()) { Initialize(); }

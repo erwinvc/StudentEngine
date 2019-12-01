@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 void editorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
@@ -10,28 +9,40 @@ void editorWindow::Initialize() {
 	objs.push_back(new GameObject("Enemy"));
 	objs.push_back(new GameObject("Camera"));
 }
-void editorWindow::End() {}
+}
+void editorWindow::Draw() {
+}
 
 void editorWindow::OnImGui() {
+	CreateDockingSpace();
 	if (inEditorMode) {
-		CreateDockingSpace();
 		CreateEditorWindows();
-	} else {
-
+	}
+	else {
 		CreateTemporaryPlayMode();
 	}
 }
 
 void editorWindow::CreateTemporaryPlayMode() {
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::Button("Return to Edit")) {
-			inEditorMode = true;
-			//ImGui::EndMenu();
+	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
+	ImGuiWindowFlags playwindowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
+	if (ImGui::Begin("Play Window"), nullptr, playwindowFlags) {
+		if (ImGui::IsWindowFocused()) {
+			ImGui::GetIO().WantCaptureMouse = false;
+			ImGui::GetIO().WantCaptureKeyboard = false;
+		}
+
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::Button("Return to Edit")) {
+				inEditorMode = true;
+				GetStateManager()->SetState(EDIT);
+			}
 		}
 		ImGui::EndMainMenuBar();
+		CreateViewport();
 	}
+	ImGui::End();
 }
-
 
 void editorWindow::CreateDockingSpace() {
 	//Create initial docking window
@@ -47,6 +58,7 @@ void editorWindow::CreateDockingSpace() {
 
 	ImGui::Begin("Dock", nullptr, window_flags);
 
+	m_mainWindowPos = ImGui::GetWindowPos();
 	ImGui::PopStyleVar(3);
 
 	// Create docking space
@@ -91,7 +103,7 @@ void editorWindow::CreateEditorWindows() {
 		}
 		if (ImGui::Button("Enter Play Mode")) {
 			inEditorMode = false;
-			//ImGui::EndMenu();
+			GetStateManager()->SetState(PLAY);
 		}
 		ImGui::EndMainMenuBar();
 	}
@@ -105,11 +117,18 @@ void editorWindow::CreateEditorWindows() {
 	// Main viewport
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
+		Undo::OnImGui();
+		if (ImGui::IsWindowFocused()) {
+			ImGui::GetIO().WantCaptureMouse = false;
+			ImGui::GetIO().WantCaptureKeyboard = false;
+		}
 		CreateViewport();
 	}
 	ImGui::End();
 
-	// Hierarchy
+	//ImGui::End();
+	//
+		// Hierarchy
 	CreateSceneOverview(window_flags2);
 
 	// Drag 'n Drop
@@ -245,22 +264,17 @@ void editorWindow::AddItem() {
 }
 
 void editorWindow::CreateViewport() {
-	//fancy texture render pipeline here
-	ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-	ImVec2    win_region = ImGui::GetContentRegionAvail();
-	ImVec2 w_pos = ImGui::GetCursorPos(), c_pos = ImGui::GetWindowPos();
-	ImVec2 pos = ImGui::GetCursorScreenPos();
-	//#TODO Fix this mess
-	//if (ImGui::GetCurrentWindowRead()->ParentWindow) {
-		//ImVec2 parentPos = ImGui::GetCurrentWindowRead()->ParentWindow->Pos;
+	ImGuiViewport* viewport = ImGui::GetWindowViewport();
+	ImGuiContext& g = *GImGui;
 
-		//GetPipeline()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-	if (viewportSize.x > 0 && viewportSize.y > 0)
-		GetFrameBufferManager()->OnResize((uint)viewportSize.x, (uint)viewportSize.y);
-	//GetCamera()->UpdateProjectionMatrix();
+	ImVec2    actualWindowSize = ImGui::GetContentRegionAvail();
+	ImVec2    actualWindowPosition = ImGui::GetCursorScreenPos();
+	actualWindowPosition.x -= m_mainWindowPos.x;
+	actualWindowPosition.y -= m_mainWindowPos.y;
 
-	//Hardcoded 19 because we can't get this value from the parent window with ImGui::GetCurrentWindowRead()->ParentWindow->MenuBarHeight(); 
-	GetPipeline()->m_camera->SetViewport(pos.x, pos.y, viewportSize.x, viewportSize.y);
-	ImGui::Image((void*)GetPipeline()->GetFinalTexture()->GetHandle(), viewportSize, { 0, 1 }, { 1, 0 });
-	//}
+	if (viewport->Size.x > 0 && viewport->Size.y > 0)
+		GetFrameBufferManager()->OnResize((uint)actualWindowSize.x, (uint)actualWindowSize.y);
+
+	GetApp()->GetPipeline()->m_camera->SetViewport(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
+	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }

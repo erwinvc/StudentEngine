@@ -12,12 +12,10 @@ public:
 
 	}
 
-	virtual void loadAsset() {
+	virtual void loadAsset(bool addToProcessQueue = true) = 0;
 
-	}
+	virtual void processAsset(map<String, AssetBase*>& assets) = 0;
 
-	virtual void processAsset(map<String, AssetBase*>& assets) {
-
-	}
+	const String& GetID() { return m_id; }
 };
 

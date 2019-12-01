@@ -17,6 +17,7 @@ private:
 	ImGuiID m_dockspaceBottom;
 	ImGuiID m_dockspaceLeftBottom;
 
+	ImVec2 m_mainWindowPos;
 	void CreateDockingSpace();
 	void CreateEditorWindows();
 	void CreateTemporaryPlayMode();
@@ -40,8 +41,8 @@ public:
 
 	void Initialize();
 	void OnImGui();
-	//void Begin();
-	void End();
+	void Draw();
+	void Update(const TimeStep& time);
 };
 
 static editorWindow* GetEditorWindow() { return editorWindow::GetInstance(); }

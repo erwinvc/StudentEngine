@@ -3,7 +3,6 @@
 struct Data {
 	vec2 uv;
 	float textureID;
-	float materialID;
 	vec4 color;
 };
 

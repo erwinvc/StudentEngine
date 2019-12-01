@@ -58,15 +58,28 @@ void App::Initialize() {
 
 	GetAssetWatcher()->Initialize();
 	GetAssetManager()->Initialize();
+	GetAssetManager()->ForceLoadAsset<Texture>(new TextureLoadJob("White", 1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/squareGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
+	GetAssetManager()->ProcessInitialQueue();
 	GetImGuiManager()->Initialize(m_window);
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
-	GetPipeline()->Initialize();
+	m_pipeline = new RenderingPipeline();
+	m_pipeline->Initialize();
+
+	Undo::Initialize();
+	GetEditorManager()->Initialize();
+	GetMouse()->Initialize(m_window);
+	GetKeyboard()->Initialize(m_window);
 	m_window->Show();
 
-	m_initialized = true;
+	GetStateManager()->Initialize();
 
+	m_initialized = true;
+	
 	while (m_running) {
 		GetGLFiberManager()->Tick();
 	}
@@ -110,26 +123,28 @@ void App::Run() {
 }
 
 void App::Update(TimeStep time) {
-	//GetMouse()->Update();
+	GetMouse()->Update();
 	//GetStateManager()->Update(time);
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
 	//
-	GetPipeline()->Update(time);
-	//GetAssetManager()->Update();
+	m_pipeline->Update(time);
+	GetEditorManager()->Update(time);
+	GetEditorWindow()->Update(time);
+	GetAssetManager()->Update();
 }
 
 void App::Draw() {
-	GetPipeline()->Begin();
-	GetEditorManager()->Draw();
-	GetPipeline()->End();
+	m_pipeline->Begin();
+	GetEditorManager()->Draw(m_pipeline);
+	m_pipeline->End();
 	GetImGuiManager()->Begin();
 
 
 	
-	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(576, 680), ImGuiWindowFlags_NoDocking)) {
+	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
 		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
-			GetPipeline()->OnImGui();
+			m_pipeline->OnImGui();
 			GetFrameBufferManager()->OnImGui();
 			GetShaderManager()->OnImGui();
 			ImGui::EndTabBar();
@@ -163,6 +178,8 @@ void App::Draw() {
 }
 
 void App::Cleanup() {
+	Undo::Cleanup();
 	GetThreadManager()->Cleanup();
+	delete m_pipeline;
 	delete m_window;
 }
