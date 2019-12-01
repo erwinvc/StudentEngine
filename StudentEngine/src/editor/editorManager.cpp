@@ -68,8 +68,8 @@ void EditorManager::UpdateSelected(const TimeStep& time) {
 
 
 void EditorManager::Draw(RenderingPipeline* pipeline) {
+	EditorGrid::Draw(pipeline);
 	m_hierarchy.Draw(pipeline);
-
 	//int count = 0;
 	//float scale = 2.5f;
 	//Vector4 vp = GetApp()->GetPipeline()->m_camera->GetViewport();

@@ -15,7 +15,7 @@ public:
 
 	template<typename T>
 	void SetState() {
-		BaseState* newState = CreateState<T>();
+		BaseState* newState = CreateState<T>(); //#TODO mem leak?
 		if (newState != nullptr) {
 			if (m_state != nullptr) {
 				m_state->ExitState();
