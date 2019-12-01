@@ -3,6 +3,9 @@ void editorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
 	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 }
 
 void editorWindow::Update(const TimeStep& time) {
@@ -17,8 +20,7 @@ void editorWindow::OnImGui() {
 	CreateDockingSpace();
 	if (inEditorMode) {
 		CreateEditorWindows();
-	}
-	else {
+	} else {
 		CreateTemporaryPlayMode();
 	}
 }
@@ -63,7 +65,7 @@ void editorWindow::CreateDockingSpace() {
 
 	// Create docking space
 	ImGuiIO& io = ImGui::GetIO();
-	io.FontGlobalScale = 1.5;
+	//io.FontGlobalScale = 1.5;
 	ImGuiID dockspace_id;
 	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
@@ -138,7 +140,7 @@ void editorWindow::CreateEditorWindows() {
 	//context->FontBaseSize = 50;
 
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
-		if (ImGui::Button("Sprite", ImVec2(100,100))) {}
+		if (ImGui::Button("Sprite", ImVec2(100, 100))) {}
 		ImGui::SameLine();
 		if (ImGui::Button("GameObject", ImVec2(100, 100))) {}
 		ImGui::SameLine();
