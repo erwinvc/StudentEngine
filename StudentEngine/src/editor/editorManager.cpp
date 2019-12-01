@@ -9,6 +9,8 @@ void EditorManager::Initialize() {
 	//for (int i = 0; i < 1000000; i++) {
 	//	colors[i] = Color::RandomPrimary();
 	//}
+
+
 	g_buttonGizmo = GetAssetManager()->Get<Texture>("ButtonGizmo");
 	g_arrowGizmo = GetAssetManager()->Get<Texture>("ArrowGizmo");
 	g_squareGizmo = GetAssetManager()->Get<Texture>("SquareGizmo");
@@ -22,6 +24,9 @@ void EditorManager::Initialize() {
 		.SetSize(Vector2(500, 500))
 		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2))
 		.SetTexture(g_logo);
+
+
+	GetEditorWindow()->Initialize();
 }
 
 static float offset = 0;

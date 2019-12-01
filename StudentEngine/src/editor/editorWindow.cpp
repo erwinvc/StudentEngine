@@ -3,14 +3,14 @@ void editorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
 	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
+}
 
-	//objs = vector<GameObject*>();
-	objs.push_back(new GameObject("Player"));
-	objs.push_back(new GameObject("Enemy"));
-	objs.push_back(new GameObject("Camera"));
+void editorWindow::Update(const TimeStep& time) {
+
 }
-}
+
 void editorWindow::Draw() {
+
 }
 
 void editorWindow::OnImGui() {
@@ -170,10 +170,10 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 			String title = ("\uf557 " + objs[i]->m_name);
 
 			//Since all objects remain in the objs/hierachy class, we skip over those that have parents to prevent duplicates
-			if (objs[i]->HasParent())
-				continue;
+			/*if (objs[i]->HasParent())
+				continue;*/
 
-			DisplaySceneChild(i, (objs[i]->m_children.size() > 0));
+			DisplaySceneChild(i, (objs[i]->GetChildren().size() > 0));
 		}
 
 		ImGui::TreePop();
@@ -184,25 +184,26 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
 	String title = ("\uf557 " + objs[index]->m_name);
 	if (hasChildren) {
-		for (size_t i = 0; i < objs[index]->m_children.size(); i++) {
+		for (size_t i = 0; i < objs[index]->GetChildren().size(); i++) {
 			//title = ("\uf557 " + objs[index]->m_children[i]->m_name);
 			if (ImGui::TreeNode(title.c_str())) {
 
-				for (size_t child = 0; child < objs[index]->m_children.size(); child++) {
+				for (size_t child = 0; child < objs[index]->GetChildren().size(); child++) {
 					if (objs[index]->HasParent())
 						continue;
 					// A convoluted way of finding the index of the child in the hierachy (and not in the child-list of the current object)
-					vector<GameObject*>::iterator childIndexInHierarchy = find(objs.begin(), objs.end(), objs[index]->m_children[child]);
+					vector<GameObject*>::iterator childIndexInHierarchy = find(objs.begin(), objs.end(), objs[index]->GetChildren()[child]);
 					int childIndex = distance(objs.begin(), childIndexInHierarchy);
 
-					DisplaySceneChild(childIndex, (objs[childIndex]->m_children.size() > 0));
+					DisplaySceneChild(childIndex, (objs[childIndex]->GetChildren().size() > 0));
 				}
 
 				ImGui::TreePop();
 			}
 		}
 	} else {
-		if (ImGui::Selectable(title.c_str()))
+		bool selected = (GetEditorManager()->GetHierarchy().m_selected == objs[index]);
+		if (ImGui::Selectable(title.c_str(), selected))
 			OnItemSelect(objs[index]);
 	}
 
@@ -239,10 +240,12 @@ void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
 
 void editorWindow::OnItemSelect(GameObject* obj) {
 	LOG("%s", obj->m_name.c_str());
+	GetEditorManager()->GetHierarchy().m_selected = obj;
 }
 
 void editorWindow::OnItemDelete(int index) {
 	objs.erase(objs.begin() + index);
+	//GetEditorManager()->GetHierarchy().
 }
 
 void editorWindow::OnItemRename(int index) {
@@ -256,11 +259,23 @@ void editorWindow::SettingNewParent(int parent, int child) {
 	objs[parent]->AddChild(objs[child]);
 	ToggleSettingNewParent();
 
-	LOG("%i", objs[parent]->m_children.size());
+	//LOG("%i", objs[parent]->m_children.size());
 }
 
 void editorWindow::AddItem() {
-	objs.push_back(new GameObject("New GameObject"));
+	//objs.push_back(new GameObject("New GameObject"));
+
+	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
+	Texture* logo;
+	logo = GetAssetManager()->Get<Texture>("Logo");
+	String name = "Object" + (GetEditorManager()->GetHierarchy().m_gameObjects.size());
+	GetEditorManager()->AddGameObject(new GameObject(name))
+		.SetSize(Vector2(500, 500))
+		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2))
+		.SetTexture(logo);
+
+
+	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
 }
 
 void editorWindow::CreateViewport() {

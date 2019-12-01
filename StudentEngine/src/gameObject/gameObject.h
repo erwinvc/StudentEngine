@@ -18,9 +18,13 @@ public:
 		m_children.push_back(gameObject);
 	}
 
+	vector<GameObject*> GetChildren() { return m_children; }
+
 	void SetParent(GameObject* gameObject) {
 		m_parent = gameObject;
 	}
+
+	bool HasParent() { return m_parent != NULL; }
 
 	GameObject* GetParent() { return m_parent; }
 
@@ -53,5 +57,6 @@ public:
 		m_sprite.m_color = color;
 		return *this;
 	}
+
 	#pragma endregion
 };
