@@ -100,6 +100,7 @@ void editorWindow::CreateEditorWindows() {
 	// Main viewport
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
+		Undo::OnImGui();
 		if (ImGui::IsWindowFocused()) {
 			ImGui::GetIO().WantCaptureMouse = false;
 			ImGui::GetIO().WantCaptureKeyboard = false;

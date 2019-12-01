@@ -41,15 +41,16 @@ void EditorManager::Update(const TimeStep& time) {
 	UpdateSelected(time);
 	offset += time.GetSeconds() * 5;
 
-	if (KeyDown(LCTRL) && KeyJustDown('Z')) {
-		Undo::UndoOne();
+	if (KeyDown(LCTRL)) {
+		if (KeyJustDown('Z')) Undo::UndoOne();
+		if (KeyJustDown('Y')) Undo::RedoOne();
 	}
 }
 
 void EditorManager::UpdateSelected(const TimeStep& time) {
 	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
-		for (int i = m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
+		for (int i = (int)m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
 			GameObject*& gObj = m_hierarchy.m_gameObjects[i];
 			if (gObj->m_transform.IsPointWithin(m_mouseRayPosition.x, m_mouseRayPosition.y)) {
 				m_hierarchy.m_selected = gObj;

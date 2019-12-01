@@ -1,6 +1,9 @@
 #include "stdafx.h"
 
-int Undo::MAXSTACKSIZE = 200;
+int Undo::MAXLISTSIZE = 200;
+int Undo::g_newListIndex = 0;
+int Undo::g_currentListIndex = 0;
+
 GameObject Undo::g_baseObject;
 Undo::UndoEntryCollection* Undo::m_currentCollection;
 bool Undo::m_recording;
