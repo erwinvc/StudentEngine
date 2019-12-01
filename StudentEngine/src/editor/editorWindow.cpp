@@ -6,28 +6,39 @@ void editorWindow::Update(const TimeStep& time) {
 
 void editorWindow::Draw() {
 }
+
 void editorWindow::OnImGui() {
+	CreateDockingSpace();
 
 	if (inEditorMode) {
-		CreateDockingSpace();
-
 		CreateEditorWindows();
-	} else {
+	}
+	else {
 		CreateTemporaryPlayMode();
 	}
 }
 
 
 void editorWindow::CreateTemporaryPlayMode() {
-	CreateViewport();
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::Button("Return to Edit")) {
-			inEditorMode = true;
+	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
+	ImGuiWindowFlags playwindowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
+	if (ImGui::Begin("Play Window"), nullptr, playwindowFlags) {
+		if (ImGui::IsWindowFocused()) {
+			ImGui::GetIO().WantCaptureMouse = false;
+			ImGui::GetIO().WantCaptureKeyboard = false;
+		}
+
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::Button("Return to Edit")) {
+				inEditorMode = true;
+				GetStateManager()->SetState(EDIT);
+			}
 		}
 		ImGui::EndMainMenuBar();
+		CreateViewport();
 	}
+	ImGui::End();
 }
-
 
 void editorWindow::CreateDockingSpace() {
 	//Create initial docking window
@@ -87,6 +98,7 @@ void editorWindow::CreateEditorWindows() {
 		}
 		if (ImGui::Button("Enter Play Mode")) {
 			inEditorMode = false;
+			GetStateManager()->SetState(PLAY);
 		}
 		ImGui::EndMainMenuBar();
 	}

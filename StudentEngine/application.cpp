@@ -76,6 +76,8 @@ void App::Initialize() {
 	GetKeyboard()->Initialize(m_window);
 	m_window->Show();
 
+	GetStateManager()->Initialize();
+
 	m_initialized = true;
 	
 	while (m_running) {
