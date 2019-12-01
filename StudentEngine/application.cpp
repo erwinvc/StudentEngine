@@ -70,13 +70,14 @@ void App::Initialize() {
 	m_pipeline = new RenderingPipeline();
 	m_pipeline->Initialize();
 
+	Undo::Initialize();
 	GetEditorManager()->Initialize();
 	GetMouse()->Initialize(m_window);
 	GetKeyboard()->Initialize(m_window);
 	m_window->Show();
 
 	m_initialized = true;
-
+	
 	while (m_running) {
 		GetGLFiberManager()->Tick();
 	}
@@ -175,6 +176,7 @@ void App::Draw() {
 }
 
 void App::Cleanup() {
+	Undo::Cleanup();
 	GetThreadManager()->Cleanup();
 	delete m_pipeline;
 	delete m_window;

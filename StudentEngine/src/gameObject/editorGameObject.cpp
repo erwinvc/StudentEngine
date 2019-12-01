@@ -40,7 +40,10 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	g_outlineColor = Color::Mix(Color(1.0f, 0.4f, 0.0f), Color(0.5f, 0.2f, 0.0f), Math::Map(Math::Sin(g_outlineColorValue), -1.0f, 1.0f, 0.0f, 1.0f));
 
 	//Moving
-	if (g_moving && !ButtonDown(VK_MOUSE_LEFT)) g_moving = false;
+	if (g_moving && !ButtonDown(VK_MOUSE_LEFT)) {
+		g_moving = false;
+		Undo::FinishRecording();
+	}
 	if (g_moving) {
 		if (g_selectedArrow == 0) {
 			transform.m_position.y = mousePosition.y + g_movingOffset.y;
@@ -63,10 +66,14 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	if (g_selectedArrow != -1 && ButtonJustDown(VK_MOUSE_LEFT)) {
 		g_movingOffset = transform.m_position - mousePosition;
 		g_moving = true;
+		Undo::Record(gameObject);
 	}
 
 	//Resizing
-	if (g_draggingCorner && !ButtonDown(VK_MOUSE_LEFT)) g_draggingCorner = false;
+	if (g_draggingCorner && !ButtonDown(VK_MOUSE_LEFT)) {
+		g_draggingCorner = false;
+		Undo::FinishRecording();
+	}
 	if (g_draggingCorner) {
 		if (KeyJustDown(LALT) || KeyJustUp(LALT)) transform.m_position = g_draggingPositionBackup;
 		if (!KeyDown(LALT)) {
@@ -129,6 +136,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 		g_draggingSizeBackup = transform.m_size;
 		g_mousePositionBackup = mousePosition;
 		g_draggingCorner = true;
+		Undo::Record(gameObject);
 	}
 
 	return g_selectedArrow != -1 || g_selectedButton != -1;

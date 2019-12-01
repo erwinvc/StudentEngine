@@ -5,13 +5,13 @@ private:
 	GameObject* m_parent;
 	vector<GameObject*> m_children;
 
-
 public:
 	String m_name;
 	Transform m_transform;
 	Sprite m_sprite;
 
 	GameObject(const String& name) : m_name(name) {}
+	GameObject() : m_name("") {}
 
 	void AddChild(GameObject* gameObject) {
 		gameObject->SetParent(this);

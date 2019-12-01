@@ -40,6 +40,10 @@ void EditorManager::Update(const TimeStep& time) {
 
 	UpdateSelected(time);
 	offset += time.GetSeconds() * 5;
+
+	if (KeyDown(LCTRL) && KeyJustDown('Z')) {
+		Undo::UndoOne();
+	}
 }
 
 void EditorManager::UpdateSelected(const TimeStep& time) {

@@ -42,13 +42,9 @@ struct Vector2 {
 	bool operator!=(const Vector2& other) const;
 
 	Vector2& operator+=(const Vector2& other);
-	Vector2& operator+=(const Vector2I& other);
 	Vector2& operator-=(const Vector2& other);
-	Vector2& operator-=(const Vector2I& other);
 	Vector2& operator*=(const Vector2& other);
-	Vector2& operator*=(const Vector2I& other);
 	Vector2& operator/=(const Vector2& other);
-	Vector2& operator/=(const Vector2I& other);
 
 	Vector2& operator+=(float value);
 	Vector2& operator-=(float value);
