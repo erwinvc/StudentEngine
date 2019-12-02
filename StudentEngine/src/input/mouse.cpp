@@ -28,6 +28,6 @@ void Mouse::OnMousePos(double xpos, double ypos) {
 
 
 void Mouse::OnScroll(double xoffset, double yoffset) {
-    GetMouse()->m_scroll.x = (float)xoffset;
-    GetMouse()->m_scroll.y = (float)yoffset;
+    GetMouse()->m_scrollBuffer.x += (float)xoffset;
+    GetMouse()->m_scrollBuffer.y += (float)yoffset;
 }

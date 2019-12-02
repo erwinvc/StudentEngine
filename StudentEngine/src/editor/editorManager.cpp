@@ -22,7 +22,7 @@ void EditorManager::Initialize() {
 
 	AddGameObject(new GameObject("Object 2"))
 		.SetSize(Vector2(500, 500))
-		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2))
+		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))
 		.SetTexture(g_logo);
 
 
@@ -37,22 +37,30 @@ void EditorManager::Update(const TimeStep& time) {
 	m_selectedOutlineValue += time.GetSeconds();
 	Vector3 ray = GroundRaycast::GetMousePosition(GetApp()->GetPipeline()->m_camera);
 	m_mouseRayPosition = GroundRaycast::GetGroundPosition(GetApp()->GetPipeline()->m_camera, ray, 1.0f);
+
 	//m_sample->m_transform.m_position = m_mouseRayPosition;
 	//m_sample->SetRotation(Math::Sin(m_selectedOutlineValue));
 	//a += 0.5f * time.GetSeconds();
 	//m_sample->m_transform.m_position.x = Math::Sin(a) * 100 + 500;
 	//m_sample->m_sprite.m_color = Color(0.1f, 0.1f, 0.1f, 1.0);
 
-	UpdateSelected(time);
-	offset += time.GetSeconds() * 5;
-
 	if (KeyDown(LCTRL)) {
 		if (KeyJustDown('Z')) Undo::UndoOne();
 		if (KeyJustDown('Y')) Undo::RedoOne();
 	}
+
+	EditorControls(time);
+	offset += time.GetSeconds() * 5;
 }
 
-void EditorManager::UpdateSelected(const TimeStep& time) {
+void EditorManager::EditorControls(const TimeStep& time) {
+	if (ButtonDown(VK_MOUSE_MIDDLE)) {
+		Vector2 delta = GetMouse()->GetDelta();
+		delta.y *= -1;
+		GetApp()->GetPipeline()->m_camera->m_position += delta * GetApp()->GetPipeline()->m_camera->GetZoom();
+		return;
+	}
+	
 	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		for (int i = (int)m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {

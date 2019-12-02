@@ -19,7 +19,7 @@ Vector3 GroundRaycast::CalculateScreenRay(const Vector2& position, const Camera*
 Vector3 GroundRaycast::CalculateMouseRay(const Camera* camera) {
 	float mouseX = GetMouse()->GetPosition().x;
 	float mouseY = GetMouse()->GetPosition().y;/* -19 * 2;*/
-	Vector4 viewport = camera->GetViewport();
+	Vector4 viewport = camera->GetActualViewport();
 	//LOG("%f %f %f %f", viewport.x, viewport.y, viewport.z, viewport.w);
 	mouseX = Math::Clamp(mouseX, viewport.x, viewport.x + viewport.z);
 	mouseY = Math::Clamp(mouseY, viewport.y, viewport.y + viewport.w);
@@ -57,7 +57,7 @@ Vector3 GroundRaycast::GetGroundPosition(const Camera* camera, const Vector3& ra
 	auto vp = delta.Dot(Vector3::ZAxis());
 	auto k = wp / vp;
 	Vector3 toRet = delta.Multiply(-k).Add(rayStart);
-	toRet.x += camera->GetViewport().z;
-	toRet.y += camera->GetViewport().w;
+	toRet.x += camera->GetRelativeViewport().z;
+	toRet.y += camera->GetRelativeViewport().w;
 	return toRet;
 }

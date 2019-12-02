@@ -273,7 +273,7 @@ void editorWindow::AddItem() {
 	String name = "Object" + (GetEditorManager()->GetHierarchy().m_gameObjects.size());
 	GetEditorManager()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
-		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2))
+		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))
 		.SetTexture(logo);
 
 
@@ -289,9 +289,10 @@ void editorWindow::CreateViewport() {
 	actualWindowPosition.x -= m_mainWindowPos.x;
 	actualWindowPosition.y -= m_mainWindowPos.y;
 
+	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
+	
 	if (viewport->Size.x > 0 && viewport->Size.y > 0)
 		GetFrameBufferManager()->OnResize((uint)actualWindowSize.x, (uint)actualWindowSize.y);
 
 	GetApp()->GetPipeline()->m_camera->SetViewport(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
-	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }

@@ -139,8 +139,6 @@ void App::Draw() {
 	GetEditorManager()->Draw(m_pipeline);
 	m_pipeline->End();
 	GetImGuiManager()->Begin();
-
-
 	
 	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
 		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {

@@ -13,7 +13,7 @@ private:
 public:
 	RenderingPipeline() {}
 	~RenderingPipeline();
-	AssetRef<OrthographicCamera> m_camera;
+	AssetRef<Camera> m_camera;
 
 	Texture* GetFinalTexture() const { return m_finalTexture; }
 	SpriteRenderer* GetSpriteRenderer() const { return m_spriteRenderer; }

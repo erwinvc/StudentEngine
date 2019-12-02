@@ -6,7 +6,7 @@ private:
 	Vector2 m_mouseRayPosition;
 	GameObject* m_sample;
 
-	void UpdateSelected(const TimeStep& time);
+	void EditorControls(const TimeStep& time);
 	
 public:
 	static Texture* g_logo;

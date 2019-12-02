@@ -4,7 +4,7 @@ void RenderingPipeline::Initialize() {
 	m_finalFBO = GetFrameBufferManager()->Create("Final", FBOScale::FULL, false);
 	m_finalTexture = m_finalFBO->AddBuffer("Final", TextureParameters(RGB, RGB, NEAREST, CLAMP_TO_BORDER), FBOAttachment::COLOR);
 	m_finalFBO->SetClearColor(Color::Black());
-	m_camera = new OrthographicCamera();
+	m_camera = new Camera();
 	m_camera->SetViewport(0, 0, 1920, 1080);
 
 	Texture* defaultTexture = GetAssetManager()->Get<Texture>("White");

@@ -16,6 +16,7 @@ private:
     Vector2 m_delta;
 
     Vector2 m_scroll;
+	Vector2 m_scrollBuffer;
 
     struct Button {
         bool m_glIsUpNow;
@@ -34,6 +35,8 @@ public:
     int m_lastButton;
 
     void Update() {
+		m_scroll = m_scrollBuffer;
+		m_scrollBuffer = Vector2(0, 0);
         for (int i = 0; i < 5; i++) {
             m_buttonStates[i].m_wasUp = m_buttonStates[i].m_isUpNow;
             m_buttonStates[i].m_isUpNow = m_buttonStates[i].m_glIsUpNow;
@@ -47,7 +50,8 @@ public:
     }
 
     inline Vector2& GetPosition() { return m_usePosition; }
-    inline Vector2& GetDelta() { return m_delta; }
+	inline Vector2& GetScroll() { return m_scroll; }
+	inline Vector2& GetDelta() { return m_delta; }
 
     void Initialize(Window* window);
     bool ButtonDown(DWORD button) { return !ImGui::GetIO().WantCaptureMouse && !m_buttonStates[button].m_isUpNow; }
