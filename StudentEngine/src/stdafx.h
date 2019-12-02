@@ -130,3 +130,4 @@ using namespace std;
 #include "states/editState.h"
 #include "states/playState.h"
 #include "states/stateManager.h"
+#include "util/fonts/IconsFontAwesome.h"

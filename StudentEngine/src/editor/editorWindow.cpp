@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 void editorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
@@ -6,6 +7,15 @@ void editorWindow::Initialize() {
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+	
+	// Get the icons from both FA regular & solid (each having their own range of different icons)
+	// And add them to the already existing font
+	ImFontConfig config;
+	config.MergeMode = true;
+	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
+	io.Fonts->Build();
 }
 
 void editorWindow::Update(const TimeStep& time) {
@@ -107,6 +117,7 @@ void editorWindow::CreateEditorWindows() {
 			inEditorMode = false;
 			GetStateManager()->SetState<PlayState>();
 		}
+		ImGui::Text("%s Search", ICON_FA_SMILE);
 		ImGui::EndMainMenuBar();
 	}
 
@@ -169,7 +180,7 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 
 		for (size_t i = 0; i < objs.size(); i++) {
 			//ImGui::Selectable("\uf557" + objs[i].m_name.c_str());
-			String title = ("\uf557 " + objs[i]->m_name);
+			//String title = (ICON_FA_CUBE + objs[i]->m_name);
 
 			//Since all objects remain in the objs/hierachy class, we skip over those that have parents to prevent duplicates
 			/*if (objs[i]->HasParent())
@@ -184,7 +195,7 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 }
 
 void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
-	String title = ("\uf557 " + objs[index]->m_name);
+	String title = (ICON_FA_CAMERA + String(" ") + objs[index]->m_name);
 	if (hasChildren) {
 		for (size_t i = 0; i < objs[index]->GetChildren().size(); i++) {
 			//title = ("\uf557 " + objs[index]->m_children[i]->m_name);
