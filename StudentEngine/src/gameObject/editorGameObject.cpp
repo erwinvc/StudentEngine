@@ -15,7 +15,7 @@ Vector2 EditorGameObject::g_movingOffset;
 
 void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject) {
 	Transform& transform = gameObject->m_transform;
-	static float lineSize = 1.0f;
+	static float lineSize = 0.5f;
 	static float halfLineSize = lineSize / 2;
 	pipeline->Line(transform.XMin() - halfLineSize, transform.YMin() - halfLineSize, transform.XMin() - halfLineSize, transform.YMax() + halfLineSize, g_outlineColor, lineSize);
 	pipeline->Line(transform.XMax() + halfLineSize, transform.YMin() - halfLineSize, transform.XMax() + halfLineSize, transform.YMax() + halfLineSize, g_outlineColor, lineSize);
@@ -23,20 +23,20 @@ void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject)
 	pipeline->Line(transform.XMin() - halfLineSize, transform.YMin() - halfLineSize, transform.XMax() + halfLineSize, transform.YMin() - halfLineSize, g_outlineColor, lineSize);
 	pipeline->Line(transform.XMin() - halfLineSize, transform.YMax() + halfLineSize, transform.XMax() + halfLineSize, transform.YMax() + halfLineSize, g_outlineColor, lineSize);
 
-	pipeline->Rect(transform.XMin(), transform.YMax(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 0 ? Color(1.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
-	pipeline->Rect(transform.XMax(), transform.YMax(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 1 ? Color(1.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
-	pipeline->Rect(transform.XMin(), transform.YMin(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 2 ? Color(1.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
-	pipeline->Rect(transform.XMax(), transform.YMin(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 3 ? Color(1.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
+	pipeline->Rect(transform.XMin(), transform.YMax(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 0 ? Color(10.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
+	pipeline->Rect(transform.XMax(), transform.YMax(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 1 ? Color(10.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
+	pipeline->Rect(transform.XMin(), transform.YMin(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 2 ? Color(10.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
+	pipeline->Rect(transform.XMax(), transform.YMin(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 3 ? Color(10.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
 
-	pipeline->Rect(transform.m_position.x, transform.m_position.y + 40, 16, 80, 0, g_selectedArrow == 0 ? Color(1.0f, 0.85f, 0.0f) : Color::Red(), EditorManager::g_arrowGizmo);
-	pipeline->Rect(transform.m_position.x + 40, transform.m_position.y, 16, 80, -Math::HALF_PI, g_selectedArrow == 1 ? Color(1.0f, 0.85f, 0.0f) : Color::Green(), EditorManager::g_arrowGizmo);
-	pipeline->Rect(transform.m_position.x + 18, transform.m_position.y + 20, 32, 32, 0, g_selectedArrow == 2 ? Color(1.0f, 0.65f, 0.2f) : Color::White(), EditorManager::g_squareGizmo);
+	pipeline->Rect(transform.m_position.x, transform.m_position.y + 40, 16, 80, 0, g_selectedArrow == 0 ? Color(10.0f, 0.85f, 0.0f) : Color::Red(), EditorManager::g_arrowGizmo);
+	pipeline->Rect(transform.m_position.x + 40, transform.m_position.y, 16, 80, -Math::HALF_PI, g_selectedArrow == 1 ? Color(10.0f, 0.85f, 0.0f) : Color::Green(), EditorManager::g_arrowGizmo);
+	pipeline->Rect(transform.m_position.x + 18, transform.m_position.y + 20, 32, 32, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), EditorManager::g_squareGizmo);
 }
 
 bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vector2 mousePosition) {
 	Transform& transform = gameObject->m_transform;
 
-	g_outlineColorValue += time.GetSeconds() * 4;
+	g_outlineColorValue += time.GetSeconds() * 2.0f;
 	g_outlineColor = Color::Mix(Color(1.0f, 0.4f, 0.0f), Color(0.5f, 0.2f, 0.0f), Math::Map(Math::Sin(g_outlineColorValue), -1.0f, 1.0f, 0.0f, 1.0f));
 
 	//Moving
@@ -121,13 +121,13 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	}
 
 	g_selectedButton = -1;
-	if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMin(), transform.YMax())) < g_buttonSize * 2.5f) {
+	if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMin(), transform.YMax())) < g_buttonSize * 5.0f) {
 		g_selectedButton = 0;
-	} else if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMax(), transform.YMax())) < g_buttonSize * 2.5f) {
+	} else if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMax(), transform.YMax())) < g_buttonSize * 5.0f) {
 		g_selectedButton = 1;
-	} else if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMin(), transform.YMin())) < g_buttonSize * 2.5f) {
+	} else if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMin(), transform.YMin())) < g_buttonSize * 5.0f) {
 		g_selectedButton = 2;
-	} else if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMax(), transform.YMin())) < g_buttonSize * 2.5f) {
+	} else if (mousePosition.SqrDistance(Vector2(gameObject->m_transform.XMax(), transform.YMin())) < g_buttonSize * 5.0f) {
 		g_selectedButton = 3;
 	}
 

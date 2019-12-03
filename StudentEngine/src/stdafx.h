@@ -78,6 +78,9 @@ using namespace std;
 #include "util/timer.h"
 #include "util/glError.h"
 
+#include "assets/assetBase.h"
+#include "assets/icon.h"
+
 #include "graphics/glCallbackManager.h"
 #include "graphics/window.h"
 
@@ -93,7 +96,6 @@ using namespace std;
 #include "graphics/shaders/shader.h"
 #include "graphics/shaders/shaderManager.h"
 
-#include "assets/assetBase.h"
 #include "assets/texture/texture.h"
 #include "assets/sprite.h"
 

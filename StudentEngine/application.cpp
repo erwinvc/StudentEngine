@@ -74,6 +74,8 @@ void App::Initialize() {
 	GetEditorManager()->Initialize();
 	GetMouse()->Initialize(m_window);
 	GetKeyboard()->Initialize(m_window);
+
+	m_window->SetIcon(Icon("icon32"));
 	m_window->Show();
 
 	GetStateManager()->Initialize();

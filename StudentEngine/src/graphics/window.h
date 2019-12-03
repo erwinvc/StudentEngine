@@ -70,9 +70,9 @@ public:
 		glfwSwapInterval(toggle);
 	}
 
-	//void SetIcon(const Icon& icon) {
-	//	GL(glfwSetWindowIcon(GetHandle(), 1, icon.GetImage()));
-	//}
+	void SetIcon(const Icon& icon) {
+		GL(glfwSetWindowIcon(GetHandle(), 1, icon.GetImage()));
+	}
 
 	void SetTitle(const String& title) { glfwSetWindowTitle(m_window, title.c_str()); }
 
