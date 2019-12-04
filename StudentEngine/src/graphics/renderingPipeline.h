@@ -28,6 +28,6 @@ public:
 	}
 
 	inline void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
-		m_spriteRenderer->Line(x0, y0, x1, y1, color, size);
+		m_spriteRenderer->Line(x0, y0, x1, y1, color, size * m_camera->GetZoom());
 	}
 };

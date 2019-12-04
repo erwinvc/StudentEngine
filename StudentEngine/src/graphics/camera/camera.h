@@ -17,11 +17,16 @@ public:
 
 	Camera() {}
 	~Camera() {}
-	
+
 	void Update(const TimeStep time) {
 		float zoom = GetMouse()->GetScroll().y / 10;
+		float oldZoom = m_zoom;
 		m_zoom = Math::Clamp(m_zoom - zoom, 0.1f, 100.0f);
-		m_position += Vector2(m_viewPort.z * zoom, m_viewPort.w * zoom) / 2;
+		float difference = oldZoom - m_zoom;
+		if (difference != 0) {
+			m_position += Vector2(m_viewPort.z * difference, m_viewPort.w * difference) / 2;
+			UpdateProjectionMatrix();
+		}
 		UpdateViewMatrix();
 	}
 
@@ -30,6 +35,7 @@ public:
 	}
 
 	void SetViewport(uint x, uint y, uint width, uint height) {
+		if (m_viewPort.x == x && m_viewPort.y == y && m_viewPort.z == width && m_viewPort.w == height) return;
 		m_viewPort.x = (float)x;
 		m_viewPort.y = (float)y;
 		m_viewPort.z = (float)width;
