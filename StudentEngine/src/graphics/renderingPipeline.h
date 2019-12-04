@@ -23,7 +23,10 @@ public:
 	void End();
 	void OnImGui();
 
-	inline void Rect(float x, float y, float w, float h, float rotation, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
+	float Width() { return m_camera->GetRelativeViewport().z; }
+	float Height() { return m_camera->GetRelativeViewport().w; }
+	
+	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
 		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture);
 	}
 
