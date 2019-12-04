@@ -7,9 +7,7 @@ void RenderingPipeline::Initialize() {
 	m_camera = new Camera();
 	m_camera->SetViewport(0, 0, 1920, 1080);
 
-	Texture* defaultTexture = GetAssetManager()->Get<Texture>("White");
-	
-	m_spriteRenderer = new SpriteRenderer(defaultTexture);
+	m_spriteRenderer = new SpriteRenderer(GetAssetManager()->GetNullTexture());
 }
 
 void RenderingPipeline::Update(const TimeStep time) {

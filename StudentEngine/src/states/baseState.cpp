@@ -1,5 +1,5 @@
 #include "stdafx.h"
 
-String BaseState::GetState() {
+const String& BaseState::GetState() {
 	return name;
 }

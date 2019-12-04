@@ -50,36 +50,24 @@ void App::Initialize() {
 	LOG("[~cGPU~x] %-26s %s", "GPU~1", glGetString(GL_RENDERER));
 	LOG("[~cGPU~x] %-26s %s", "OpenGL version~1", glGetString(GL_VERSION));
 
-	//m_window->SetIcon(Icon("icon32"));
+	m_window->SetIcon(Icon("icon32"));
 
 	GetGLFiberManager()->Initialize();
 	GetGLFiberManager()->AddFiber("Main", [] {GetApp()->Run(); });
 	GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
 
-	GetAssetWatcher()->Initialize();
 	GetAssetManager()->Initialize();
-	GetAssetManager()->ForceLoadAsset<Texture>(new TextureLoadJob("White", 1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/squareGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
-	GetAssetManager()->ProcessInitialQueue();
-	GetImGuiManager()->Initialize(m_window);
+
+	GetAssetManager()->ForceLoadAsset<int>(new CustomLoadJob("ImGui Manager", [] {GetImGuiManager()->Initialize(GetApp()->GetWindow()); }));
+	
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
 	m_pipeline = new RenderingPipeline();
 	m_pipeline->Initialize();
-
-	Undo::Initialize();
 	GetEditorManager()->Initialize();
-	GetMouse()->Initialize(m_window);
-	GetKeyboard()->Initialize(m_window);
-
-	m_window->SetIcon(Icon("icon32"));
-	m_window->Show();
-
+	
 	GetStateManager()->Initialize();
 
+	m_window->Show();
 	m_initialized = true;
 	
 	while (m_running) {
@@ -126,19 +114,18 @@ void App::Run() {
 
 void App::Update(TimeStep time) {
 	GetMouse()->Update();
-	//GetStateManager()->Update(time);
+	GetStateManager()->Update(time);
 	//GetTweenManager()->Update(time);
 	//GetShaderManager()->Update(time);
 	//
 	m_pipeline->Update(time);
-	GetEditorManager()->Update(time);
-	GetEditorWindow()->Update(time);
+
 	GetAssetManager()->Update();
 }
 
 void App::Draw() {
 	m_pipeline->Begin();
-	GetEditorManager()->Draw(m_pipeline);
+	GetStateManager()->Draw(m_pipeline);
 	m_pipeline->End();
 	GetImGuiManager()->Begin();
 	
@@ -152,9 +139,7 @@ void App::Draw() {
 	}
 	ImGui::End();
 
-	GetEditorWindow()->OnImGui();
-
-	//GetStateManager()->OnImGUI();
+	GetStateManager()->OnImGui();
 	GetImGuiManager()->End();
 
 	if (resizeBuffer.x != -1) {

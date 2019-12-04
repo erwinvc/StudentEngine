@@ -9,10 +9,10 @@ private:
 	void EditorControls(const TimeStep& time);
 	
 public:
-	static Texture* g_logo;
-	static Texture* g_buttonGizmo;
-	static Texture* g_arrowGizmo;
-	static Texture* g_squareGizmo;
+	static StreamedTexture* g_logo;
+	static StreamedTexture* g_buttonGizmo;
+	static StreamedTexture* g_arrowGizmo;
+	static StreamedTexture* g_squareGizmo;
 	
 	GameObject& AddGameObject(GameObject* gameObject) {
 		return *m_hierarchy.AddGameObject(gameObject);

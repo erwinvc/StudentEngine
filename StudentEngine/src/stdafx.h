@@ -97,6 +97,7 @@ using namespace std;
 #include "graphics/shaders/shaderManager.h"
 
 #include "assets/texture/texture.h"
+#include "assets/texture/streamedTexture.h"
 #include "assets/sprite.h"
 
 #include "input/keyboard.h"
@@ -115,6 +116,7 @@ using namespace std;
 
 #include "assets/loadjobs/assetLoadJob.h"
 #include "assets/loadjobs/textureLoadJob.h"
+#include "assets/loadjobs/customLoadJob.h"
 
 #include "assets/assetWatcher.h"
 #include "assets/assetManager.h"
@@ -129,6 +131,7 @@ using namespace std;
 #include "util/undo.h"
 
 #include "states/baseState.h"
+#include "states/loadingState.h"
 #include "states/editState.h"
 #include "states/playState.h"
 #include "states/stateManager.h"

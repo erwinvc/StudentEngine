@@ -1,8 +1,8 @@
 #include "stdafx.h"
-Texture* EditorManager::g_logo;
-Texture* EditorManager::g_buttonGizmo;
-Texture* EditorManager::g_arrowGizmo;
-Texture* EditorManager::g_squareGizmo;
+StreamedTexture* EditorManager::g_logo;
+StreamedTexture* EditorManager::g_buttonGizmo;
+StreamedTexture* EditorManager::g_arrowGizmo;
+StreamedTexture* EditorManager::g_squareGizmo;
 
 //Color colors[1000000];
 void EditorManager::Initialize() {
@@ -11,11 +11,10 @@ void EditorManager::Initialize() {
 	//}
 
 
-	g_buttonGizmo = GetAssetManager()->Get<Texture>("ButtonGizmo");
-	g_arrowGizmo = GetAssetManager()->Get<Texture>("ArrowGizmo");
-	g_squareGizmo = GetAssetManager()->Get<Texture>("SquareGizmo");
-	g_logo = GetAssetManager()->Get<Texture>("Logo");
-
+	g_buttonGizmo = GetAssetManager()->Get<StreamedTexture>("ButtonGizmo");
+	g_arrowGizmo = GetAssetManager()->Get<StreamedTexture>("ArrowGizmo");
+	g_squareGizmo = GetAssetManager()->Get<StreamedTexture>("SquareGizmo");
+	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 	//m_sample = &AddGameObject(new GameObject("Object 1"))
 	//	.SetSize(Vector2(500, 200))
 	//	.SetPosition(Vector2(GetApp()->GetPipeline()->m_camera->GetViewport().z / 2, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2));

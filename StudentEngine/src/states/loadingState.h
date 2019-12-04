@@ -1,10 +1,7 @@
 #pragma once
 
-class PlayState : public BaseState {
-private:
-	vector<GameObject> editorGameObjects;
-public:
-	PlayState();
+class LoadingState : public BaseState
+{
 	void Initialize() override;
 	void Update(const TimeStep& time) override;
 	void Draw(RenderingPipeline* pipeline) override;

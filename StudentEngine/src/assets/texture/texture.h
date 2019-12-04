@@ -8,12 +8,11 @@ private:
 	String m_path;
 	byte* m_data = nullptr;
 	bool m_keepData = false;
-	bool m_hasMipmaps;
 	void Cleanup();
 
 public:
-	Texture(int32 width, int32 height, byte* data, bool hasMipmaps, TextureParameters params = TextureParameters(), bool keepData = false);
-	Texture(int32 width, int32 height, bool hasMipmaps, TextureParameters params = TextureParameters(), bool keepData = false);
+	Texture(int32 width, int32 height, byte* data, TextureParameters params = TextureParameters(), bool keepData = false);
+	Texture(int32 width, int32 height, TextureParameters params = TextureParameters(), bool keepData = false);
 	//Texture(const String& path, bool hasMipmaps, TextureParameters params = TextureParameters(), bool keepData = false);
 	~Texture();
 

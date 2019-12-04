@@ -105,13 +105,13 @@ public:
 	inline int GetFormat() const { return m_format; }
 	inline int GetWrap() const { return m_wrap; }
 	inline int GetType() const { return m_type; }
-	inline int GetFilter(int type, bool mipmap) const {
+	inline int GetFilter(int type) const {
 		switch (type) {
 			case GL_TEXTURE_MIN_FILTER: {
 					switch (m_filter) {
 						//case LINEARMIPMAP: return GL_LINEAR_MIPMAP_LINEAR;
-						case LINEAR: return mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-						case NEAREST: return mipmap ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
+						case LINEAR: GL_LINEAR;
+						case NEAREST: GL_NEAREST;
 					}
 				}break;
 			case GL_TEXTURE_MAG_FILTER: return m_filter == LINEAR ? GL_LINEAR : GL_NEAREST; break;

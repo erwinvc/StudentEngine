@@ -30,7 +30,7 @@ void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject)
 
 	pipeline->Rect(transform.m_position.x, transform.m_position.y + 40, 16, 80, 0, g_selectedArrow == 0 ? Color(10.0f, 0.85f, 0.0f) : Color::Red(), EditorManager::g_arrowGizmo);
 	pipeline->Rect(transform.m_position.x + 40, transform.m_position.y, 16, 80, -Math::HALF_PI, g_selectedArrow == 1 ? Color(10.0f, 0.85f, 0.0f) : Color::Green(), EditorManager::g_arrowGizmo);
-	pipeline->Rect(transform.m_position.x + 18, transform.m_position.y + 20, 32, 32, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), EditorManager::g_squareGizmo);
+	pipeline->Rect(transform.m_position.x + 20, transform.m_position.y + 20, 32, 32, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), EditorManager::g_squareGizmo);
 }
 
 bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vector2 mousePosition) {
@@ -59,7 +59,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	}
 
 	g_selectedArrow = -1;
-	if (Math::Within(mousePosition.x, transform.m_position.x + 2, transform.m_position.x + 34) && Math::Within(mousePosition.y, transform.m_position.y + 4, transform.m_position.y + 36))g_selectedArrow = 2;
+	if (Math::Within(mousePosition.x, transform.m_position.x + 4, transform.m_position.x + 36) && Math::Within(mousePosition.y, transform.m_position.y + 4, transform.m_position.y + 36))g_selectedArrow = 2;
 	else if (Math::Within(mousePosition.x, transform.m_position.x - 8, transform.m_position.x + 8) && Math::Within(mousePosition.y, transform.m_position.y, transform.m_position.y + 80))g_selectedArrow = 0;
 	else if (Math::Within(mousePosition.x, transform.m_position.x, transform.m_position.x + 80) && Math::Within(mousePosition.y, transform.m_position.y - 8, transform.m_position.y + 8))g_selectedArrow = 1;
 

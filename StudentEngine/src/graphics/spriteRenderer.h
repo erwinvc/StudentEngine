@@ -62,9 +62,9 @@ public:
 		delete m_instancedRenderer;
 	}
 
-	void Rect(float x, float y, float w, float h, float rotation, const Color& color, const Texture* texture = nullptr) {
+	void Rect(float x, float y, float w, float h, float rotation, const Color& color, const StreamedTexture* texture = nullptr) {
 		float textureSlot = 0.0f;
-		if (texture) textureSlot = SubmitTexture(texture);
+		if (texture) textureSlot = SubmitTexture(*texture);
 		Vertex vertices[4] = { 0 };
 		Matrix4 rot = Matrix4::Rotate(rotation, Vector3::ZAxis());
 		//Top left

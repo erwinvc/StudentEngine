@@ -48,7 +48,7 @@ public:
 		return *this;
 	}
 
-	GameObject& SetTexture(Texture* texture) {
+	GameObject& SetTexture(StreamedTexture* texture) {
 		m_sprite.m_texture = texture;
 		return *this;
 	}

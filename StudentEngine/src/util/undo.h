@@ -63,8 +63,8 @@ namespace UndoTypes {
 
 	class UndoTexture : public UndoType {
 	private:
-		Texture* m_texture;
-		Texture* m_redoTexture;
+		StreamedTexture* m_texture;
+		StreamedTexture* m_redoTexture;
 	public:
 		void Register(GameObject* gameObject) override {
 			m_texture = gameObject->m_sprite.m_texture;

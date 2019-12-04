@@ -43,7 +43,8 @@ bool FrameBuffer::CheckStatus() {
 }
 
 AssetRef<Texture> FrameBuffer::AddBuffer(const String& name, const TextureParameters& params, FBOAttachment type) {
-	Texture* texture = new Texture(m_width, m_height, false, params);
+	Texture* texture = new Texture(m_width, m_height, params);
+	
 	m_textures.push_back(texture);
 	m_textureNames.push_back(name);
 

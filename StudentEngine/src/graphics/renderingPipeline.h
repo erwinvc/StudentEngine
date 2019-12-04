@@ -6,14 +6,14 @@ private:
 	bool m_wireframe = false;
 	bool m_FXAA = true;
 
-	AssetRef<SpriteRenderer> m_spriteRenderer;
-	AssetRef<FrameBuffer> m_finalFBO;
-	AssetRef<Texture> m_finalTexture;
+	SpriteRenderer* m_spriteRenderer;
+	FrameBuffer* m_finalFBO;
+	Texture* m_finalTexture;
 
 public:
 	RenderingPipeline() {}
 	~RenderingPipeline();
-	AssetRef<Camera> m_camera;
+	Camera* m_camera;
 
 	Texture* GetFinalTexture() const { return m_finalTexture; }
 	SpriteRenderer* GetSpriteRenderer() const { return m_spriteRenderer; }
@@ -23,7 +23,7 @@ public:
 	void End();
 	void OnImGui();
 
-	inline void Rect(float x, float y, float w, float h, float rotation, const Color& color = Color::White(), const Texture* texture = nullptr) {
+	inline void Rect(float x, float y, float w, float h, float rotation, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
 		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture);
 	}
 

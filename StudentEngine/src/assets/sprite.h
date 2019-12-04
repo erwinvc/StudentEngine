@@ -2,6 +2,6 @@
 
 class Sprite {
 public:
-	Texture* m_texture = nullptr;
+	StreamedTexture* m_texture = nullptr;
 	Color m_color = Color::White();
 };

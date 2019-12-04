@@ -47,7 +47,7 @@ void editorWindow::CreateTemporaryPlayMode() {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::Button("Return to Edit")) {
 				inEditorMode = true;
-				GetStateManager()->SetState<EditState>();
+				GetStateManager()->SetState(States::EDIT);
 			}
 		}
 		ImGui::EndMainMenuBar();
@@ -115,7 +115,7 @@ void editorWindow::CreateEditorWindows() {
 		}
 		if (ImGui::Button("Enter Play Mode")) {
 			inEditorMode = false;
-			GetStateManager()->SetState<PlayState>();
+			GetStateManager()->SetState(States::PLAY);
 		}
 		ImGui::Text("%s Search", ICON_FA_SMILE);
 		ImGui::EndMainMenuBar();
@@ -279,8 +279,8 @@ void editorWindow::AddItem() {
 	//objs.push_back(new GameObject("New GameObject"));
 
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
-	Texture* logo;
-	logo = GetAssetManager()->Get<Texture>("Logo");
+	StreamedTexture* logo;
+	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 	String name = "Object" + (GetEditorManager()->GetHierarchy().m_gameObjects.size());
 	GetEditorManager()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
