@@ -6,7 +6,7 @@ protected:
 	Matrix4 m_viewMatrix;
 	Vector4 m_viewPort;
 	float m_zoom = 1.0f;
-
+	bool zoomEnabled = false;
 
 public:
 	void UpdateViewMatrix() {
@@ -19,13 +19,15 @@ public:
 	~Camera() {}
 
 	void Update(const TimeStep time) {
-		float zoom = GetMouse()->GetScroll().y / 10;
-		float oldZoom = m_zoom;
-		m_zoom = Math::Clamp(m_zoom - zoom, 0.1f, 100.0f);
-		float difference = oldZoom - m_zoom;
-		if (difference != 0) {
-			m_position += Vector2(m_viewPort.z * difference, m_viewPort.w * difference) / 2;
-			UpdateProjectionMatrix();
+		if (zoomEnabled) {
+			float zoom = GetMouse()->GetScroll().y / 10;
+			float oldZoom = m_zoom;
+			m_zoom = Math::Clamp(m_zoom - zoom, 0.1f, 100.0f);
+			float difference = oldZoom - m_zoom;
+			if (difference != 0) {
+				m_position += Vector2(m_viewPort.z * difference, m_viewPort.w * difference) / 2;
+				UpdateProjectionMatrix();
+			}
 		}
 	}
 
@@ -44,6 +46,10 @@ public:
 
 	void SetViewport(Vector4 viewport) {
 		SetViewport(viewport.x, viewport.y, viewport.z, viewport.w);
+	}
+
+	void SetZoomEnabled(bool toggle) {
+		zoomEnabled = toggle;
 	}
 
 	float GetZoom() { return m_zoom; }

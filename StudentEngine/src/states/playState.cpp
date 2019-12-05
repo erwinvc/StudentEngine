@@ -9,7 +9,9 @@ void PlayState::Update(const TimeStep& time) {
 
 }
 void PlayState::Draw(RenderingPipeline* pipeline) {
-
+	GetFrameBufferManager()->OnResize(GetEditorWindow()->GetViewport().z, GetEditorWindow()->GetViewport().w);
+	GetApp()->GetPipeline()->m_camera->SetViewport(GetEditorWindow()->GetViewport());
+	GetEditorManager()->GetHierarchy().Draw(pipeline);
 }
 
 void PlayState::PostDraw(RenderingPipeline* pipeline)
@@ -36,5 +38,5 @@ void PlayState::ExitState() {
 }
 
 void PlayState::OnImGui() {
-
+	GetEditorWindow()->OnImGui();
 }
