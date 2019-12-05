@@ -10,6 +10,12 @@ public:
 		return gameObject;
 	}
 
+	void Update(const TimeStep& time) {
+		for (auto gObj : m_gameObjects) {
+			gObj->Update(time);
+		}
+	}
+
 	void Draw(RenderingPipeline* pipeline) {
 		for (auto gObj : m_gameObjects) {
 			gObj->Draw(pipeline);

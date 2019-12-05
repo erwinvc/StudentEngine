@@ -28,6 +28,10 @@ public:
 
 	GameObject* GetParent() { return m_parent; }
 
+	virtual void Update(const TimeStep& time) {
+
+	}
+
 	void Draw(RenderingPipeline* pipeline) {
 		pipeline->Rect(m_transform.m_position.x, m_transform.m_position.y, m_transform.m_size.x, m_transform.m_size.y, m_transform.m_rotation, m_sprite.m_color, m_sprite.m_texture);
 	}

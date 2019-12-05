@@ -6,8 +6,9 @@ void PlayState::Initialize()
 }
 
 void PlayState::Update(const TimeStep& time) {
-
+	GetEditorManager()->GetHierarchy().Update(time);
 }
+
 void PlayState::Draw(RenderingPipeline* pipeline) {
 	GetFrameBufferManager()->OnResize(GetEditorWindow()->GetViewport().z, GetEditorWindow()->GetViewport().w);
 	GetApp()->GetPipeline()->m_camera->SetViewport(GetEditorWindow()->GetViewport());
