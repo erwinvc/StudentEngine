@@ -140,6 +140,7 @@ public:
 		m_types.push_back(new UndoSize());
 		m_types.push_back(new UndoTexture());
 		m_types.push_back(new UndoColor());
+		LOG("[~cUndo~x] Initialized Undo");
 	}
 	static void Cleanup() {
 		for (auto& type : m_types) delete type;

@@ -18,6 +18,7 @@ private:
 	ImGuiID m_dockspaceLeftBottom;
 
 	ImVec2 m_mainWindowPos;
+	Vector4 m_viewport;
 	void CreateDockingSpace();
 	void CreateEditorWindows();
 	void CreateTemporaryPlayMode();
@@ -43,6 +44,8 @@ public:
 	void OnImGui();
 	void Draw();
 	void Update(const TimeStep& time);
+
+	Vector4 GetViewport() { return m_viewport; }
 };
 
 static editorWindow* GetEditorWindow() { return editorWindow::GetInstance(); }

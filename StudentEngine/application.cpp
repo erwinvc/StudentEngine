@@ -17,10 +17,8 @@ void App::OnWindowClose() {
 
 void App::Initialize() {
 	glfwSetErrorCallback(ErrorCallback);
-	if (!glfwInit()) {
-		LOG_ERROR("[GLFW] GLFW failed to initialize");
-		return;
-	}
+	
+	if (!glfwInit()) LOG_ERROR("[GLFW] GLFW failed to initialize");
 
 	glfwDefaultWindowHints();
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -37,11 +35,8 @@ void App::Initialize() {
 	m_window->MakeContextCurrent();
 	m_window->ClearColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
 	m_window->SetVSync(true);
-
-	if (glewInit() != GLEW_OK) {
-		LOG_ERROR("[GLEW] failed to initialize");
-		return;
-	}
+	
+	if (glewInit() != GLEW_OK) LOG_ERROR("[GLEW] failed to initialize");
 
 	GetGLCallbackManager()->AddOnResizeCallback(this, &App::OnResize);
 	GetGLCallbackManager()->AddOnCloseCallback(this, &App::OnWindowClose);
@@ -52,24 +47,20 @@ void App::Initialize() {
 
 	m_window->SetIcon(Icon("icon32"));
 
+	GetAssetManager()->Initialize();
+	GetStateManager()->Initialize();
+
+	m_pipeline = new RenderingPipeline();
+	m_pipeline->Initialize();
+
 	GetGLFiberManager()->Initialize();
 	GetGLFiberManager()->AddFiber("Main", [] {GetApp()->Run(); });
 	GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
-
-	GetAssetManager()->Initialize();
-
-	GetAssetManager()->ForceLoadAsset<int>(new CustomLoadJob("ImGui Manager", [] {GetImGuiManager()->Initialize(GetApp()->GetWindow()); }));
+	GetGLFiberManager()->AddFiber("Tween", [] {});
 	
-	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
-	m_pipeline = new RenderingPipeline();
-	m_pipeline->Initialize();
-	GetEditorManager()->Initialize();
-	
-	GetStateManager()->Initialize();
-
 	m_window->Show();
 	m_initialized = true;
-	
+
 	while (m_running) {
 		GetGLFiberManager()->Tick();
 	}
@@ -84,6 +75,7 @@ void App::HandleQueue() {
 
 void App::Run() {
 	m_timer = Timer();
+	float totalTime = 0;
 	float timer = m_timer.Get();
 	float updateTimer = m_timer.Get();
 	float updateTick = 1000.0f / 60.0f;
@@ -93,7 +85,8 @@ void App::Run() {
 		m_window->Clear();
 		float time = m_timer.Get();
 		if (time - updateTimer > updateTick) {
-			Update(time - m_lastFrameTime);
+			totalTime += time - m_lastFrameTime;
+			Update(TimeStep(time - m_lastFrameTime, totalTime, m_frameCount));
 			m_lastFrameTime = time;
 			updates++;
 			updateTimer += updateTick;
@@ -115,20 +108,20 @@ void App::Run() {
 void App::Update(TimeStep time) {
 	GetMouse()->Update();
 	GetStateManager()->Update(time);
-	//GetTweenManager()->Update(time);
-	//GetShaderManager()->Update(time);
-	//
+	GetTweenManager()->Update(time);
+
 	m_pipeline->Update(time);
 
 	GetAssetManager()->Update();
 }
 
 void App::Draw() {
+	m_pipeline->m_camera->UpdateViewMatrix();
 	m_pipeline->Begin();
 	GetStateManager()->Draw(m_pipeline);
 	m_pipeline->End();
 	GetImGuiManager()->Begin();
-	
+
 	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
 		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 			m_pipeline->OnImGui();
@@ -141,6 +134,8 @@ void App::Draw() {
 
 	GetStateManager()->OnImGui();
 	GetImGuiManager()->End();
+
+	GetStateManager()->PostDraw(m_pipeline);
 
 	if (resizeBuffer.x != -1) {
 		uint width = resizeBuffer.x;

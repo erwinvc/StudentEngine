@@ -24,6 +24,10 @@ public:
 		return -1;
 	}
 
+	void Print(const String& name) {
+		LOG("~1%s ~xtook %.2fms", name.c_str(), Get());
+	}
+	
 	void Print() {
 		LOG("%.2fms", Get());
 	}

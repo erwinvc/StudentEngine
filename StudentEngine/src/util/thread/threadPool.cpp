@@ -5,9 +5,9 @@ void ThreadPool::Initialize(int threads) {
 	m_initialized = true;
 
 	for (int i = 0; i < threads; ++i) {
-		GetThreadManager()->RegisterThread(Format("Job thread %d", i), [] {GetThreadPool()->ThreadEntry(); });
+		GetThreadManager()->RegisterThread(Format("Job Thread %d", i), [] {GetThreadPool()->ThreadEntry(); });
 	}
-	LOG("[~rThreads~x] Thread pool created");
+	LOG("[~rThreads~x] Initialized Thread Pool");
 }
 
 void ThreadPool::DoJob(std::function <void(void)> func) {

@@ -10,6 +10,7 @@ void Mouse::Initialize(Window* window) {
     GetGLCallbackManager()->AddOnMouseButtonCallback(this, &Mouse::OnMouseButton);
     GetGLCallbackManager()->AddOnMousePosCallback(this, &Mouse::OnMousePos);
     GetGLCallbackManager()->AddOnScrollCallback(this, &Mouse::OnScroll);
+	LOG("[~cInput~x] Initialized Mouse");
 }
 
 void Mouse::OnMouseButton(int button, int action, int mods) {

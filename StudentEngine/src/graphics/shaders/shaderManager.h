@@ -25,9 +25,6 @@ public:
 		return m_shaders[name];
 	}
 
-	void Update(const TimeStep& time) {
-	}
-
 	void ReloadShaderByFileName(const String& file) {
 		for (int i = 0; i < m_shadersVector.size(); i++) {
 			if (m_shadersVector[i]->m_file.compare(file) == 0) {

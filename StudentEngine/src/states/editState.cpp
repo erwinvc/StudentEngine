@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 void EditState::Initialize() {
-
+	GetEditorManager()->Initialize();
 }
 
 void EditState::Update(const TimeStep& time) {
@@ -10,7 +10,13 @@ void EditState::Update(const TimeStep& time) {
 }
 
 void EditState::Draw(RenderingPipeline* pipeline) {
+	GetFrameBufferManager()->OnResize(GetEditorWindow()->GetViewport().z, GetEditorWindow()->GetViewport().w);
+	GetApp()->GetPipeline()->m_camera->SetViewport(GetEditorWindow()->GetViewport());
 	GetEditorManager()->Draw(pipeline);
+}
+
+void EditState::PostDraw(RenderingPipeline* pipeline) {
+
 }
 
 void EditState::EnterState() {

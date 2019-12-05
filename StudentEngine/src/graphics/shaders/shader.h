@@ -29,10 +29,8 @@ public:
 
 		GL(glLinkProgram(m_handle));
 		GL(glValidateProgram(m_handle));
-
-		int count;
-		GL(glGetProgramiv(m_handle, GL_ACTIVE_UNIFORMS, &count));
-		m_uniformCount = count;
+		
+		GL(glGetProgramiv(m_handle, GL_ACTIVE_UNIFORMS, &m_uniformCount));
 
 		DeleteAttachedShaders();
 	}
@@ -140,14 +138,14 @@ private:
 	ShaderProgram* Load() {
 		ShaderProgram* shaderProgram = new ShaderProgram();
 		shaderProgram->CreateProgram();
-
 		bool failed = false;
 
 		String vertexFile = m_file + ".vert";
 		String fragFile = m_file + ".frag";
+
 		failed |= AddShaderToProgram(shaderProgram, vertexFile, GL_VERTEX_SHADER);
 		failed |= AddShaderToProgram(shaderProgram, fragFile, GL_FRAGMENT_SHADER);
-
+		
 		if (m_hasGeometry) {
 			String geomFile = m_file + ".geom";
 			failed |= AddShaderToProgram(shaderProgram, geomFile, GL_GEOMETRY_SHADER);
@@ -160,15 +158,12 @@ private:
 			failed |= AddShaderToProgram(shaderProgram, tc, GL_TESS_CONTROL_SHADER);
 		}
 
-
 		if (failed) {
 			delete shaderProgram;
 			shaderProgram = nullptr;
 		} else {
 			shaderProgram->LinkAndValidate();
-			shaderProgram->DeleteAttachedShaders();
 		}
-
 		return shaderProgram;
 	}
 

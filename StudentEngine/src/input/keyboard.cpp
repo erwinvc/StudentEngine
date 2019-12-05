@@ -7,6 +7,7 @@ void Keyboard::Initialize(Window* window) {
     }
 
     GetGLCallbackManager()->AddOnKeyCallback(this, &Keyboard::OnKey);
+	LOG("[~cInput~x] Initialized Keyboard");
 }
 
 void Keyboard::OnKey(int key, int scancode, int action, int mods) {

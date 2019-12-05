@@ -25,7 +25,6 @@ void EditorManager::Initialize() {
 		.SetTexture(g_logo);
 
 
-	GetEditorWindow()->Initialize();
 }
 
 static float offset = 0;

@@ -7,12 +7,12 @@ protected:
 	Vector4 m_viewPort;
 	float m_zoom = 1.0f;
 
-protected:
+
+public:
 	void UpdateViewMatrix() {
 		m_viewMatrix = Matrix4::Translate(-m_position);
 	}
 
-public:
 	Vector3 m_position = Vector3();
 
 	Camera() {}
@@ -27,7 +27,6 @@ public:
 			m_position += Vector2(m_viewPort.z * difference, m_viewPort.w * difference) / 2;
 			UpdateProjectionMatrix();
 		}
-		UpdateViewMatrix();
 	}
 
 	void UpdateProjectionMatrix() {
@@ -41,6 +40,10 @@ public:
 		m_viewPort.z = (float)width;
 		m_viewPort.w = (float)height;
 		UpdateProjectionMatrix();
+	}
+
+	void SetViewport(Vector4 viewport) {
+		SetViewport(viewport.x, viewport.y, viewport.z, viewport.w);
 	}
 
 	float GetZoom() { return m_zoom; }

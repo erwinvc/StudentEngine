@@ -16,7 +16,6 @@ TextureLoadJob::~TextureLoadJob() {
 }
 
 bool TextureLoadJob::loadAsset(bool addToProcessQueue) {
-	Sleep(1000);
 	if (!m_data) {
 		TextureUtils::LoadTexture(m_filePath, m_params.GetFlipY(), [this](const LoadedTexture& data) {
 			m_width = data.m_width;
@@ -35,6 +34,6 @@ void TextureLoadJob::processAsset(map<String, AssetBase*>& assets) {
 	if (m_data != nullptr) {
 		StreamedTexture* st = GetAssetManager()->Get<StreamedTexture>(m_id);
 		st->FinishStreaming(new Texture(m_width, m_height, m_data, m_params));
-		LOG("[~yAssets~x] asset ~1%s~x of type ~1%s~x processed", m_id.c_str(), typeid(*assets[m_id]).name());
+		//LOG("[~yAssets~x] asset ~1%s~x of type ~1%s~x processed", m_id.c_str(), typeid(*assets[m_id]).name());
 	}
 }

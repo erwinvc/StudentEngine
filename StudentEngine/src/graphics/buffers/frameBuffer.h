@@ -138,7 +138,7 @@ public:
 	}
 
 	void OnResize(uint width, uint height) {
-		if (m_width == width && m_height == height)return;
+		if (m_width == width && m_height == height) return;
 		m_width = width;
 		m_height = height;
 		for (FrameBuffer* fbo : m_frameBuffers) fbo->Resize(m_width, m_height);

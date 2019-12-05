@@ -292,6 +292,7 @@ void editorWindow::AddItem() {
 }
 
 void editorWindow::CreateViewport() {
+	//if (GetStateManager()->GetState() == States::LOADING) return;
 	ImGuiViewport* viewport = ImGui::GetWindowViewport();
 	ImGuiContext& g = *GImGui;
 
@@ -300,10 +301,7 @@ void editorWindow::CreateViewport() {
 	actualWindowPosition.x -= m_mainWindowPos.x;
 	actualWindowPosition.y -= m_mainWindowPos.y;
 
-	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
+	m_viewport = Vector4(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
 	
-	if (viewport->Size.x > 0 && viewport->Size.y > 0)
-		GetFrameBufferManager()->OnResize((uint)actualWindowSize.x, (uint)actualWindowSize.y);
-
-	GetApp()->GetPipeline()->m_camera->SetViewport(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
+	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }

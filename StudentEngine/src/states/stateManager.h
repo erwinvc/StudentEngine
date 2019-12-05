@@ -23,14 +23,14 @@ private:
 	BaseState* RegisterState() {
 		for (BaseState* state : m_states) {
 			if (typeid(state) == typeid(T)) {
-				LOG_ERROR("[~mGameState~x] already registered ~1%s~x", typeid(*state).name());
+				LOG_ERROR("[~mGameState~x] already registered ~1%s~x", state->GetName().c_str());
 				return (T*)state;
 			}
 		}
 		T* instance = new T();
 
 		m_states.push_back(instance);
-		LOG("[~mGameState~x] registered ~1%s ~xstate", typeid(*instance).name());
+		LOG("[~mGameState~x] registered ~1%s ~xstate", instance->GetName().c_str());
 		return (T*)instance;
 	}
 
@@ -46,6 +46,8 @@ public:
 		m_state->EnterState();
 	}
 
+	vector<BaseState*>& GetStates() { return m_states; }
+
 	void Update(const TimeStep& time) {
 		m_state->Update(time);
 	}
@@ -53,7 +55,10 @@ public:
 	void Draw(RenderingPipeline* pipeline) {
 		m_state->Draw(pipeline);
 	}
-	
+
+	void PostDraw(RenderingPipeline* pipeline) {
+		m_state->PostDraw(pipeline);
+	}
 	void OnImGui() {
 		m_state->OnImGui();
 	}

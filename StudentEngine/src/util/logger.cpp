@@ -149,10 +149,8 @@ void Logger::HandleQueue() {
 /*Initialize the non-blocking logger*/
 void Logger::Initialize() {
 	if (m_allocated) return;
-
 	AllocConsole();
 	SetConsoleTitleA("StudentEngine");
-
 	m_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	m_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
 	GetConsoleScreenBufferInfo(m_outputHandle, &m_screenBuffer);

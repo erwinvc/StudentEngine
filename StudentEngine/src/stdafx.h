@@ -78,6 +78,8 @@ using namespace std;
 #include "util/timer.h"
 #include "util/glError.h"
 
+#include "util/tween/tween.h"
+
 #include "assets/assetBase.h"
 #include "assets/icon.h"
 
@@ -115,6 +117,7 @@ using namespace std;
 #include "util/math/groundRaycast.h"
 
 #include "assets/loadjobs/assetLoadJob.h"
+#include "assets/loadjobs/stateLoadJob.h"
 #include "assets/loadjobs/textureLoadJob.h"
 #include "assets/loadjobs/customLoadJob.h"
 

@@ -1,9 +1,5 @@
 #include "stdafx.h"
 
-PlayState::PlayState() {
-	editorGameObjects = vector<GameObject>();
-}
-
 void PlayState::Initialize()
 {
 	
@@ -14,6 +10,11 @@ void PlayState::Update(const TimeStep& time) {
 }
 void PlayState::Draw(RenderingPipeline* pipeline) {
 
+}
+
+void PlayState::PostDraw(RenderingPipeline* pipeline)
+{
+	
 }
 
 void PlayState::EnterState() {

@@ -7,7 +7,7 @@ protected:
 	friend Singleton;
 private:
 	bool m_initialized;
-	int m_activeJobs;
+	static int m_activeJobs;
 	map<String, AssetBase*> m_assets;
 	Texture* m_nullTexture;
 	AssetRef<Thread> m_loadingThread;
@@ -15,20 +15,20 @@ private:
 	AsyncQueue<AssetLoadJob*> m_loadAssetQueue;
 
 	// Excecute loading jobs on seperate thread.
-	void ExecuteLoadJobs() {
-		if (m_loadAssetQueue.Size() != 0) {
-			AssetLoadJob* currentLoadJob;
-
-			if (m_loadAssetQueue.TryToGet(currentLoadJob)) {
-				if (currentLoadJob->loadAsset()) {
-					AddToProcessQueue(currentLoadJob);
-				} else {
-					delete currentLoadJob;
-					m_activeJobs--;
-				}
-			}
-		}
-	}
+	//void ExecuteLoadJobs() {
+	//	if (m_loadAssetQueue.Size() != 0) {
+	//		AssetLoadJob* currentLoadJob;
+	//
+	//		if (m_loadAssetQueue.TryToGet(currentLoadJob)) {
+	//			if (currentLoadJob->loadAsset()) {
+	//				AddToProcessQueue(currentLoadJob);
+	//			} else {
+	//				delete currentLoadJob;
+	//				m_activeJobs--;
+	//			}
+	//		}
+	//	}
+	//}
 
 	template <class T>
 	void AddToProcessQueue(T* assetLoadJob) {
@@ -38,7 +38,7 @@ private:
 public:
 	void Initialize() {
 		if (m_initialized) return;
-		m_loadingThread = GetThreadManager()->RegisterThread("AssetManager LoadJobs", []() {GetInstance()->ExecuteLoadJobs(); });
+		//m_loadingThread = GetThreadManager()->RegisterThread("AssetManager LoadJobs", []() {GetInstance()->ExecuteLoadJobs(); });
 		m_nullTexture = new Texture(1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
 		m_initialized = true;
 		m_activeJobs = 0;
@@ -58,7 +58,15 @@ public:
 
 	template <class T>
 	void AddToLoadQueue(T* assetLoadJob) {
-		m_loadAssetQueue.Add(assetLoadJob);
+		GetThreadPool()->DoJob([=] {
+			if (assetLoadJob->loadAsset()) {
+				AddToProcessQueue(assetLoadJob);
+			} else {
+				delete assetLoadJob;
+				m_activeJobs--;
+			}
+		});
+		//m_loadAssetQueue.Add(assetLoadJob);
 		m_activeJobs++;
 	}
 
