@@ -19,7 +19,7 @@ void EditorManager::Initialize() {
 	//	.SetSize(Vector2(500, 200))
 	//	.SetPosition(Vector2(GetApp()->GetPipeline()->m_camera->GetViewport().z / 2, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2));
 
-	AddGameObject(new GameObject("Object 2"))
+	AddGameObject(new GameObject("Object 1"))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))
 		.SetTexture(g_logo);

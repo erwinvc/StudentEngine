@@ -111,6 +111,63 @@ namespace UndoTypes {
 			gameObject->m_sprite.m_color = m_redoColor;
 		}
 	};
+
+
+	class UndoParent : public UndoType {
+	private:
+		GameObject* m_parent;
+		GameObject* m_redoParent;
+	public:
+		void Register(GameObject* gameObject) override {
+			m_parent = gameObject->GetParent();
+		}
+		UndoType* CheckChanged(GameObject* gameObject) override {
+			UndoParent* toReturn = nullptr;
+			if (gameObject->GetParent() != m_parent) {
+				toReturn = new UndoParent();
+				toReturn->m_parent = m_parent;
+			}
+			return toReturn;
+		}
+		void Undo(GameObject* gameObject) override {
+			m_redoParent = gameObject->GetParent();
+			gameObject->SetParent(m_parent);
+		}
+
+		void Redo(GameObject* gameObject) override {
+			gameObject->SetParent(m_redoParent);
+		}
+	};
+
+	class UndoChild : public UndoType {
+	private:
+		vector<GameObject*> m_children;
+		int m_childrenCount;
+		vector<GameObject*> m_redoChildren;
+	public:
+		void Register(GameObject* gameObject) override {
+			m_children = gameObject->GetChildren();
+			m_childrenCount = m_children.size();
+		}
+		UndoType* CheckChanged(GameObject* gameObject) override {
+			UndoChild* toReturn = nullptr;
+			bool hasChanged = gameObject->GetChildren().size() != m_children.size();
+			LOG("%i != %i", gameObject->GetChildren().size(), m_children.size());
+			if (gameObject->GetChildren().size() != m_children.size()) {
+				toReturn = new UndoChild();
+				toReturn->m_children = m_children;
+			}
+			return toReturn;
+		}
+		void Undo(GameObject* gameObject) override {
+			m_redoChildren = gameObject->GetChildren();
+			gameObject->SetChildren(m_children);
+		}
+
+		void Redo(GameObject* gameObject) override {
+			gameObject->SetChildren(m_redoChildren);
+		}
+	};
 };
 
 using namespace UndoTypes;
@@ -140,6 +197,8 @@ public:
 		m_types.push_back(new UndoSize());
 		m_types.push_back(new UndoTexture());
 		m_types.push_back(new UndoColor());
+		m_types.push_back(new UndoParent());
+		m_types.push_back(new UndoChild());
 		LOG("[~cUndo~x] Initialized Undo");
 	}
 	static void Cleanup() {

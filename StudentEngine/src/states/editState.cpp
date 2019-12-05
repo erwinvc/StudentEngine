@@ -2,6 +2,7 @@
 
 void EditState::Initialize() {
 	GetEditorManager()->Initialize();
+	GetEditorWindow()->Initialize();
 }
 
 void EditState::Update(const TimeStep& time) {
