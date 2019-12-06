@@ -6,6 +6,7 @@ private:
 	float m_time = 0;
 	bool inEditorMode = true;
 	bool settingNewParent = false;
+	bool draggingItem = false;
 	int childObjIndex = -1;
 
 	vector<GameObject*> objs;
@@ -25,15 +26,15 @@ private:
 	void CreateViewport();
 	void CreateSceneOverview(ImGuiWindowFlags flags);
 
-
 	void DisplaySceneChild(int index, bool hasChildren);
 	void OnItemSelect(GameObject* obj);
 	void OnItemDelete(int index);
 	void OnItemRename(int index);
+	void AddItem(Vector2 pos);
 	void ToggleSettingNewParent();
 	void SettingNewParent(int parent, int child);
-	void AddItem();
-	//void RenderGUI();
+	void GuiItemDrag();
+	void SetupEditorStyle(bool styleDark, float alpha);
 
 public:
 	editorWindow() {}

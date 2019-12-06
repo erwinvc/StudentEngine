@@ -152,7 +152,6 @@ namespace UndoTypes {
 		UndoType* CheckChanged(GameObject* gameObject) override {
 			UndoChild* toReturn = nullptr;
 			bool hasChanged = gameObject->GetChildren().size() != m_children.size();
-			LOG("%i != %i", gameObject->GetChildren().size(), m_children.size());
 			if (gameObject->GetChildren().size() != m_children.size()) {
 				toReturn = new UndoChild();
 				toReturn->m_children = m_children;

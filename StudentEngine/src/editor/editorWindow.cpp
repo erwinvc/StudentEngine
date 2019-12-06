@@ -4,10 +4,12 @@ void editorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
 	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
+
+	SetupEditorStyle(true, 0.5f);
 }
 
 void editorWindow::Update(const TimeStep& time) {
-
+	
 }
 
 void editorWindow::Draw() {
@@ -127,20 +129,37 @@ void editorWindow::CreateEditorWindows() {
 	// Hierarchy
 	CreateSceneOverview(window_flags2);
 
+	//Response to Dragging
+	if (ImGui::IsMouseReleased(0) && draggingItem) {
+		draggingItem = false;
+
+		Vector2 pos = GetMouse()->GetPosition();
+		bool inWindow = Math::Within(pos.x, m_viewport.x, m_viewport.x + m_viewport.z) && Math::Within(pos.y, m_viewport.y, m_viewport.y + m_viewport.w);
+
+		if (inWindow) {
+			Vector3 ray = GroundRaycast::GetMousePosition(GetApp()->GetPipeline()->m_camera);
+			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetApp()->GetPipeline()->m_camera, ray, 1.0f);
+
+			// #TODO: Add different responses to each draggable button!
+			AddItem(Vector2(rayPos.x, rayPos.y));
+			GetEditorManager()->GetHierarchy().m_selected = GetEditorManager()->GetHierarchy().m_gameObjects[GetEditorManager()->GetHierarchy().m_gameObjects.size() - 1];
+		}
+	}
+
 	// Drag 'n Drop
 	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
-
-	//ImGuiContext* context = ImGui::GetCurrentContext();
-	//context->FontBaseSize = 50;
-
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
 		if (ImGui::Button("Sprite", ImVec2(100, 100))) {}
+		GuiItemDrag();
 		ImGui::SameLine();
 		if (ImGui::Button("GameObject", ImVec2(100, 100))) {}
+		GuiItemDrag();
 		ImGui::SameLine();
 		if (ImGui::Button("Scripts...", ImVec2(100, 100))) {}
+		GuiItemDrag();
 		ImGui::SameLine();
 		if (ImGui::Button("Stuff", ImVec2(100, 100))) {}
+		GuiItemDrag();
 	}
 	ImGui::End();
 
@@ -157,10 +176,6 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 
 	// TODO: Actual object types
 	if (ImGui::TreeNode("Game Objects")) {
-		ImGui::SameLine(ImGui::GetContentRegionAvail().x - 25);
-		if (ImGui::Selectable("+"))
-			AddItem();
-
 		for (size_t i = 0; i < objs.size(); i++) {
 			//Since all objects remain in the objs/hierachy class, we skip over those that have parents to prevent duplicates
 			if (objs[i]->HasParent())
@@ -227,7 +242,6 @@ void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
 		ImGui::EndPopup();
 	}
 
-	//TODO: line 2628 in imgui_demo.cpp for debugging dragging
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
 	ImGui::Selectable("\uf557 \uf557");
 }
@@ -269,7 +283,10 @@ void editorWindow::SettingNewParent(int parent, int child) {
 	Undo::FinishRecording();
 }
 
-void editorWindow::AddItem() {
+void editorWindow::AddItem(Vector2 pos = NULL) {
+	if (pos == NULL) {
+		pos = Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2);
+	}
 	//objs.push_back(new GameObject("New GameObject"));
 
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
@@ -278,11 +295,23 @@ void editorWindow::AddItem() {
 	String name = Format("Object %i", GetEditorManager()->GetHierarchy().m_gameObjects.size()+1);
 	GetEditorManager()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
-		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))
+		.SetPosition(pos)
 		.SetTexture(logo);
 
-
 	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
+}
+
+void editorWindow::GuiItemDrag() {
+	if (ImGui::IsItemActive()) {
+		draggingItem = true;
+		ImGuiIO io = ImGui::GetIO();
+		// Draw a line between the button and the mouse cursor
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		draw_list->PushClipRectFullScreen();
+		draw_list->AddLine(io.MouseClickedPos[0], io.MousePos, ImGui::GetColorU32(ImGuiCol_Button), 4.0f);
+		//draw_list->AddText(ImVec2(io.MousePos.x, io.MousePos.y - 20), ImU32("#ffffff"), "Object");
+		draw_list->PopClipRect();
+	}
 }
 
 void editorWindow::CreateViewport() {
@@ -298,4 +327,97 @@ void editorWindow::CreateViewport() {
 	m_viewport = Vector4(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
 	
 	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
+}
+
+void editorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	// light style from Pacôme Danhiez (user itamago)
+	// https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
+	style.Alpha = 1.0f;
+	//style.FrameRounding = 1.0f;
+	style.Colors[ImGuiCol_Text]					= ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+	style.Colors[ImGuiCol_WindowBg]				= ImVec4(0.84f, 0.84f, 0.84f, 0.94f);
+	style.Colors[ImGuiCol_ChildWindowBg]		= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_PopupBg]				= ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
+	style.Colors[ImGuiCol_Border]				= ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+	style.Colors[ImGuiCol_BorderShadow]			= ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+	style.Colors[ImGuiCol_FrameBg]				= ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
+	style.Colors[ImGuiCol_FrameBgHovered]		= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_FrameBgActive]		= ImVec4(0.26f, 0.98f, 0.59f, 0.67f);
+	style.Colors[ImGuiCol_TitleBg]				= ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+	style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
+	style.Colors[ImGuiCol_TitleBgActive]		= ImVec4(0.82f, 0.82f, 0.82f, 1.00f);
+	style.Colors[ImGuiCol_MenuBarBg]			= ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarBg]			= ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+	style.Colors[ImGuiCol_ScrollbarGrab]		= ImVec4(0.69f, 0.69f, 0.69f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabHovered]	= ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive]	= ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+	/*style.Colors[ImGuiCol_ComboBg]			= ImVec4(0.86f, 0.86f, 0.86f, 0.99f);*/
+	style.Colors[ImGuiCol_CheckMark]			= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_CheckMark]			= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrab]			= ImVec4(0.24f, 0.88f, 0.52f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrabActive]		= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_Button]				= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_ButtonHovered]		= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ButtonActive]			= ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
+	style.Colors[ImGuiCol_Header]				= ImVec4(0.26f, 0.98f, 0.59f, 0.31f);
+	style.Colors[ImGuiCol_HeaderHovered]		= ImVec4(0.26f, 0.98f, 0.59f, 0.80f);
+	style.Colors[ImGuiCol_HeaderActive]			= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+
+	style.Colors[ImGuiCol_Column]				= ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+	style.Colors[ImGuiCol_ColumnHovered]		= ImVec4(0.26f, 0.95f, 0.59f, 0.78f);
+	style.Colors[ImGuiCol_ColumnActive]			= ImVec4(0.26f, 0.95f, 0.59f, 1.00f);
+
+	style.Colors[ImGuiCol_ResizeGrip]			= ImVec4(0.65f, 0.65f, 0.65f, 0.50f);
+	style.Colors[ImGuiCol_ResizeGripHovered]	= ImVec4(0.26f, 0.95f, 0.59f, 0.67f);
+	style.Colors[ImGuiCol_ResizeGripActive]		= ImVec4(0.26f, 0.95f, 0.59f, 0.95f);
+
+	style.Colors[ImGuiCol_PlotLines]			= ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+	style.Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogram]		= ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogramHovered]	= ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_TextSelectedBg]		= ImVec4(0.26f, 0.98f, 0.59f, 0.35f);
+	style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+
+	style.Colors[ImGuiCol_Tab]					= ImVec4(0.26f, 0.98f, 0.59f, 0.35f);
+	style.Colors[ImGuiCol_TabActive]			= ImVec4(0.26f, 0.98f, 0.59f, 0.50f);
+	style.Colors[ImGuiCol_TabHovered]			= ImVec4(0.26f, 0.98f, 0.59f, 0.60f);
+	style.Colors[ImGuiCol_TabUnfocused]			= ImVec4(0.26f, 0.98f, 0.59f, 0.25f);
+	style.Colors[ImGuiCol_TabUnfocusedActive]	= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+
+
+	style.WindowRounding = 5;
+	style.FrameRounding = 2;
+	style.TabRounding = 5;
+	style.ChildRounding = 5;
+	style.PopupRounding = 5;
+
+	if (bStyleDark) {
+		for (int i = 0; i <= ImGuiCol_COUNT; i++) {
+			ImVec4& col = style.Colors[i];
+			float H, S, V;
+			ImGui::ColorConvertRGBtoHSV(col.x, col.y, col.z, H, S, V);
+
+			if (S < 0.1f) {
+				V = 1.0f - V;
+			}
+			ImGui::ColorConvertHSVtoRGB(H, S, V, col.x, col.y, col.z);
+			if (col.w < 1.00f) {
+				col.w *= alpha;
+			}
+		}
+	}
+	else {
+		for (int i = 0; i <= ImGuiCol_COUNT; i++) {
+			ImVec4& col = style.Colors[i];
+			if (col.w < 1.00f) {
+				col.x *= alpha;
+				col.y *= alpha;
+				col.z *= alpha;
+				col.w *= alpha;
+			}
+		}
+	}
 }
