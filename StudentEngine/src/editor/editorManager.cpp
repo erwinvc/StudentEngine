@@ -19,12 +19,16 @@ void EditorManager::Initialize() {
 	//	.SetSize(Vector2(500, 200))
 	//	.SetPosition(Vector2(GetApp()->GetPipeline()->m_camera->GetViewport().z / 2, GetApp()->GetPipeline()->m_camera->GetViewport().w / 2));
 
-	AddGameObject(new GameObject("Object 2"))
+	AddGameObject(new GameObject("Object 1"))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))
 		.SetTexture(g_logo);
 
-
+	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("PlayerCat");
+	AddGameObject(new PlayerObject("Player Object", 5))
+		.SetSize(Vector2(64, 64))
+		.SetPosition(Vector2(500.0f, 500.0f))
+		.SetTexture(playerSprite);
 }
 
 static float offset = 0;

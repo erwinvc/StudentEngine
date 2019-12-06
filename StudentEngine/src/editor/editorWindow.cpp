@@ -63,9 +63,7 @@ void editorWindow::CreateDockingSpace() {
 
 	// Create docking space
 	ImGuiIO& io = ImGui::GetIO();
-	//io.FontGlobalScale = 1.5;
 	ImGuiID dockspace_id;
-	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
 		dockspace_id = ImGui::GetID("MyDockspace");
@@ -105,7 +103,6 @@ void editorWindow::CreateEditorWindows() {
 			inEditorMode = false;
 			GetStateManager()->SetState(States::PLAY);
 		}
-		ImGui::Text("%s Search", ICON_FA_SMILE);
 		ImGui::EndMainMenuBar();
 	}
 
@@ -127,9 +124,7 @@ void editorWindow::CreateEditorWindows() {
 	}
 	ImGui::End();
 
-	//ImGui::End();
-	//
-		// Hierarchy
+	// Hierarchy
 	CreateSceneOverview(window_flags2);
 
 	// Drag 'n Drop
@@ -167,12 +162,9 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 			AddItem();
 
 		for (size_t i = 0; i < objs.size(); i++) {
-			//ImGui::Selectable("\uf557" + objs[i].m_name.c_str());
-			//String title = (ICON_FA_CUBE + objs[i]->m_name);
-
 			//Since all objects remain in the objs/hierachy class, we skip over those that have parents to prevent duplicates
-			/*if (objs[i]->HasParent())
-				continue;*/
+			if (objs[i]->HasParent())
+				continue;
 
 			DisplaySceneChild(i, ((int)objs[i]->GetChildren().size() > 0));
 		}
@@ -183,15 +175,11 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 }
 
 void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
-	String title = (ICON_FA_CAMERA + String(" ") + objs[index]->m_name);
+	String title = Format("%s %s", ICON_FA_CAMERA, objs[index]->m_name.c_str());
 	if (hasChildren) {
 		for (size_t i = 0; i < objs[index]->GetChildren().size(); i++) {
-			//title = ("\uf557 " + objs[index]->m_children[i]->m_name);
 			if (ImGui::TreeNode(title.c_str())) {
-
 				for (size_t child = 0; child < objs[index]->GetChildren().size(); child++) {
-					if (objs[index]->HasParent())
-						continue;
 					// A convoluted way of finding the index of the child in the hierachy (and not in the child-list of the current object)
 					vector<GameObject*>::iterator childIndexInHierarchy = find(objs.begin(), objs.end(), objs[index]->GetChildren()[child]);
 					int childIndex = distance(objs.begin(), childIndexInHierarchy);
@@ -203,6 +191,7 @@ void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
 			}
 		}
 	} else {
+		//Bool that controls which object in the hierachy gets highlighted. Since there's only one selected object in the hierarchy class, that's straightforward to do
 		bool selected = (GetEditorManager()->GetHierarchy().m_selected == objs[index]);
 		if (ImGui::Selectable(title.c_str(), selected))
 			OnItemSelect(objs[index]);
@@ -211,19 +200,23 @@ void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
 	//Right Click 
 	if (ImGui::BeginPopupContextItem(nullptr, 1)) {
 		if (settingNewParent) {
-			if (ImGui::Selectable("Confirm Parent")) {
+			// We check whether the selected obj is the to-be child && if they already are a child of that GameObject && if they're going to eachother's parent
+			// If all of these are false, then we'll have a normal, functioning hierachy
+			bool canSetParent = (index != childObjIndex && !objs[index]->ContainsChild(objs[childObjIndex]) && !(objs[index]->GetParent() == objs[childObjIndex]));
+			if (canSetParent && ImGui::Selectable("Confirm Parent")) {
 				SettingNewParent(index, childObjIndex);
 			}
 			if (ImGui::Selectable("Cancel Setting Parent")) {
 				ToggleSettingNewParent();
 			}
 		} else {
-			if (ImGui::Selectable("Delete")) {
-				OnItemDelete(index);
-			}
 			if (ImGui::Selectable("Set parent")) {
+				//Using a class variable so we can use it when the user confirms the parent (by clicking on the parent, so we need to remember the child)
 				childObjIndex = index;
 				ToggleSettingNewParent();
+			}
+			if (ImGui::Selectable("Delete")) {
+				//OnItemDelete(index);
 			}
 		}
 		/*if (ImGui::Selectable("Rename")) {
@@ -240,7 +233,7 @@ void editorWindow::DisplaySceneChild(int index, bool hasChildren) {
 }
 
 void editorWindow::OnItemSelect(GameObject* obj) {
-	LOG("%s", obj->m_name.c_str());
+	//LOG("%s", obj->m_name.c_str());
 	GetEditorManager()->GetHierarchy().m_selected = obj;
 }
 
@@ -257,10 +250,23 @@ void editorWindow::ToggleSettingNewParent() {
 }
 
 void editorWindow::SettingNewParent(int parent, int child) {
+	if (objs[child]->HasParent()) {
+		Undo::Record(objs[child]->GetParent());
+
+		objs[child]->GetParent()->RemoveChild(objs[child]);
+		objs[child]->SetParent(NULL);
+	}
+
+	Undo::Record(objs[child]);
+	objs[child]->SetParent(objs[parent]);
+
+	Undo::FinishRecording();
+
+	Undo::Record(objs[parent]);
 	objs[parent]->AddChild(objs[child]);
 	ToggleSettingNewParent();
 
-	//LOG("%i", objs[parent]->m_children.size());
+	Undo::FinishRecording();
 }
 
 void editorWindow::AddItem() {
@@ -269,7 +275,7 @@ void editorWindow::AddItem() {
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
 	StreamedTexture* logo;
 	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
-	String name = "Object" + (GetEditorManager()->GetHierarchy().m_gameObjects.size());
+	String name = Format("Object %i", GetEditorManager()->GetHierarchy().m_gameObjects.size()+1);
 	GetEditorManager()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))

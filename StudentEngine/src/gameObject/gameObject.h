@@ -2,7 +2,7 @@
 
 class GameObject {
 private:
-	GameObject* m_parent;
+	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
 
 public:
@@ -18,15 +18,13 @@ public:
 		m_children.push_back(gameObject);
 	}
 
-	vector<GameObject*> GetChildren() { return m_children; }
-
 	void SetParent(GameObject* gameObject) {
 		m_parent = gameObject;
 	}
 
-	bool HasParent() { return m_parent != NULL; }
+	virtual void Update(const TimeStep& time) {
 
-	GameObject* GetParent() { return m_parent; }
+	}
 
 	void Draw(RenderingPipeline* pipeline) {
 		pipeline->Rect(m_transform.m_position.x, m_transform.m_position.y, m_transform.m_size.x, m_transform.m_size.y, m_transform.m_rotation, m_sprite.m_color, m_sprite.m_texture);
@@ -56,6 +54,35 @@ public:
 	GameObject& SetColor(Color color) {
 		m_sprite.m_color = color;
 		return *this;
+	}
+
+	void SetChildren(vector<GameObject*> children) {
+		m_children = children;
+	}
+
+	vector<GameObject*> GetChildren() { 
+		return m_children; 
+	}
+
+	bool HasParent() { 
+		return m_parent != NULL; 
+	}
+
+	GameObject* GetParent() { 
+		return m_parent; 
+	}
+	
+	bool ContainsChild(GameObject* child) {
+		bool foundChild = false;
+		for (size_t i = 0; i < m_children.size(); i++) {
+			foundChild = m_children[i] == child;
+		}
+
+		return foundChild;
+	}
+
+	void RemoveChild(GameObject* child) {
+		m_children.erase(remove(m_children.begin(), m_children.end(), child), m_children.end());
 	}
 
 	#pragma endregion

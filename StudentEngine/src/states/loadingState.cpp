@@ -26,6 +26,7 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/squareGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerCat", "res/cat.png"));
 
 	for (auto& state : GetStateManager()->GetStates()) {
 		if (state != this) {
