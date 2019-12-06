@@ -81,10 +81,9 @@ public:
 				const char* line_start = buf + m_lineOffsets[line_no];
 				const char* line_end = (line_no + 1 < m_lineOffsets.size()) ? (buf + m_lineOffsets[line_no + 1] - 1) : buf_end;
 				if (m_filter.PassFilter(line_start + 1, line_end)) {
-
-					ImGui::PushStyleColor(ImGuiCol_Text, CharToColor(*line_start));
+					//ImGui::PushStyleColor(ImGuiCol_Text, CharToColor(*line_start));
 					ImGui::TextUnformatted(line_start + 1, line_end);
-					ImGui::PopStyleColor();
+					//ImGui::PopStyleColor();
 				}
 			}
 		} else {
@@ -94,9 +93,9 @@ public:
 				for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++) {
 					const char* line_start = buf + m_lineOffsets[line_no];
 					const char* line_end = (line_no + 1 < m_lineOffsets.size()) ? (buf + m_lineOffsets[line_no + 1] - 1) : buf_end;
-					ImGui::PushStyleColor(ImGuiCol_Text, CharToColor(*line_start));
+					//ImGui::PushStyleColor(ImGuiCol_Text, CharToColor(*line_start));
 					ImGui::TextUnformatted(line_start + 1, line_end);
-					ImGui::PopStyleColor();
+					//ImGui::PopStyleColor();
 				}
 			}
 			clipper.End();

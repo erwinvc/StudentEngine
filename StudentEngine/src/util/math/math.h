@@ -97,7 +97,7 @@ namespace Math {
 	}
 
 	template<typename T>
-	inline void Clamp(T *val, T min, T max) {
+	inline void Clamp(T* val, T min, T max) {
 		*val = *val < min ? min : *val > max ? max : *val;
 	}
 
@@ -160,6 +160,26 @@ namespace Math {
 		return ::round(val);
 	}
 
+	inline float RoundToNumber(float val, float number) {
+		float divided = val / number;
+		float rounded = Round(divided);
+		return rounded * number;
+	}
+
+	inline Vector2 RoundToNumber(Vector2 val, Vector2 number) {
+		Vector2 divided = val / number;
+		float roundedX = Round(divided.x);
+		float roundedY = Round(divided.y);
+		return Vector2(roundedX, roundedY) * number;
+	}
+
+	inline Vector3 RoundToNumber(Vector3 val, Vector3 number) {
+		Vector3 divided = val / number;
+		float roundedX = Round(divided.x);
+		float roundedY = Round(divided.y);
+		float roundedZ = Round(divided.z);
+		return Vector3(roundedX, roundedY, roundedZ) * number;
+	}
 	inline float Floor(float val) {
 		return ::floor(val);
 	}

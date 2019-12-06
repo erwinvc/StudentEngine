@@ -4,7 +4,7 @@ class Camera {
 protected:
 	Matrix4 m_projectionMatrix;
 	Matrix4 m_viewMatrix;
-	Vector4 m_viewPort;
+	Vector4 m_viewPort = Vector4(0, 0, 0, 0);
 	float m_zoom = 1.0f;
 	bool zoomEnabled = false;
 
@@ -23,6 +23,7 @@ public:
 			float zoom = GetMouse()->GetScroll().y / 10;
 			float oldZoom = m_zoom;
 			m_zoom = Math::Clamp(m_zoom - zoom, 0.1f, 100.0f);
+			m_zoom = Math::RoundToNumber(m_zoom, 0.1f);
 			float difference = oldZoom - m_zoom;
 			if (difference != 0) {
 				m_position += Vector2(m_viewPort.z * difference, m_viewPort.w * difference) / 2;
@@ -35,7 +36,7 @@ public:
 		m_projectionMatrix = Matrix4::Orthographic(0, m_viewPort.z * m_zoom, 0, m_viewPort.w * m_zoom, -1.0f, 1.0f);
 	}
 
-	void SetViewport(uint x, uint y, uint width, uint height) {
+	void SetViewport(float x, float y, float width, float height) {
 		if (m_viewPort.x == x && m_viewPort.y == y && m_viewPort.z == width && m_viewPort.w == height) return;
 		m_viewPort.x = (float)x;
 		m_viewPort.y = (float)y;

@@ -1,13 +1,38 @@
 #pragma once
 
 class EditorGrid {
+private:
+	static int g_colorValue;
+	static Color g_color;
 public:
+	static float GetGridSizeFromZoomLevel(float zoom) {
+		if (zoom < 1.0f) return 50;
+		else if (zoom < 5.0f) return 100;
+		else if (zoom < 10.0f) return 200;
+		else if (zoom < 25.0f) return 400;
+		else if (zoom < 50.0f) return 800;
+		else if (zoom < 75.0f) return 1600;
+		else if (zoom < 100.0f) return 3200;
+		return 10000;
+	}
+	static void Update(const TimeStep& time) {
+		g_color = Color::Mix(Color(1.0f, 1.0f, 1.0f, 0.2f), Color(0.5f, 0.5f, 0.5f, 0.2f), Math::Map(Math::Sin(time.TotalTime() / 1000), -1.0f, 1.0f, 0.0f, 1.0f));
+	}
 	static void Draw(RenderingPipeline* pipeline) {
-		//Vector4& vp = pipeline->m_camera->GetRelativeViewport();
-		//for (int x = pipeline->m_camera->m_position.x; x < pipeline->m_camera->m_position.x + vp.z; x += 100) {
-		//	pipeline->Line(x, pipeline->m_camera->m_position.y, x, pipeline->m_camera->m_position.y + vp.w, Color::White(), 2);
-		//}
-		//for (int y = 0; y < vp.w; y += 20) {
-		//}
+		float gridSize = GetGridSizeFromZoomLevel(pipeline->m_camera->GetZoom()) * 2;
+		float halfGridSize = gridSize / 2.0f;
+		static float lineSize = 0.5f;
+		Vector4& vp = pipeline->m_camera->GetRelativeViewport();
+		Vector3& pos = pipeline->m_camera->m_position;
+
+		float x = Math::RoundToNumber(pos.x + halfGridSize - (lineSize / 2), gridSize);
+		for (; x < pos.x + vp.z; x += gridSize) {
+			pipeline->Line(x, pos.y, x, pos.y + vp.w, g_color, lineSize);
+		}
+
+		float y = Math::RoundToNumber(pos.y + halfGridSize - (lineSize / 2), gridSize);
+		for (; y < pos.y + vp.z; y += gridSize) {
+			pipeline->Line(pos.x, y, pos.x + vp.z, y, g_color, lineSize);
+		}
 	}
 };

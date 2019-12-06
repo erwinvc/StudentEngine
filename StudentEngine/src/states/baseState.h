@@ -14,6 +14,6 @@ public:
 	virtual void Update(const TimeStep& time) = 0;
 	virtual void Draw(RenderingPipeline* pipeline) = 0;
 	virtual void PostDraw(RenderingPipeline* pipeline) = 0;
+	virtual void PostImGuiDraw(RenderingPipeline* pipeline) = 0;
 	virtual void OnImGui() = 0;
-	const String& GetState();
 };

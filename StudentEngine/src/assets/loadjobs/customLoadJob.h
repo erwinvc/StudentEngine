@@ -8,7 +8,7 @@ public:
 	CustomLoadJob(const String& name, function<void(void)> aSync, function<void(void)> sync = Utils::nullfunc) : AssetLoadJob(name), m_aSync(aSync), m_sync(sync) {}
 	bool loadAsset(bool addToProcessQueue = true) override {
 		m_aSync();
-		return false;
+		return true;
 	}
 
 	void processAsset(map<String, AssetBase*>& assets) override {

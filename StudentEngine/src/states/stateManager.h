@@ -59,6 +59,9 @@ public:
 	void PostDraw(RenderingPipeline* pipeline) {
 		m_state->PostDraw(pipeline);
 	}
+	void PostImGuiDraw(RenderingPipeline* pipeline) {
+		m_state->PostImGuiDraw(pipeline);
+	}
 	void OnImGui() {
 		m_state->OnImGui();
 	}

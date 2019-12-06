@@ -1,16 +1,12 @@
 #include "stdafx.h"
-#include "util/meshGenerator.h"
 
-Mesh* m_quad;
 Shader* m_basicShader;
 int m_animationFrame = 0;
 void LoadingState::Initialize() {
-	m_quad = MeshGenerator::Quad();
-	
 	GetShaderManager()->Create("Sprite", "res/shaders/sprite");
 	m_basicShader = GetShaderManager()->Create("Basic", "res/shaders/basic");
 	m_basicShader->Set("_Texture", 0);
-	
+
 	m_loadingTexture[0] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading1", "res/Logo1.png"));
 	m_loadingTexture[1] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading2", "res/Logo2.png"));
 	m_loadingTexture[2] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading3", "res/Logo3.png"));
@@ -22,8 +18,8 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Mouse", [] {GetMouse()->Initialize(GetApp()->GetWindow()); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Asset Watcher", [] {GetAssetWatcher()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Undo", [] {Undo::Initialize(); }));
-	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager",  [] {GetImGuiManager()->Initialize(GetApp()->GetWindow()); }));
-	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", Utils::nullfunc, [] {GetEditorWindow()->Initialize(); }));
+	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
+	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));
 
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));
@@ -51,20 +47,23 @@ void LoadingState::Draw(RenderingPipeline* pipeline) {
 }
 
 void LoadingState::PostDraw(RenderingPipeline* pipeline) {
+	if (m_fade) States::EDIT->PostDraw(pipeline);
+}
+
+void LoadingState::PostImGuiDraw(RenderingPipeline* pipeline) {
 	pipeline->m_camera->SetViewport(0, 0, GetApp()->GetWidth<float>(), GetApp()->GetHeight<float>());
 	GetFrameBufferManager()->OnResize(GetApp()->GetWidth<float>(), GetApp()->GetHeight<float>());
 
 	pipeline->Begin();
 	pipeline->Rect(pipeline->Width() / 2, pipeline->Height() / 2, pipeline->Width(), pipeline->Height(), 0, Color::Black());
 	pipeline->Rect(pipeline->Width() - 100, 100, 100, 100, 0, Color::White(), m_loadingTexture[m_animationFrame]);
-	pipeline->End();
+	pipeline->EndSpriteRenderer();
+	pipeline->Finish();
 
-	GLUtils::EnableBlending();
 	m_basicShader->Bind();
 	m_basicShader->Set("_Transparency", m_transparency);
 	pipeline->GetFinalTexture()->Bind(0);
-	m_quad->Draw();
-	GLUtils::DisableBlending();
+	pipeline->GetQuad()->Draw();
 }
 
 void LoadingState::EnterState() {

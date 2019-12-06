@@ -6,6 +6,7 @@ private:
 	bool m_wireframe = false;
 	bool m_FXAA = true;
 
+	Mesh* m_quad;
 	SpriteRenderer* m_spriteRenderer;
 	FrameBuffer* m_finalFBO;
 	Texture* m_finalTexture;
@@ -20,12 +21,16 @@ public:
 	void Initialize();
 	void Update(const TimeStep time);
 	void Begin();
-	void End();
+	void EndSpriteRenderer();
+	void Finish();
 	void OnImGui();
 
 	float Width() { return m_camera->GetRelativeViewport().z; }
 	float Height() { return m_camera->GetRelativeViewport().w; }
+
+	bool Initialized() { return m_initialized; }
 	
+	Mesh* GetQuad() { return m_quad; }
 	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
 		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture);
 	}

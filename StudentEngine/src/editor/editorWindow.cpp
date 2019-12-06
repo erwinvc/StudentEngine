@@ -4,18 +4,6 @@ void editorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
 	objs = GetEditorManager()->GetHierarchy().m_gameObjects;
-
-	ImGuiIO& io = ImGui::GetIO();
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-	
-	// Get the icons from both FA regular & solid (each having their own range of different icons)
-	// And add them to the already existing font
-	ImFontConfig config;
-	config.MergeMode = true;
-	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
-	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
-	io.Fonts->Build();
 }
 
 void editorWindow::Update(const TimeStep& time) {
@@ -186,7 +174,7 @@ void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 			/*if (objs[i]->HasParent())
 				continue;*/
 
-			DisplaySceneChild(i, (objs[i]->GetChildren().size() > 0));
+			DisplaySceneChild(i, ((int)objs[i]->GetChildren().size() > 0));
 		}
 
 		ImGui::TreePop();

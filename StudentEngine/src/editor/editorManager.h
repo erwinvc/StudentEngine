@@ -20,6 +20,7 @@ public:
 	void Initialize();
 	void Update(const TimeStep& time);
 	void Draw(RenderingPipeline* pipeline);
+	void PostDraw(RenderingPipeline* pipeline);
 
 	inline Hierarchy& GetHierarchy() { return m_hierarchy; }
 };

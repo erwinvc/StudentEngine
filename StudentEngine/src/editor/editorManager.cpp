@@ -32,6 +32,7 @@ float a = 0;
 static float m_selectedOutlineValue = 0;
 
 void EditorManager::Update(const TimeStep& time) {
+	EditorGrid::Update(time);
 	m_selectedOutlineValue += time.GetSeconds();
 	Vector3 ray = GroundRaycast::GetMousePosition(GetApp()->GetPipeline()->m_camera);
 	m_mouseRayPosition = GroundRaycast::GetGroundPosition(GetApp()->GetPipeline()->m_camera, ray, 1.0f);
@@ -58,7 +59,7 @@ void EditorManager::EditorControls(const TimeStep& time) {
 		GetApp()->GetPipeline()->m_camera->m_position += delta * GetApp()->GetPipeline()->m_camera->GetZoom();
 		return;
 	}
-	
+
 	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		for (int i = (int)m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
@@ -74,8 +75,8 @@ void EditorManager::EditorControls(const TimeStep& time) {
 
 
 void EditorManager::Draw(RenderingPipeline* pipeline) {
-	EditorGrid::Draw(pipeline);
 	m_hierarchy.Draw(pipeline);
+	EditorGrid::Draw(pipeline);
 	//int count = 0;
 	//float scale = 2.5f;
 	//Vector4 vp = GetApp()->GetPipeline()->m_camera->GetViewport();
@@ -87,4 +88,7 @@ void EditorManager::Draw(RenderingPipeline* pipeline) {
 	//}
 	//static int TIMER = 0;
 	//Utils::DoTimedFunction(&TIMER, 250, [count] {LOG("%d", count); });
+}
+
+void EditorManager::PostDraw(RenderingPipeline* pipeline) {
 }

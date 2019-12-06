@@ -117,6 +117,7 @@ using namespace std;
 #include "util/math/groundRaycast.h"
 
 #include "assets/loadjobs/assetLoadJob.h"
+#include "assets/loadjobs/shaderLoadJob.h"
 #include "assets/loadjobs/stateLoadJob.h"
 #include "assets/loadjobs/textureLoadJob.h"
 #include "assets/loadjobs/customLoadJob.h"

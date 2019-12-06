@@ -17,7 +17,7 @@ void App::OnWindowClose() {
 
 void App::Initialize() {
 	glfwSetErrorCallback(ErrorCallback);
-	
+
 	if (!glfwInit()) LOG_ERROR("[GLFW] GLFW failed to initialize");
 
 	glfwDefaultWindowHints();
@@ -35,7 +35,7 @@ void App::Initialize() {
 	m_window->MakeContextCurrent();
 	m_window->ClearColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
 	m_window->SetVSync(true);
-	
+
 	if (glewInit() != GLEW_OK) LOG_ERROR("[GLEW] failed to initialize");
 
 	GetGLCallbackManager()->AddOnResizeCallback(this, &App::OnResize);
@@ -49,6 +49,7 @@ void App::Initialize() {
 
 	GetAssetManager()->Initialize();
 	GetStateManager()->Initialize();
+	GetImGuiManager()->Initialize(GetApp()->GetWindow());
 
 	m_pipeline = new RenderingPipeline();
 	m_pipeline->Initialize();
@@ -57,7 +58,7 @@ void App::Initialize() {
 	GetGLFiberManager()->AddFiber("Main", [] {GetApp()->Run(); });
 	GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
 	GetGLFiberManager()->AddFiber("Tween", [] {});
-	
+
 	m_window->Show();
 	m_initialized = true;
 
@@ -116,10 +117,14 @@ void App::Update(TimeStep time) {
 }
 
 void App::Draw() {
-	m_pipeline->m_camera->UpdateViewMatrix();
-	m_pipeline->Begin();
-	GetStateManager()->Draw(m_pipeline);
-	m_pipeline->End();
+	if (m_pipeline->Initialized()) {
+		m_pipeline->m_camera->UpdateViewMatrix();
+		m_pipeline->Begin();
+		GetStateManager()->Draw(m_pipeline);
+		m_pipeline->EndSpriteRenderer();
+		GetStateManager()->PostDraw(m_pipeline);
+		m_pipeline->Finish();
+	}
 	GetImGuiManager()->Begin();
 
 	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
@@ -135,7 +140,7 @@ void App::Draw() {
 	GetStateManager()->OnImGui();
 	GetImGuiManager()->End();
 
-	GetStateManager()->PostDraw(m_pipeline);
+	GetStateManager()->PostImGuiDraw(m_pipeline);
 
 	if (resizeBuffer.x != -1) {
 		uint width = resizeBuffer.x;

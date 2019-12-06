@@ -1,8 +1,7 @@
 #include "stdafx.h"
 
-void PlayState::Initialize()
-{
-	
+void PlayState::Initialize() {
+
 }
 
 void PlayState::Update(const TimeStep& time) {
@@ -14,9 +13,12 @@ void PlayState::Draw(RenderingPipeline* pipeline) {
 	GetEditorManager()->GetHierarchy().Draw(pipeline);
 }
 
-void PlayState::PostDraw(RenderingPipeline* pipeline)
-{
-	
+void PlayState::PostDraw(RenderingPipeline* pipeline) {
+
+}
+
+void PlayState::PostImGuiDraw(RenderingPipeline* pipeline) {
+
 }
 
 void PlayState::EnterState() {

@@ -14,6 +14,7 @@ Vector2 EditorGameObject::g_draggingPositionBackup;
 Vector2 EditorGameObject::g_movingOffset;
 
 void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject) {
+	float zoom = pipeline->m_camera->GetZoom();
 	Transform& transform = gameObject->m_transform;
 	static float lineSize = 0.5f;
 	static float halfLineSize = lineSize / 2;
@@ -28,12 +29,13 @@ void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject)
 	pipeline->Rect(transform.XMin(), transform.YMin(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 2 ? Color(10.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
 	pipeline->Rect(transform.XMax(), transform.YMin(), g_buttonSize, g_buttonSize, 0, g_selectedButton == 3 ? Color(10.0f, 0.85f, 0.0f) : Color::White(), EditorManager::g_buttonGizmo);
 
-	pipeline->Rect(transform.m_position.x, transform.m_position.y + 40, 16, 80, 0, g_selectedArrow == 0 ? Color(10.0f, 0.85f, 0.0f) : Color::Red(), EditorManager::g_arrowGizmo);
-	pipeline->Rect(transform.m_position.x + 40, transform.m_position.y, 16, 80, -Math::HALF_PI, g_selectedArrow == 1 ? Color(10.0f, 0.85f, 0.0f) : Color::Green(), EditorManager::g_arrowGizmo);
-	pipeline->Rect(transform.m_position.x + 20, transform.m_position.y + 20, 32, 32, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), EditorManager::g_squareGizmo);
+	pipeline->Rect(transform.m_position.x, transform.m_position.y + 40 * zoom, 16 * zoom, 80 * zoom, 0, g_selectedArrow == 0 ? Color(10.0f, 0.85f, 0.0f) : Color::Red(), EditorManager::g_arrowGizmo);
+	pipeline->Rect(transform.m_position.x + 40 * zoom, transform.m_position.y, 16 * zoom, 80 * zoom, -Math::HALF_PI, g_selectedArrow == 1 ? Color(10.0f, 0.85f, 0.0f) : Color::Green(), EditorManager::g_arrowGizmo);
+	pipeline->Rect(transform.m_position.x + 20 * zoom, transform.m_position.y + 20 * zoom, 32 * zoom, 32 * zoom, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), EditorManager::g_squareGizmo);
 }
 
 bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vector2 mousePosition) {
+	float zoom = GetApp()->GetPipeline()->m_camera->GetZoom();
 	Transform& transform = gameObject->m_transform;
 
 	g_outlineColorValue += time.GetSeconds() * 2.0f;
@@ -46,22 +48,29 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	}
 	if (g_moving) {
 		if (g_selectedArrow == 0) {
-			transform.m_position.y = mousePosition.y + g_movingOffset.y;
+			if (KeyDown(LCTRL)) transform.m_position.y = Math::RoundToNumber(mousePosition.y + g_movingOffset.y, 100.0f);
+			else transform.m_position.y = mousePosition.y + g_movingOffset.y;
 		}
 		if (g_selectedArrow == 1) {
-			transform.m_position.x = mousePosition.x + g_movingOffset.x;
+			if (KeyDown(LCTRL)) transform.m_position.x = Math::RoundToNumber(mousePosition.x + g_movingOffset.x, 100.0f);
+			else transform.m_position.x = mousePosition.x + g_movingOffset.x;
 		}
 		if (g_selectedArrow == 2) {
-			transform.m_position.y = mousePosition.y + g_movingOffset.y;
-			transform.m_position.x = mousePosition.x + g_movingOffset.x;
+			if (KeyDown(LCTRL)) {
+				transform.m_position.x = Math::RoundToNumber(mousePosition.x + g_movingOffset.x, 100.0f);
+				transform.m_position.y = Math::RoundToNumber(mousePosition.y + g_movingOffset.y, 100.0f);
+			} else {
+				transform.m_position.y = mousePosition.y + g_movingOffset.y;
+				transform.m_position.x = mousePosition.x + g_movingOffset.x;
+			}
 		}
 		return true;
 	}
 
 	g_selectedArrow = -1;
-	if (Math::Within(mousePosition.x, transform.m_position.x + 4, transform.m_position.x + 36) && Math::Within(mousePosition.y, transform.m_position.y + 4, transform.m_position.y + 36))g_selectedArrow = 2;
-	else if (Math::Within(mousePosition.x, transform.m_position.x - 8, transform.m_position.x + 8) && Math::Within(mousePosition.y, transform.m_position.y, transform.m_position.y + 80))g_selectedArrow = 0;
-	else if (Math::Within(mousePosition.x, transform.m_position.x, transform.m_position.x + 80) && Math::Within(mousePosition.y, transform.m_position.y - 8, transform.m_position.y + 8))g_selectedArrow = 1;
+	if (Math::Within(mousePosition.x, transform.m_position.x + 4 * zoom, transform.m_position.x + 36 * zoom) && Math::Within(mousePosition.y, transform.m_position.y + 4 * zoom, transform.m_position.y + 36 * zoom))g_selectedArrow = 2;
+	else if (Math::Within(mousePosition.x, transform.m_position.x - 8 * zoom, transform.m_position.x + 8 * zoom) && Math::Within(mousePosition.y, transform.m_position.y, transform.m_position.y + 80 * zoom))g_selectedArrow = 0;
+	else if (Math::Within(mousePosition.x, transform.m_position.x, transform.m_position.x + 80 * zoom) && Math::Within(mousePosition.y, transform.m_position.y - 8 * zoom, transform.m_position.y + 8 * zoom))g_selectedArrow = 1;
 
 	if (g_selectedArrow != -1 && ButtonJustDown(VK_MOUSE_LEFT)) {
 		g_movingOffset = transform.m_position - mousePosition;
@@ -82,7 +91,9 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 
 			if (g_selectedButton == 0 || g_selectedButton == 3) scaled.x *= -1;
 
-			transform.m_size = g_draggingSizeBackup + scaled;
+			if (KeyDown(LCTRL)) transform.m_size = g_draggingSizeBackup + Math::RoundToNumber(scaled, Vector2(50, 50));
+			else transform.m_size = g_draggingSizeBackup + scaled;
+
 			if (transform.m_size.x < g_minObjectSize) transform.m_size.x = g_minObjectSize;
 			if (transform.m_size.y < g_minObjectSize) transform.m_size.y = g_minObjectSize;
 
@@ -104,7 +115,12 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 					if (mouseMovedDistance.y > g_draggingSizeBackup.y - g_minObjectSize) mouseMovedDistance.y = g_draggingSizeBackup.y - g_minObjectSize;
 				} break;
 			}
-			transform.m_position = g_draggingPositionBackup + mouseMovedDistance / 2.0f;
+			if (KeyDown(LCTRL)) {
+				transform.m_position = g_draggingPositionBackup + Math::RoundToNumber(mouseMovedDistance, Vector2(50, 50)) / 2.0f;
+			} else {
+				transform.m_position = g_draggingPositionBackup + mouseMovedDistance / 2.0f;
+
+			}
 		} else {
 			Vector2 scaled = (g_selectedButton / 2 == 0 ? mousePosition - transform.m_position : transform.m_position - mousePosition) * 2;
 			if (g_selectedButton == 0 || g_selectedButton == 3) {
@@ -114,8 +130,14 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 				if (scaled.x < g_minObjectSize) scaled.x = g_minObjectSize;
 				if (scaled.y < g_minObjectSize) scaled.y = g_minObjectSize;
 			}
-			transform.m_size.x = Math::Abs(scaled.x);
-			transform.m_size.y = Math::Abs(scaled.y);
+
+			if (KeyDown(LCTRL)) {
+				transform.m_size.x = Math::RoundToNumber(Math::Abs(scaled.x), 100.0f);
+				transform.m_size.y = Math::RoundToNumber(Math::Abs(scaled.y), 100.0f);
+			} else {
+				transform.m_size.x = Math::Abs(scaled.x);
+				transform.m_size.y = Math::Abs(scaled.y);
+			}
 		}
 		return true;
 	}

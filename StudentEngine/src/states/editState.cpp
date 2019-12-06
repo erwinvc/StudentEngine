@@ -2,6 +2,7 @@
 
 void EditState::Initialize() {
 	GetEditorManager()->Initialize();
+	GetEditorWindow()->Initialize();
 }
 
 void EditState::Update(const TimeStep& time) {
@@ -16,8 +17,12 @@ void EditState::Draw(RenderingPipeline* pipeline) {
 }
 
 void EditState::PostDraw(RenderingPipeline* pipeline) {
-
+	GetEditorManager()->PostDraw(pipeline);
 }
+
+void EditState::PostImGuiDraw(RenderingPipeline* pipeline) {
+}
+
 
 void EditState::EnterState() {
 	GetApp()->GetPipeline()->m_camera->SetZoomEnabled(true);

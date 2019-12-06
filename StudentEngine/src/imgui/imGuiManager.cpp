@@ -19,8 +19,6 @@ void ImGuiManager::Initialize(Window* window) {
 	ImGui_ImplGlfw_InitForOpenGL(window->GetHandle(), false);
 	ImGui_ImplOpenGL3_Init("#version 410");
 
-	GetEditorWindow()->Initialize();
-
 	GetGLCallbackManager()->AddOnMouseButtonCallback([](int button, int action, int mods) {
 		ImGuiIO& io = ImGui::GetIO();
 		if (action == GLFW_PRESS) io.MouseDown[button] = true;
@@ -60,6 +58,16 @@ void ImGuiManager::Initialize(Window* window) {
 			io.AddInputCharacter((unsigned short)c);
 	});
 
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+
+	// Get the icons from both FA regular & solid (each having their own range of different icons)
+	// And add them to the already existing font
+	ImFontConfig config;
+	config.MergeMode = true;
+	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
+	io.Fonts->Build();
 }
 
 void ImGuiManager::Begin() {
