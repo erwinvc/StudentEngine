@@ -60,6 +60,10 @@ public:
 		m_children = children;
 	}
 
+	GameObject* GetChildAt(int index) {
+		return m_children[index];
+	}
+
 	vector<GameObject*> GetChildren() { 
 		return m_children; 
 	}
