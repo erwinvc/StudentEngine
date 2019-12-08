@@ -18,7 +18,7 @@ public:
 	Camera() {}
 	~Camera() {}
 
-	void Update(const TimeStep time) {
+	void UpdateZoom(const TimeStep& time) {
 		if (zoomEnabled) {
 			float zoom = GetMouse()->GetScroll().y / 10;
 			float oldZoom = m_zoom;
@@ -30,6 +30,9 @@ public:
 				UpdateProjectionMatrix();
 			}
 		}
+	}
+
+	void Update(const TimeStep time) {
 	}
 
 	void UpdateProjectionMatrix() {

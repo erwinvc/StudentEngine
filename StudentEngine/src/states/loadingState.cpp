@@ -12,15 +12,17 @@ void LoadingState::Initialize() {
 	m_loadingTexture[2] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading3", "res/Logo3.png"));
 	m_loadingTexture[3] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading4", "res/Logo4.png"));
 
-	GetAssetManager()->ForceLoadAsset<int>(new CustomLoadJob("Thread Pool", [] {GetThreadPool()->Initialize(2); }));
+	GetAssetManager()->ForceLoadAsset<int>(new CustomLoadJob("Thread Pool", [] {GetThreadPool()->Initialize(5); }));
 
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Keyboard", [] {GetKeyboard()->Initialize(GetApp()->GetWindow()); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Mouse", [] {GetMouse()->Initialize(GetApp()->GetWindow()); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Asset Watcher", [] {GetAssetWatcher()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Undo", [] {Undo::Initialize(); }));
+	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Asset Manager", [] {GetEditorAssetManager()->Initialize(); }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));
 
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("FolderIcon", "res/folderIcon.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/squareGizmo.png"));
@@ -28,6 +30,16 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerCat", "res/cat.png"));
 
+	for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
+		if (file.path().extension().string().compare(".png") == 0) {
+			Path path(file.path().string());
+			String fullPath = path.GetFullPath();
+			GetAssetManager()->AddToLoadQueue(new TextureLoadJob(fullPath, path));
+			AssetBase* asset = GetAssetManager()->Get<StreamedTexture>(fullPath);
+			GetEditorAssetManager()->AddAsset(path, asset);
+		}
+	}
+	
 	for (auto& state : GetStateManager()->GetStates()) {
 		if (state != this) {
 			GetAssetManager()->AddToLoadQueue(new StateLoadJob(state));
@@ -52,7 +64,7 @@ void LoadingState::PostDraw(RenderingPipeline* pipeline) {
 }
 
 void LoadingState::PostImGuiDraw(RenderingPipeline* pipeline) {
-	pipeline->m_camera->SetViewport(0, 0, GetApp()->GetWidth<float>(), GetApp()->GetHeight<float>());
+	GetCamera()->SetViewport(0, 0, GetApp()->GetWidth<float>(), GetApp()->GetHeight<float>());
 	GetFrameBufferManager()->OnResize(GetApp()->GetWidth<float>(), GetApp()->GetHeight<float>());
 
 	pipeline->Begin();

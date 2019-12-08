@@ -147,7 +147,7 @@ namespace UndoTypes {
 	public:
 		void Register(GameObject* gameObject) override {
 			m_children = gameObject->GetChildren();
-			m_childrenCount = m_children.size();
+			m_childrenCount = (int)m_children.size();
 		}
 		UndoType* CheckChanged(GameObject* gameObject) override {
 			UndoChild* toReturn = nullptr;
@@ -203,6 +203,7 @@ public:
 	static void Cleanup() {
 		for (auto& type : m_types) delete type;
 	}
+
 	static void Record(GameObject* gameObject) {
 		if (m_recording) {
 			LOG_WARN("[Undo] Already recording!");
@@ -218,6 +219,7 @@ public:
 	}
 
 	static void FinishRecording() {
+		if (!m_recording) return;
 		for (auto& type : m_types) {
 			UndoType* entry = type->CheckChanged(m_currentCollection->m_gameObject);
 			if (entry) m_currentCollection->m_entries.push_back(entry);
@@ -239,6 +241,12 @@ public:
 		}
 		g_newListIndex = m_list.Size();
 		g_currentListIndex = m_list.Size();
+		m_recording = false;
+	}
+
+	static void CancelRecording() {
+		if (!m_recording) return;
+		delete m_currentCollection;
 		m_recording = false;
 	}
 

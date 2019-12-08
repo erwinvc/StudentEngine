@@ -18,6 +18,8 @@ public:
 	StreamedTexture(Texture* texture, bool streamed = false);
 	~StreamedTexture();
 
+	Texture* GetTexture() { return m_texture; }
+	
 	operator Texture*() { return m_texture; }
 	operator Texture*() const { return m_texture; }
 };

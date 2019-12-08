@@ -43,9 +43,7 @@ void Texture::Unbind(uint slot) const {
 
 void Texture::Cleanup() {
 	glDeleteTextures(1, &m_textureID);
-	if (m_keepData) {
-		delete[] m_data;
-	}
+	if (m_keepData) delete[] m_data;
 }
 
 void Texture::Resize(int width, int height) {

@@ -6,6 +6,7 @@ private:
 	bool m_wireframe = false;
 	bool m_FXAA = true;
 
+	Camera* m_camera;
 	Mesh* m_quad;
 	SpriteRenderer* m_spriteRenderer;
 	FrameBuffer* m_finalFBO;
@@ -14,7 +15,6 @@ private:
 public:
 	RenderingPipeline() {}
 	~RenderingPipeline();
-	Camera* m_camera;
 
 	Texture* GetFinalTexture() const { return m_finalTexture; }
 	SpriteRenderer* GetSpriteRenderer() const { return m_spriteRenderer; }
@@ -29,6 +29,8 @@ public:
 	float Height() { return m_camera->GetRelativeViewport().w; }
 
 	bool Initialized() { return m_initialized; }
+
+	Camera* GetCamera() { return m_camera; }
 	
 	Mesh* GetQuad() { return m_quad; }
 	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {

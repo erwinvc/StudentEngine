@@ -5965,7 +5965,7 @@ bool ImGui::IsWindowChildOf(ImGuiWindow* window, ImGuiWindow* potential_parent) 
 }
 
 bool ImGui::IsWindowHovered(ImGuiHoveredFlags flags) {
-	IM_ASSERT((flags & ImGuiHoveredFlags_AllowWhenOverlapped) == 0);   // Flags not supported by this function
+	//IM_ASSERT((flags & ImGuiHoveredFlags_AllowWhenOverlapped) == 0);   // Flags not supported by this function
 	ImGuiContext& g = *GImGui;
 
 	if (flags & ImGuiHoveredFlags_AnyWindow) {

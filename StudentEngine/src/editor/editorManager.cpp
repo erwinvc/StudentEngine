@@ -21,7 +21,7 @@ void EditorManager::Initialize() {
 
 	AddGameObject(new GameObject("Object 1"))
 		.SetSize(Vector2(500, 500))
-		.SetPosition(Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2))
+		.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
 		.SetTexture(g_logo);
 
 	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("PlayerCat");
@@ -38,8 +38,8 @@ static float m_selectedOutlineValue = 0;
 void EditorManager::Update(const TimeStep& time) {
 	EditorGrid::Update(time);
 	m_selectedOutlineValue += time.GetSeconds();
-	Vector3 ray = GroundRaycast::GetMousePosition(GetApp()->GetPipeline()->m_camera);
-	m_mouseRayPosition = GroundRaycast::GetGroundPosition(GetApp()->GetPipeline()->m_camera, ray, 1.0f);
+	Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
+	m_mouseRayPosition = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
 	//m_sample->m_transform.m_position = m_mouseRayPosition;
 	//m_sample->SetRotation(Math::Sin(m_selectedOutlineValue));
@@ -56,24 +56,35 @@ void EditorManager::Update(const TimeStep& time) {
 	offset += time.GetSeconds() * 5;
 }
 
+GameObject* EditorManager::GetGameObjectUnderMouse() {
+	if (!GetEditorWindow()->IsMouseInViewport()) {
+		return nullptr;
+	}
+	for (int i = (int)m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
+		GameObject*& gObj = m_hierarchy.m_gameObjects[i];
+		if (gObj->m_transform.IsPointWithin(m_mouseRayPosition.x, m_mouseRayPosition.y)) {
+			return gObj;
+		}
+	}
+	return nullptr;
+}
+
 void EditorManager::EditorControls(const TimeStep& time) {
-	if (ButtonDown(VK_MOUSE_MIDDLE)) {
+	static bool dragging = false;
+	if (!ButtonDown(VK_MOUSE_MIDDLE)) dragging = false;
+	if (dragging) {
 		Vector2 delta = GetMouse()->GetDelta();
 		delta.y *= -1;
-		GetApp()->GetPipeline()->m_camera->m_position += delta * GetApp()->GetPipeline()->m_camera->GetZoom();
-		return;
+		GetCamera()->m_position += delta * GetCamera()->GetZoom();
 	}
 
+	if (!GetEditorWindow()->IsMouseInViewport() || dragging) return;
+	if (ButtonJustDown(VK_MOUSE_MIDDLE)) dragging = true;
+
 	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
+
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
-		for (int i = (int)m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
-			GameObject*& gObj = m_hierarchy.m_gameObjects[i];
-			if (gObj->m_transform.IsPointWithin(m_mouseRayPosition.x, m_mouseRayPosition.y)) {
-				m_hierarchy.m_selected = gObj;
-				return;
-			}
-		}
-		m_hierarchy.m_selected = nullptr;
+		m_hierarchy.m_selected = GetGameObjectUnderMouse();
 	}
 }
 

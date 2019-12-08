@@ -20,6 +20,7 @@ private:
 
 	ImVec2 m_mainWindowPos;
 	Vector4 m_viewport;
+	bool m_mouseInViewport;
 	void CreateDockingSpace();
 	void CreateEditorWindows();
 	void CreateTemporaryPlayMode();
@@ -46,6 +47,10 @@ public:
 	void Draw();
 	void Update(const TimeStep& time);
 
+	bool IsMouseInViewport() {
+		return m_mouseInViewport;
+	}
+	
 	Vector4 GetViewport() { return m_viewport; }
 };
 

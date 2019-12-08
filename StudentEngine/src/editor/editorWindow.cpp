@@ -9,7 +9,7 @@ void editorWindow::Initialize() {
 }
 
 void editorWindow::Update(const TimeStep& time) {
-	
+	if (m_mouseInViewport)GetCamera()->UpdateZoom(time);
 }
 
 void editorWindow::Draw() {
@@ -29,7 +29,7 @@ void editorWindow::CreateTemporaryPlayMode() {
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	ImGuiWindowFlags playwindowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
 	if (ImGui::Begin("Play Window"), nullptr, playwindowFlags) {
-		if (ImGui::IsWindowFocused()) {
+		if (m_mouseInViewport) {
 			ImGui::GetIO().WantCaptureMouse = false;
 			ImGui::GetIO().WantCaptureKeyboard = false;
 		}
@@ -75,8 +75,8 @@ void editorWindow::CreateDockingSpace() {
 			ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_AutoHideTabBar);
 
 			m_dockspaceCenter = dockspace_id;
-			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.3f, nullptr, &m_dockspaceCenter);
-			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.3f, nullptr, &m_dockspaceCenter);
+			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.2f, nullptr, &m_dockspaceCenter);
+			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.2968725f, nullptr, &m_dockspaceCenter);
 			m_dockspaceBottom = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Down, 0.2f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
 
@@ -118,7 +118,7 @@ void editorWindow::CreateEditorWindows() {
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
 		Undo::OnImGui();
-		if (ImGui::IsWindowFocused()) {
+		if (m_mouseInViewport) {
 			ImGui::GetIO().WantCaptureMouse = false;
 			ImGui::GetIO().WantCaptureKeyboard = false;
 		}
@@ -137,14 +137,16 @@ void editorWindow::CreateEditorWindows() {
 		bool inWindow = Math::Within(pos.x, m_viewport.x, m_viewport.x + m_viewport.z) && Math::Within(pos.y, m_viewport.y, m_viewport.y + m_viewport.w);
 
 		if (inWindow) {
-			Vector3 ray = GroundRaycast::GetMousePosition(GetApp()->GetPipeline()->m_camera);
-			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetApp()->GetPipeline()->m_camera, ray, 1.0f);
+			Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
+			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
 			// #TODO: Add different responses to each draggable button!
 			AddItem(Vector2(rayPos.x, rayPos.y));
 			GetEditorManager()->GetHierarchy().m_selected = GetEditorManager()->GetHierarchy().m_gameObjects[GetEditorManager()->GetHierarchy().m_gameObjects.size() - 1];
 		}
 	}
+
+	ImGui::PopStyleVar(3);
 
 	// Drag 'n Drop
 	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
@@ -165,9 +167,11 @@ void editorWindow::CreateEditorWindows() {
 
 	// Throwing the logger in there for debugging purposes (for now)
 	ImGui::SetNextWindowDockID(m_dockspaceBottom, ImGuiCond_Always);
-	Logger::OnImGui();
+	GetEditorAssetManager()->OnImGui();
 
-	ImGui::PopStyleVar(3);
+	ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
+	GetInspector()->OnImGui();
+
 }
 
 void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
@@ -285,14 +289,14 @@ void editorWindow::SettingNewParent(int parent, int child) {
 
 void editorWindow::AddItem(Vector2 pos = NULL) {
 	if (pos == NULL) {
-		pos = Vector2(300.0f, GetApp()->GetPipeline()->m_camera->GetRelativeViewport().w / 2);
+		pos = Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2);
 	}
 	//objs.push_back(new GameObject("New GameObject"));
 
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
 	StreamedTexture* logo;
 	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
-	String name = Format("Object %i", GetEditorManager()->GetHierarchy().m_gameObjects.size()+1);
+	String name = Format("Object %i", GetEditorManager()->GetHierarchy().m_gameObjects.size() + 1);
 	GetEditorManager()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(pos)
@@ -325,7 +329,7 @@ void editorWindow::CreateViewport() {
 	actualWindowPosition.y -= m_mainWindowPos.y;
 
 	m_viewport = Vector4(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
-	
+	m_mouseInViewport = ImGui::IsWindowHovered(ImGuiHoveredFlags_RectOnly);
 	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }
 
@@ -336,56 +340,56 @@ void editorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 	// https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
 	style.Alpha = 1.0f;
 	//style.FrameRounding = 1.0f;
-	style.Colors[ImGuiCol_Text]					= ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_TextDisabled]			= ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-	style.Colors[ImGuiCol_WindowBg]				= ImVec4(0.84f, 0.84f, 0.84f, 0.94f);
-	style.Colors[ImGuiCol_ChildWindowBg]		= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_PopupBg]				= ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
-	style.Colors[ImGuiCol_Border]				= ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
-	style.Colors[ImGuiCol_BorderShadow]			= ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
-	style.Colors[ImGuiCol_FrameBg]				= ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
-	style.Colors[ImGuiCol_FrameBgHovered]		= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
-	style.Colors[ImGuiCol_FrameBgActive]		= ImVec4(0.26f, 0.98f, 0.59f, 0.67f);
-	style.Colors[ImGuiCol_TitleBg]				= ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-	style.Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
-	style.Colors[ImGuiCol_TitleBgActive]		= ImVec4(0.82f, 0.82f, 0.82f, 1.00f);
-	style.Colors[ImGuiCol_MenuBarBg]			= ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarBg]			= ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
-	style.Colors[ImGuiCol_ScrollbarGrab]		= ImVec4(0.69f, 0.69f, 0.69f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarGrabHovered]	= ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarGrabActive]	= ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+	style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.84f, 0.84f, 0.84f, 0.94f);
+	style.Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_PopupBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
+	style.Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+	style.Colors[ImGuiCol_BorderShadow] = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+	style.Colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.94f);
+	style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.98f, 0.59f, 0.67f);
+	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+	style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 1.00f, 1.00f, 0.51f);
+	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.82f, 0.82f, 0.82f, 1.00f);
+	style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
 	/*style.Colors[ImGuiCol_ComboBg]			= ImVec4(0.86f, 0.86f, 0.86f, 0.99f);*/
-	style.Colors[ImGuiCol_CheckMark]			= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_CheckMark]			= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_SliderGrab]			= ImVec4(0.24f, 0.88f, 0.52f, 1.00f);
-	style.Colors[ImGuiCol_SliderGrabActive]		= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_Button]				= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
-	style.Colors[ImGuiCol_ButtonHovered]		= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_ButtonActive]			= ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
-	style.Colors[ImGuiCol_Header]				= ImVec4(0.26f, 0.98f, 0.59f, 0.31f);
-	style.Colors[ImGuiCol_HeaderHovered]		= ImVec4(0.26f, 0.98f, 0.59f, 0.80f);
-	style.Colors[ImGuiCol_HeaderActive]			= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.88f, 0.52f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
+	style.Colors[ImGuiCol_Header] = ImVec4(0.26f, 0.98f, 0.59f, 0.31f);
+	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.98f, 0.59f, 0.80f);
+	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
 
-	style.Colors[ImGuiCol_Column]				= ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-	style.Colors[ImGuiCol_ColumnHovered]		= ImVec4(0.26f, 0.95f, 0.59f, 0.78f);
-	style.Colors[ImGuiCol_ColumnActive]			= ImVec4(0.26f, 0.95f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_Column] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+	style.Colors[ImGuiCol_ColumnHovered] = ImVec4(0.26f, 0.95f, 0.59f, 0.78f);
+	style.Colors[ImGuiCol_ColumnActive] = ImVec4(0.26f, 0.95f, 0.59f, 1.00f);
 
-	style.Colors[ImGuiCol_ResizeGrip]			= ImVec4(0.65f, 0.65f, 0.65f, 0.50f);
-	style.Colors[ImGuiCol_ResizeGripHovered]	= ImVec4(0.26f, 0.95f, 0.59f, 0.67f);
-	style.Colors[ImGuiCol_ResizeGripActive]		= ImVec4(0.26f, 0.95f, 0.59f, 0.95f);
+	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.65f, 0.65f, 0.65f, 0.50f);
+	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.26f, 0.95f, 0.59f, 0.67f);
+	style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.26f, 0.95f, 0.59f, 0.95f);
 
-	style.Colors[ImGuiCol_PlotLines]			= ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-	style.Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogram]		= ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogramHovered]	= ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_TextSelectedBg]		= ImVec4(0.26f, 0.98f, 0.59f, 0.35f);
-	style.Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+	style.Colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+	style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.98f, 0.59f, 0.35f);
+	style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
-	style.Colors[ImGuiCol_Tab]					= ImVec4(0.26f, 0.98f, 0.59f, 0.35f);
-	style.Colors[ImGuiCol_TabActive]			= ImVec4(0.26f, 0.98f, 0.59f, 0.50f);
-	style.Colors[ImGuiCol_TabHovered]			= ImVec4(0.26f, 0.98f, 0.59f, 0.60f);
-	style.Colors[ImGuiCol_TabUnfocused]			= ImVec4(0.26f, 0.98f, 0.59f, 0.25f);
-	style.Colors[ImGuiCol_TabUnfocusedActive]	= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_Tab] = ImVec4(0.26f, 0.98f, 0.59f, 0.35f);
+	style.Colors[ImGuiCol_TabActive] = ImVec4(0.26f, 0.98f, 0.59f, 0.50f);
+	style.Colors[ImGuiCol_TabHovered] = ImVec4(0.26f, 0.98f, 0.59f, 0.60f);
+	style.Colors[ImGuiCol_TabUnfocused] = ImVec4(0.26f, 0.98f, 0.59f, 0.25f);
+	style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
 
 
 	style.WindowRounding = 5;
@@ -408,8 +412,7 @@ void editorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 				col.w *= alpha;
 			}
 		}
-	}
-	else {
+	} else {
 		for (int i = 0; i <= ImGuiCol_COUNT; i++) {
 			ImVec4& col = style.Colors[i];
 			if (col.w < 1.00f) {

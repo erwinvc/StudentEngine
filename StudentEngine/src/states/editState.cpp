@@ -12,7 +12,7 @@ void EditState::Update(const TimeStep& time) {
 
 void EditState::Draw(RenderingPipeline* pipeline) {
 	GetFrameBufferManager()->OnResize(GetEditorWindow()->GetViewport().z, GetEditorWindow()->GetViewport().w);
-	GetApp()->GetPipeline()->m_camera->SetViewport(GetEditorWindow()->GetViewport());
+	GetCamera()->SetViewport(GetEditorWindow()->GetViewport());
 	GetEditorManager()->Draw(pipeline);
 }
 
@@ -25,12 +25,12 @@ void EditState::PostImGuiDraw(RenderingPipeline* pipeline) {
 
 
 void EditState::EnterState() {
-	GetApp()->GetPipeline()->m_camera->SetZoomEnabled(true);
+	GetCamera()->SetZoomEnabled(true);
 	LOG("[~GStates~x] Entered ~1%s~x state", typeid(*this).name());
 }
 
 void EditState::ExitState() {
-	GetApp()->GetPipeline()->m_camera->SetZoomEnabled(false);
+	GetCamera()->SetZoomEnabled(false);
 	LOG("[~GStates~x] Exited ~1%s~x state", typeid(*this).name());
 }
 

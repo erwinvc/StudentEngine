@@ -66,7 +66,6 @@ public:
 				m_activeJobs--;
 			}
 		});
-		//m_loadAssetQueue.Add(assetLoadJob);
 		m_activeJobs++;
 	}
 
@@ -88,6 +87,14 @@ public:
 	void Add(const String& name, T* asset) {
 		if (m_assets[name]) LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x already exists", name.c_str(), typeid(T).name());
 		else m_assets[name] = asset;
+	}
+
+	void Remove(const String& name) {
+		if (m_assets[name]) {
+			LOG("[~yAssets~x] removed ~1%s~x", name.c_str());
+			delete m_assets[name];
+			m_assets.erase(name);
+		} else LOG_WARN("[~yAssets~x] failed to remove %s", name.c_str());
 	}
 
 	template<typename T>

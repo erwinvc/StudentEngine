@@ -14,7 +14,7 @@ Vector2 EditorGameObject::g_draggingPositionBackup;
 Vector2 EditorGameObject::g_movingOffset;
 
 void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject) {
-	float zoom = pipeline->m_camera->GetZoom();
+	float zoom = GetCamera()->GetZoom();
 	Transform& transform = gameObject->m_transform;
 	static float lineSize = 0.5f;
 	static float halfLineSize = lineSize / 2;
@@ -35,7 +35,7 @@ void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject)
 }
 
 bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vector2 mousePosition) {
-	float zoom = GetApp()->GetPipeline()->m_camera->GetZoom();
+	float zoom = GetCamera()->GetZoom();
 	Transform& transform = gameObject->m_transform;
 
 	g_outlineColorValue += time.GetSeconds() * 2.0f;

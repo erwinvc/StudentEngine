@@ -49,3 +49,4 @@ protected:
 };
 
 inline App* GetApp() { return App::GetInstance(); }
+inline Camera* GetCamera() { return App::GetInstance()->GetPipeline()->GetCamera(); }

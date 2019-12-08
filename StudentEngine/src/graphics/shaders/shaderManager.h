@@ -10,7 +10,7 @@ private:
 
 public:
 
-	AssetRef<Shader> Create(const String& name, const String& file, bool hasGeometry = false, bool hasTessellation = false) {
+	AssetRef<Shader> Create(const String& name, const Path& file, bool hasGeometry = false, bool hasTessellation = false) {
 		if (m_shaders[name]) {
 			LOG("[~bShaders~x] ~1%s ~rshader has already been created", name.c_str());
 			return m_shaders[name];
@@ -24,10 +24,10 @@ public:
 	AssetRef<Shader> Get(const String& name) {
 		return m_shaders[name];
 	}
-
-	void ReloadShaderByFileName(const String& file) {
+	
+	void ReloadShaderByFileName(const Tracker& file) {
 		for (int i = 0; i < m_shadersVector.size(); i++) {
-			if (m_shadersVector[i]->m_file.compare(file) == 0) {
+			if (m_shadersVector[i]->m_path.GetFullPath().compare(file.m_path.GetFullPath()) == 0) {
 				m_shadersVector[i]->Reload();
 			}
 		}

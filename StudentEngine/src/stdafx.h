@@ -35,6 +35,7 @@
 #include <GLFW/glfw3.h>
 
 // ImGui
+#define IMGUI_DEFINE_MATH_OPERATORS 
 #include <imgui.h>
 #include "imgui_impl_glfw.h"
 #include "imgui_internal.h"
@@ -72,11 +73,13 @@ using namespace std;
 #include "util/thread/threadManager.h"
 #include "util/thread/threadPool.h"
 #include "util/logger.h"
+#include "util/path.h"
 #include "util/thread/glFiberManager.h"
 #include "util/color.h"
 #include "util/timestep.h"
 #include "util/timer.h"
 #include "util/glError.h"
+#include "util/fonts/IconsFontAwesome.h"
 
 #include "util/tween/tween.h"
 
@@ -93,6 +96,8 @@ using namespace std;
 #include "graphics/buffers/indexBuffer.h"
 #include "graphics/buffers/vertexBuffer.h"
 #include "graphics/buffers/vertexArray.h"
+
+#include "assets/assetWatcher.h"
 
 #include "graphics/shaders/shaderUniformBuffer.h"
 #include "graphics/shaders/shader.h"
@@ -122,7 +127,6 @@ using namespace std;
 #include "assets/loadjobs/textureLoadJob.h"
 #include "assets/loadjobs/customLoadJob.h"
 
-#include "assets/assetWatcher.h"
 #include "assets/assetManager.h"
 
 #include "application.h"
@@ -133,6 +137,8 @@ using namespace std;
 #include "editor/editorGrid.h"
 #include "editor/editorManager.h"
 #include "editor/editorWindow.h"
+#include "editor/editorAssetManager.h"
+#include "editor/inspector.h"
 #include "util/undo.h"
 
 #include "states/baseState.h"
@@ -140,4 +146,3 @@ using namespace std;
 #include "states/editState.h"
 #include "states/playState.h"
 #include "states/stateManager.h"
-#include "util/fonts/IconsFontAwesome.h"

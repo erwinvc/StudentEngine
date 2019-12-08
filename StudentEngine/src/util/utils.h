@@ -20,9 +20,10 @@ namespace Utils {
 	static void nullfunc() {}
 
 	//String
-	static vector<String> Split(String& s, const String& splitter) {
+	static vector<String> Split(const String& str, const String& splitter) {
 		size_t pos;
 		vector<String> out;
+		String s = str;
 		while ((pos = s.find(splitter)) != String::npos) {
 			String token = s.substr(0, pos);
 			out.push_back(token);

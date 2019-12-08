@@ -98,7 +98,7 @@ private:
 	bool m_hasGeometry;
 	bool m_hasTessellation;
 	String m_name;
-	String m_file;
+	Path m_path;
 
 	ShaderUniformBuffer m_uniformBuffer;
 
@@ -139,21 +139,22 @@ private:
 		ShaderProgram* shaderProgram = new ShaderProgram();
 		shaderProgram->CreateProgram();
 		bool failed = false;
+		String fullPath = m_path.GetFullPathWithoutExtention();
 
-		String vertexFile = m_file + ".vert";
-		String fragFile = m_file + ".frag";
+		String vertexFile = fullPath + ".vert";
+		String fragFile = fullPath + ".frag";
 
 		failed |= AddShaderToProgram(shaderProgram, vertexFile, GL_VERTEX_SHADER);
 		failed |= AddShaderToProgram(shaderProgram, fragFile, GL_FRAGMENT_SHADER);
 		
 		if (m_hasGeometry) {
-			String geomFile = m_file + ".geom";
+			String geomFile = fullPath + ".geom";
 			failed |= AddShaderToProgram(shaderProgram, geomFile, GL_GEOMETRY_SHADER);
 		}
 
 		if (m_hasTessellation) {
-			String te = m_file + ".tese";
-			String tc = m_file + ".tesc";
+			String te = fullPath + ".tese";
+			String tc = fullPath + ".tesc";
 			failed |= AddShaderToProgram(shaderProgram, te, GL_TESS_EVALUATION_SHADER);
 			failed |= AddShaderToProgram(shaderProgram, tc, GL_TESS_CONTROL_SHADER);
 		}
@@ -167,7 +168,7 @@ private:
 		return shaderProgram;
 	}
 
-	Shader(const String& name, const String& file, bool hasGeometry = false, bool hasTessellation = false) : m_shaderProgram(nullptr), m_hasGeometry(hasGeometry), m_hasTessellation(hasTessellation), m_name(name), m_file(file) {
+	Shader(const String& name, const Path& file, bool hasGeometry = false, bool hasTessellation = false) : m_shaderProgram(nullptr), m_hasGeometry(hasGeometry), m_hasTessellation(hasTessellation), m_name(name), m_path(file) {
 		m_shaderProgram = Load();
 		if (!m_shaderProgram) LOG_ERROR("[~bShaders~x] ~1%s~x shader failed to compile", name.c_str());
 		m_uniformBuffer.RegisterUniforms(m_shaderProgram);

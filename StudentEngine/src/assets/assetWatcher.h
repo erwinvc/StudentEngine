@@ -1,15 +1,33 @@
 #pragma once
 #include <filesystem>
 
+enum class WatchType {
+	ADDED,
+	REMOVED,
+	CHANGED
+};
+
+struct Tracker {
+	Path m_path;
+	filesystem::file_time_type m_time;
+
+	
+	Tracker(Path& path, filesystem::file_time_type& time) : m_path(path), m_time(time) {}
+	Tracker() : m_path(), m_time(filesystem::file_time_type()) {}
+};
+
 class AssetWatcher : public Singleton<AssetWatcher> {
 private:
 	struct QueueEntry {
-		function<void(const String&)> m_function;
-		String m_file;
+		function<void(const Tracker&)> m_function;
+		Tracker m_file;
 	};
+
 	AsyncQueue<QueueEntry> m_queue;
-	unordered_map<String, filesystem::file_time_type> m_paths;
-	map<String, function<void(const String&)>> m_handlers;
+	unordered_map<String, Tracker> m_paths;
+	map<String, function<void(const Tracker&)>> m_removedHandlers;
+	map<String, function<void(const Tracker&)>> m_addedHandlers;
+	map<String, function<void(const Tracker&)>> m_changedHandlers;
 	AssetRef<Thread> m_thread;
 	bool m_initialized = false;
 	vector<String> m_dirs;
@@ -18,74 +36,55 @@ private:
 
 		for (auto it = m_paths.begin(); it != m_paths.end();) {
 			if (!filesystem::exists(it->first)) {
+				HandleChange(it->second, WatchType::REMOVED);
 				it = m_paths.erase(it);
 			} else it++;
 		}
 
 		for (String& dir : m_dirs) {
-			for (auto &file : std::filesystem::recursive_directory_iterator(dir)) {
+			for (auto& file : std::filesystem::recursive_directory_iterator(dir)) {
+				if (!filesystem::exists(file)) continue;
 				auto current_file_last_write_time = std::filesystem::last_write_time(file);
 
-				String path = file.path().string();
-				if (m_paths.find(path) == m_paths.end()) {
-					m_paths[file.path().string()] = current_file_last_write_time;
+				filesystem::path path = file.path();
+				auto it = m_paths.find(path.string());
+				if (it == m_paths.end()) {
+					Tracker newTracker(Path(path.string()), current_file_last_write_time);
+					m_paths[file.path().string()] = newTracker;
+					HandleChange(newTracker, WatchType::ADDED);
 				} else {
-					if (m_paths[path] != current_file_last_write_time) {
-						m_paths[path] = current_file_last_write_time;
-						HandleChange(dir, path);
+					if (it->second.m_time != current_file_last_write_time) {
+						it->second.m_time = current_file_last_write_time;
+						HandleChange(it->second, WatchType::CHANGED);
 					}
 				}
 			}
 		}
 	}
 
-	void HandleChange(const String& dir, const filesystem::path& path) {
-		String fileName = path.filename().string();
-		String extention = path.extension().string();
-		auto it = m_handlers.find(extention);
-		LOG("[~yAssets~x] Detected change in ~1%s", fileName.c_str());
-		if (it != m_handlers.end()) {
-			m_queue.Add({ it->second, dir + "/" + fileName.substr(0, fileName.size() - extention.size()) });
+	void HandleChange(const Tracker& tracker, WatchType type) {
+		map<String, function<void(const Tracker&)>>* handlers = nullptr;
+		switch (type) {
+			case WatchType::ADDED: handlers = &m_addedHandlers; break;
+			case WatchType::REMOVED: handlers = &m_removedHandlers; break;
+			case WatchType::CHANGED: handlers = &m_changedHandlers; break;
+		}
+
+		//switch (type) {
+		//	case WatchType::ADDED:   LOG("[~yAssets~x] Detected added ~1%s", tracker.m_path.GetFileName().c_str()); break;
+		//	case WatchType::REMOVED: LOG("[~yAssets~x] Detected removed ~1%s", tracker.m_path.GetFileName().c_str()); break;
+		//	case WatchType::CHANGED: LOG("[~yAssets~x] Detected change in ~1%s", tracker.m_path.GetFileName().c_str()); break;
+		//}
+		auto it = handlers->find(tracker.m_path.GetExtention());
+		if (it != handlers->end()) {
+			m_queue.Add({ it->second, tracker });
 		}
 	}
 public:
-	void Initialize() {
-		if (m_initialized) return;
-		m_thread = GetThreadManager()->RegisterThread("AssetWatcher", [] {GetInstance()->Watch(); });
-		LOG("[~yAssets~x] Initialized Asset Watcher");
-		AddDirectory("res/shaders", false);
-		AddChangeHandler(".vert", [](const String& file) { GetShaderManager()->ReloadShaderByFileName(file); });
-		AddChangeHandler(".frag", [](const String& file) { GetShaderManager()->ReloadShaderByFileName(file); });
-		AddChangeHandler(".tesc", [](const String& file) { GetShaderManager()->ReloadShaderByFileName(file); });
-		AddChangeHandler(".tese", [](const String& file) { GetShaderManager()->ReloadShaderByFileName(file); });
-		m_initialized = true;
-	}
-
-	void AddDirectory(const String& dir, bool watchSubTree) {
-		if (FileSystem::DoesFileExist(dir)) {
-			if (!Utils::VectorContains(m_dirs, dir)) {
-				for (auto &file : filesystem::recursive_directory_iterator(dir)) {
-					m_paths[file.path().string()] = std::filesystem::last_write_time(file);
-				}
-				m_dirs.push_back(dir);
-				LOG("[~yAssets~x] Added ~1%s~x to Asset Watcher", dir.c_str());
-				return;
-			}
-		} else LOG("[~yAssets~x] Failed to create Asset Watcher for ~x%s", dir.c_str());
-	}
-
-	void AddChangeHandler(const String& extention, function<void(const String&)> handler) {
-		if (m_handlers.find(extention) == m_handlers.end()) {
-			m_handlers.emplace(extention, handler);
-		} else LOG_ERROR("[~yAssets~x] Asset Watcher already contains handler for ~1%s", extention.c_str());
-	}
-
-	void HandleQueue() {
-		QueueEntry entry;
-		if (m_queue.TryToGet(entry)) {
-			entry.m_function(entry.m_file);
-		}
-	}
+	void Initialize();
+	void AddDirectory(const String& dir, bool watchSubTree);
+	void AddChangeHandler(WatchType type, const String& extention, function<void(const Tracker&)> handler);
+	void HandleQueue();
 };
 
 static AssetWatcher* GetAssetWatcher() {

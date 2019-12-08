@@ -19,11 +19,11 @@ public:
 		g_color = Color::Mix(Color(1.0f, 1.0f, 1.0f, 0.2f), Color(0.5f, 0.5f, 0.5f, 0.2f), Math::Map(Math::Sin(time.TotalTime() / 1000), -1.0f, 1.0f, 0.0f, 1.0f));
 	}
 	static void Draw(RenderingPipeline* pipeline) {
-		float gridSize = GetGridSizeFromZoomLevel(pipeline->m_camera->GetZoom()) * 2;
+		float gridSize = GetGridSizeFromZoomLevel(GetCamera()->GetZoom()) * 2;
 		float halfGridSize = gridSize / 2.0f;
 		static float lineSize = 0.5f;
-		Vector4& vp = pipeline->m_camera->GetRelativeViewport();
-		Vector3& pos = pipeline->m_camera->m_position;
+		Vector4& vp = GetCamera()->GetRelativeViewport();
+		Vector3& pos = GetCamera()->m_position;
 
 		float x = Math::RoundToNumber(pos.x + halfGridSize - (lineSize / 2), gridSize);
 		for (; x < pos.x + vp.z; x += gridSize) {

@@ -54,9 +54,9 @@ public:
 	inline Vector2& GetDelta() { return m_delta; }
 
     void Initialize(Window* window);
-    bool ButtonDown(DWORD button) { return !ImGui::GetIO().WantCaptureMouse && !m_buttonStates[button].m_isUpNow; }
-    bool ButtonJustUp(DWORD button) { return !ImGui::GetIO().WantCaptureMouse && m_buttonStates[button].m_justUp; }
-    bool ButtonJustDown(DWORD button) { return !ImGui::GetIO().WantCaptureMouse && m_buttonStates[button].m_justDown; }
+    bool ButtonDown(DWORD button) { return !m_buttonStates[button].m_isUpNow; }
+    bool ButtonJustUp(DWORD button) { return m_buttonStates[button].m_justUp; }
+    bool ButtonJustDown(DWORD button) { return m_buttonStates[button].m_justDown; }
     //bool ButtonDoubleClicked(DWORD button);
 
     bool Mouse::MouseWithin(float x, float y, float width, float height) {

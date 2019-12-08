@@ -114,11 +114,14 @@ void App::Update(TimeStep time) {
 	m_pipeline->Update(time);
 
 	GetAssetManager()->Update();
+
+	GetAssetWatcher()->HandleQueue();
+	HandleQueue();
 }
 
 void App::Draw() {
 	if (m_pipeline->Initialized()) {
-		m_pipeline->m_camera->UpdateViewMatrix();
+		m_pipeline->GetCamera()->UpdateViewMatrix();
 		m_pipeline->Begin();
 		GetStateManager()->Draw(m_pipeline);
 		m_pipeline->EndSpriteRenderer();
@@ -152,9 +155,6 @@ void App::Draw() {
 		//GetStateManager()->OnResize(width, height);
 		resizeBuffer = Vector2I(-1, -1);
 	}
-
-	GetAssetWatcher()->HandleQueue();
-	HandleQueue();
 
 	//GetAssetWatcher()->HandleQueue();
 

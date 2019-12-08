@@ -1,15 +1,14 @@
 #include "stdafx.h"
 
 TextureLoadJob::TextureLoadJob(const String& id, uint32 width, uint32 height, byte* data, const TextureParameters& params)
-	: AssetLoadJob(id), m_params(params), m_filePath(""), m_data(data), m_width(width), m_height(height), m_channelCount(0) {
+	: AssetLoadJob(id), m_params(params), m_filePath(Path()), m_data(data), m_width(width), m_height(height), m_channelCount(0) {
 	GetAssetManager()->Get<StreamedTexture>(id);
 }
 
-TextureLoadJob::TextureLoadJob(const String& id, const String& filePath, const TextureParameters& params)
+TextureLoadJob::TextureLoadJob(const String& id, const Path& filePath, const TextureParameters& params)
 	: AssetLoadJob(id), m_params(params), m_filePath(filePath), m_data(nullptr), m_width(0), m_height(0), m_channelCount(0) {
 	GetAssetManager()->Get<StreamedTexture>(id);
 }
-
 
 TextureLoadJob::~TextureLoadJob() {
 	delete[] m_data;
@@ -17,7 +16,7 @@ TextureLoadJob::~TextureLoadJob() {
 
 bool TextureLoadJob::loadAsset(bool addToProcessQueue) {
 	if (!m_data) {
-		TextureUtils::LoadTexture(m_filePath, m_params.GetFlipY(), [this](const LoadedTexture& data) {
+		TextureUtils::LoadTexture(m_filePath.GetFullPath(), m_params.GetFlipY(), [this](const LoadedTexture& data) {
 			m_width = data.m_width;
 			m_height = data.m_height;
 			m_channelCount = data.m_channelCount;

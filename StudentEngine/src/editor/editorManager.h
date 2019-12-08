@@ -13,6 +13,8 @@ public:
 	static StreamedTexture* g_buttonGizmo;
 	static StreamedTexture* g_arrowGizmo;
 	static StreamedTexture* g_squareGizmo;
+
+	GameObject* GetGameObjectUnderMouse();
 	
 	GameObject& AddGameObject(GameObject* gameObject) {
 		return *m_hierarchy.AddGameObject(gameObject);

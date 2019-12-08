@@ -26,6 +26,16 @@ public:
 	inline const int32 GetHeight() const { return m_height; }
 	inline byte* GetData() const { return m_data; }
 	inline const TextureParameters& GetTextureParams() { return m_params; }
-
+	inline Vector2 GetAspect() {
+		float w = GetWidth();
+		float h = GetHeight();
+		Vector2 aspect(1.0f, 1.0f);
+		if (w < h) {
+			aspect.x *= w / h;
+		} else if (h < w) {
+			aspect.y *= h / w;
+		}
+		return aspect;
+	}
 	static const String GetAssetTypeName() { return "Texture"; }
 };
