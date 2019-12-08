@@ -4,14 +4,13 @@
 class editorWindow : public Singleton<editorWindow> {
 private:
 	float m_time = 0;
-	bool inEditorMode = true;
-	bool settingNewParent = false;
-	bool draggingItem = false;
-	int childObjIndex = -1;
+	bool m_inEditorMode = true;
+	bool m_settingNewFolder = false;
+	//SET BACK TO METHODS AAA
+	//bool m_draggingItem = false;
+	GameObject* m_movingChild;
+	vector<HierarchyObject*> m_folders;
 
-	vector<GameObject*> objs;
-
-	//RenderWindow
 	ImGuiID m_dockspaceCenter;
 	ImGuiID m_dockspaceLeft;
 	ImGuiID m_dockspaceRight;
@@ -21,31 +20,44 @@ private:
 	ImVec2 m_mainWindowPos;
 	Vector4 m_viewport;
 	bool m_mouseInViewport;
+
 	void CreateDockingSpace();
 	void CreateEditorWindows();
 	void CreateTemporaryPlayMode();
 	void CreateViewport();
 	void CreateSceneOverview(ImGuiWindowFlags flags);
 
-	void DisplaySceneChild(int index, bool hasChildren);
-	void OnItemSelect(GameObject* obj);
+	void DisplayFolder(int index, bool hasChildren);
+	void DisplayObject(GameObject* obj);
+	//void OnItemSelect(GameObject* obj);
 	void OnItemDelete(int index);
 	void OnItemRename(int index);
 	void AddItem(Vector2 pos);
-	void ToggleSettingNewParent();
-	void SettingNewParent(int parent, int child);
-	void GuiItemDrag();
+	void AddFolder();
+	void CreateItemDrag();
 	void SetupEditorStyle(bool styleDark, float alpha);
 
 public:
 	editorWindow() {}
 	~editorWindow() {}
 	friend Singleton;
+	bool m_draggingItem = false;
+	bool m_dragPlacement = false;
 
 	void Initialize();
 	void OnImGui();
 	void Draw();
 	void Update(const TimeStep& time);
+
+	void MoveToFolder(HierarchyObject* folder);
+	HierarchyObject* FindFolderOfObject(GameObject* obj);
+	void ToggleSettingNewParent(GameObject* obj);
+	bool SettingNewFolder() { return m_settingNewFolder; }
+	
+	
+	
+	//bool CurrentlyDragging() { return m_draggingItem; }
+	//void SetCurrentlyDragging(bool value) { m_draggingItem = value; }
 
 	bool IsMouseInViewport() {
 		return m_mouseInViewport;

@@ -133,6 +133,7 @@ using namespace std;
 #include "gameObject/gameObject.h"
 #include "gameObject/editorGameObject.h"
 #include "gameObject/playerObject.h"
+#include "editor/hierarchyObject.h"
 #include "editor/hierarchy.h"
 #include "editor/editorGrid.h"
 #include "editor/editorManager.h"
@@ -140,6 +141,7 @@ using namespace std;
 #include "editor/editorAssetManager.h"
 #include "editor/inspector.h"
 #include "util/undo.h"
+#include "util/fonts/IconsFontAwesome.h"
 
 #include "states/baseState.h"
 #include "states/loadingState.h"
