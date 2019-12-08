@@ -30,7 +30,7 @@ void PlayState::EnterState() {
 	cameraObject = Camera();
 
 	Hierarchy& hierarchy = GetEditorManager()->GetHierarchy();
-	hierarchy.m_selected = nullptr;
+	hierarchy.SetSelected(nullptr);
 	for (int i = 0; i < hierarchy.m_gameObjects.size(); i++) {
 		m_hierarchy->AddGameObject(hierarchy.m_gameObjects[i]->Copy());
 	}

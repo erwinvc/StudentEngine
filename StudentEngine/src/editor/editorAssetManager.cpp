@@ -41,6 +41,7 @@ void EditorAssetManager::OnImGui() {
 					case EditorAssetType::ANIMATION:
 						break;
 				}
+				GetInspector()->SetSelected(asset);
 			}
 
 			switch (asset->m_type) {

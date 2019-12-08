@@ -1,13 +1,15 @@
 #pragma once
 
 class Hierarchy {
+private:
+	GameObject* m_selected;
+
 public:
 	~Hierarchy() {
 		Clear();
 	}
-	
+
 	vector<GameObject*> m_gameObjects;
-	GameObject* m_selected;
 
 	GameObject* AddGameObject(GameObject* gameObject) {
 		m_gameObjects.push_back(gameObject);
@@ -40,5 +42,13 @@ public:
 			delete obj;
 		}
 		m_gameObjects.clear();
+	}
+
+	void SetSelected(GameObject* selected) {
+		m_selected = selected;
+	}
+
+	GameObject* GetSelected() {
+		return m_selected;
 	}
 };

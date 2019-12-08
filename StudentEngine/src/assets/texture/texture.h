@@ -16,6 +16,7 @@ public:
 	//Texture(const String& path, bool hasMipmaps, TextureParameters params = TextureParameters(), bool keepData = false);
 	~Texture();
 
+	void SetTextureParameters(TextureParameters& params);
 	void SetData(byte* data);
 	uint GetHandle() { return m_textureID; }
 	void Bind(uint slot = 0) const;

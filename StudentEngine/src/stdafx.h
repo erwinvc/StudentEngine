@@ -83,6 +83,9 @@ using namespace std;
 
 #include "util/tween/tween.h"
 
+#include "editor/inspector/inspectorDrawable.h"
+#include "editor/inspector/inspector.h"
+
 #include "assets/assetBase.h"
 #include "assets/icon.h"
 
@@ -139,7 +142,6 @@ using namespace std;
 #include "editor/editorManager.h"
 #include "editor/editorWindow.h"
 #include "editor/editorAssetManager.h"
-#include "editor/inspector.h"
 #include "util/undo.h"
 #include "util/fonts/IconsFontAwesome.h"
 

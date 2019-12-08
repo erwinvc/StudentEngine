@@ -36,7 +36,7 @@ void HierarchyObject::DisplayChild(int index) {
 	GameObject* child = m_children[index];
 	String title = Format("%s %s", ICON_FA_BOX, child->m_name.c_str()); 
 
-	bool selected = (GetEditorManager()->GetHierarchy().m_selected == child);
+	bool selected = (GetEditorManager()->GetHierarchy().GetSelected() == child);
 	if (ImGui::Selectable(title.c_str(), selected))
 		OnItemSelect(child);
 
@@ -50,7 +50,8 @@ void HierarchyObject::DisplayChild(int index) {
 
 void HierarchyObject::OnItemSelect(GameObject* obj) {
 	//LOG("%s", obj->m_name.c_str());
-	GetEditorManager()->GetHierarchy().m_selected = obj;
+	GetEditorManager()->GetHierarchy().SetSelected(obj);
+	GetInspector()->SetSelected(obj);
 }
 
 void HierarchyObject::RightClick(int index, bool folder) {

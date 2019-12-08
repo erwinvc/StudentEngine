@@ -11,14 +11,8 @@ Texture::Texture(int32 width, int32 height, TextureParameters params, bool keepD
 void Texture::SetData(byte* data) {
 	GL(glGenTextures(1, &m_textureID));
 
-	GL(glBindTexture(GL_TEXTURE_2D, m_textureID));
-
+	SetTextureParameters(m_params);
 	GL(glTexImage2D(GL_TEXTURE_2D, 0, m_params.GetInternalFormat(), m_width, m_height, 0, m_params.GetFormat(), m_params.GetType(), data));
-
-	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_params.GetFilter(GL_TEXTURE_MIN_FILTER)));
-	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_params.GetFilter(GL_TEXTURE_MAG_FILTER)));
-	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_params.GetWrap()));
-	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_params.GetWrap()));
 
 	int size = m_width * m_height * m_params.GetChannelCount();
 
@@ -26,6 +20,17 @@ void Texture::SetData(byte* data) {
 		m_data = new byte[size];
 		memcpy(m_data, data, size);
 	}
+}
+
+void Texture::SetTextureParameters(TextureParameters& params)
+{
+	m_params = params;
+	GL(glBindTexture(GL_TEXTURE_2D, m_textureID));
+
+	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_params.GetFilter(GL_TEXTURE_MIN_FILTER)));
+	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_params.GetFilter(GL_TEXTURE_MAG_FILTER)));
+	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_params.GetWrap()));
+	GL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_params.GetWrap()));
 }
 
 Texture::~Texture() {

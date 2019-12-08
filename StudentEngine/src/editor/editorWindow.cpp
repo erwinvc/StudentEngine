@@ -147,7 +147,7 @@ void editorWindow::CreateEditorWindows() {
 
 			// #TODO: Add different responses to each draggable button!
 			AddItem(Vector2(rayPos.x, rayPos.y));
-			GetEditorManager()->GetHierarchy().m_selected = GetEditorManager()->GetHierarchy().m_gameObjects[GetEditorManager()->GetHierarchy().m_gameObjects.size() - 1];
+			GetEditorManager()->GetHierarchy().SetSelected(GetEditorManager()->GetHierarchy().m_gameObjects[GetEditorManager()->GetHierarchy().m_gameObjects.size() - 1]);
 		} else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
@@ -182,7 +182,6 @@ void editorWindow::CreateEditorWindows() {
 
 	ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
 	GetInspector()->OnImGui();
-
 }
 
 void editorWindow::CreateItemDrag() {
@@ -252,7 +251,7 @@ void editorWindow::DisplayFolder(int index, bool hasChildren) {
 void editorWindow::DisplayObject(GameObject* obj) {
 	String title = Format("%s %s", ICON_FA_BOX, obj->m_name.c_str());
 
-	bool selected = (GetEditorManager()->GetHierarchy().m_selected == obj);
+	bool selected = (GetEditorManager()->GetHierarchy().GetSelected() == obj);
 	//if (ImGui::Selectable(title.c_str(), selected))
 	//	OnItemSelect(obj);
 

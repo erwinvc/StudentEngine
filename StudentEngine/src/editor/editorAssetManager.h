@@ -6,7 +6,7 @@ enum class EditorAssetType {
 	ANIMATION
 };
 
-class EditorAsset {
+class EditorAsset : public InspectorDrawable {
 public:
 	String m_name;
 	String m_fullName;
@@ -17,6 +17,29 @@ public:
 	EditorAsset(const String& name, const String& fullName, AssetBase* asset, EditorAssetType type, EditorAsset* parent) : m_name(name), m_fullName(fullName), m_asset(asset), m_type(type), m_parent(parent) {}
 
 	virtual StreamedTexture* GetTexture();
+
+	//Op het moment is een asset een folder OF een sprite dus we doen het even zo.
+	void InspectorDraw() override {
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Name");
+		float width = ImGui::GetContentRegionAvail().x;
+		ImGui::SameLine(width - ImGui::CalcTextSize(m_name.c_str(), NULL, true).x);
+		ImGui::LabelText("##hideName", m_name.c_str());
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Filter type");
+		ImGui::SameLine(width / 2);
+		ImGui::PushItemWidth(width / 2);
+		TextureParameters params = GetTexture()->GetTexture()->GetTextureParams();
+		int type = params.GetFilterType();
+		static String_t dropDown[] = { "LINEAR", "NEAREST" };
+		if (ImGui::Combo("##filtering", &type, dropDown, NUMOF(dropDown))) {
+			params.SetFilter(TextureFilter(type));
+			GetTexture()->GetTexture()->SetTextureParameters(params);
+		}
+		ImGui::Separator();
+	}
 };
 
 class EditorAssetFolder : public EditorAsset {
@@ -40,6 +63,9 @@ public:
 
 	void Sort() {
 		sort(m_assets.begin(), m_assets.end(), CompareEditorAsset);
+	}
+
+	void InspectorDraw() override {
 	}
 };
 

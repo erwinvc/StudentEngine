@@ -84,7 +84,9 @@ void EditorManager::EditorControls(const TimeStep& time) {
 	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
 
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
-		m_hierarchy.m_selected = GetGameObjectUnderMouse();
+		GameObject* obj = GetGameObjectUnderMouse();
+		m_hierarchy.SetSelected(obj);
+		GetInspector()->SetSelected(obj);
 	}
 }
 

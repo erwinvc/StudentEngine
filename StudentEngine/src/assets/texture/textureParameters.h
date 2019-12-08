@@ -98,22 +98,24 @@ private:
 public:
 
 	TextureParameters(TextureFormat internalFormat = RGBA, TextureFormat format = RGBA, TextureFilter filter = LINEAR, TextureWrap wrap = REPEAT, TextureType type = T_UNSIGNED_BYTE, bool flipY = true)
-		: m_internalFormat(internalFormat), m_format(format), m_filter(filter), m_wrap(wrap), m_type(type), m_flipY(flipY) {}
+		: m_internalFormat(internalFormat), m_format(format), m_filter(filter), m_wrap(wrap), m_type(type), m_flipY(flipY) {
+	}
 
 	inline bool GetFlipY() const { return m_flipY; }
 	inline int GetInternalFormat() const { return m_internalFormat; }
 	inline int GetFormat() const { return m_format; }
 	inline int GetWrap() const { return m_wrap; }
 	inline int GetType() const { return m_type; }
+	inline TextureFilter GetFilterType() { return m_filter; }
 	inline int GetFilter(int type) const {
 		switch (type) {
 			case GL_TEXTURE_MIN_FILTER: {
-					switch (m_filter) {
-						//case LINEARMIPMAP: return GL_LINEAR_MIPMAP_LINEAR;
-						case LINEAR: GL_LINEAR;
-						case NEAREST: GL_NEAREST;
-					}
-				}break;
+				switch (m_filter) {
+					//case LINEARMIPMAP: return GL_LINEAR_MIPMAP_LINEAR;
+					case LINEAR: GL_LINEAR;
+					case NEAREST: GL_NEAREST;
+				}
+			}break;
 			case GL_TEXTURE_MAG_FILTER: return m_filter == LINEAR ? GL_LINEAR : GL_NEAREST; break;
 		}
 		return GL_LINEAR;
@@ -124,6 +126,10 @@ public:
 
 	void SetFormat(TextureFormat format) {
 		m_format = format;
+	}
+
+	void SetFilter(TextureFilter filter) {
+		m_filter = filter;
 	}
 
 	void SetFormatFromChannelCount(int count) {

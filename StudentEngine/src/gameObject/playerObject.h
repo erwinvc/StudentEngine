@@ -11,4 +11,8 @@ public:
 	virtual GameObject* Copy() override  {
 		return new PlayerObject(*this);
 	}
+
+	void InspectorDraw() override {
+		GameObject::InspectorDraw();
+	}
 };

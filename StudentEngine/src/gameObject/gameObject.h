@@ -1,6 +1,6 @@
 #pragma once
 
-class GameObject {
+class GameObject : public InspectorDrawable {
 private:
 	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
@@ -91,6 +91,20 @@ public:
 
 	void RemoveChild(GameObject* child) {
 		m_children.erase(remove(m_children.begin(), m_children.end(), child), m_children.end());
+	}
+
+	void InspectorDraw() override {
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Name");
+		float width = ImGui::GetContentRegionAvail().x;
+		ImGui::SameLine(width - ImGui::CalcTextSize(m_name.c_str(), NULL, true).x);
+		ImGui::LabelText("##hideName", m_name.c_str());
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Color");
+		ImGui::SameLine(width / 2);
+		ImGui::PushItemWidth(width / 2);
+		ImGui::ColorEdit4("##color", (float*)&m_sprite.m_color);
 	}
 
 	#pragma endregion
