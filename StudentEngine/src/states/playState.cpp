@@ -23,9 +23,10 @@ void PlayState::PostImGuiDraw(RenderingPipeline* pipeline) {
 }
 
 void PlayState::EnterState() {
-	editorZoom = GetCamera()->GetZoom();
-	GetCamera()->SetZoom(1.0f);
-	GetCamera()->UpdateZoom(TimeStep());
+	editorCamera = *GetCamera();
+	Camera& cameraObject = *GetApp()->GetPipeline()->GetCamera();
+	cameraObject = Camera();
+
 	Hierarchy hierarchy = GetEditorManager()->GetHierarchy();
 	hierarchy.m_selected = nullptr;
 	for (int i = 0; i < hierarchy.m_gameObjects.size(); i++) {
@@ -35,8 +36,8 @@ void PlayState::EnterState() {
 }
 
 void PlayState::ExitState() {
-	GetCamera()->SetZoom(editorZoom);
-	GetCamera()->UpdateZoom(TimeStep());
+	Camera& cameraObject = *GetApp()->GetPipeline()->GetCamera();
+	cameraObject = editorCamera;
 
 	Hierarchy hierarchy = GetEditorManager()->GetHierarchy();
 	for (int i = 0; i < editorGameObjects.size(); i++) {
