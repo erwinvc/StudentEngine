@@ -60,8 +60,8 @@ void ImGuiManager::Initialize(Window* window) {
 			io.AddInputCharacter((unsigned short)c);
 	});
 
-	g_bigFont = io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 	g_smallFont = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 10.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+	g_bigFont = io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
 
 	// Get the icons from both FA regular & solid (each having their own range of different icons)
 	// And add them to the already existing font
