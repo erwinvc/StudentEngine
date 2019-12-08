@@ -91,6 +91,7 @@ void EditorManager::EditorControls(const TimeStep& time) {
 
 void EditorManager::Draw(RenderingPipeline* pipeline) {
 	m_hierarchy.Draw(pipeline);
+	m_hierarchy.EditorDraw(pipeline);
 	EditorGrid::Draw(pipeline);
 	//int count = 0;
 	//float scale = 2.5f;

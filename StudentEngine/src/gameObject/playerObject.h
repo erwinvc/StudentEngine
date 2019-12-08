@@ -7,4 +7,8 @@ private:
 public:
 	PlayerObject(const String& name, float movementSpeed);
 	void Update(const TimeStep& time) override;
+
+	virtual GameObject* Copy() override  {
+		return new PlayerObject(*this);
+	}
 };

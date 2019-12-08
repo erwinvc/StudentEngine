@@ -13,6 +13,10 @@ public:
 	GameObject(const String& name) : m_name(name) {}
 	GameObject() : m_name("") {}
 
+	virtual GameObject* Copy() {
+		return new GameObject(*this);
+	}
+
 	void AddChild(GameObject* gameObject) {
 		gameObject->SetParent(this);
 		m_children.push_back(gameObject);
@@ -64,18 +68,18 @@ public:
 		return m_children[index];
 	}
 
-	vector<GameObject*> GetChildren() { 
-		return m_children; 
+	vector<GameObject*> GetChildren() {
+		return m_children;
 	}
 
-	bool HasParent() { 
-		return m_parent != NULL; 
+	bool HasParent() {
+		return m_parent != NULL;
 	}
 
-	GameObject* GetParent() { 
-		return m_parent; 
+	GameObject* GetParent() {
+		return m_parent;
 	}
-	
+
 	bool ContainsChild(GameObject* child) {
 		bool foundChild = false;
 		for (size_t i = 0; i < m_children.size(); i++) {

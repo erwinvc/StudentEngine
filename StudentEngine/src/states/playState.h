@@ -2,6 +2,7 @@
 
 class PlayState : public BaseState {
 private:
+	Hierarchy* m_hierarchy;
 	vector<GameObject> editorGameObjects;
 	int editorZoom;
 public:
