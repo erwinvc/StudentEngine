@@ -57,6 +57,7 @@ public:
 	}
 
 	float GetZoom() { return m_zoom; }
+	void SetZoom(float zoom) { m_zoom = zoom; }
 
 	inline Matrix4 GetProjectionMatrix() const { return m_projectionMatrix; }
 	inline Matrix4 GetViewMatrix() const { return m_viewMatrix; }

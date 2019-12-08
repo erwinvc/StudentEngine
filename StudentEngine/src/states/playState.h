@@ -3,6 +3,7 @@
 class PlayState : public BaseState {
 private:
 	vector<GameObject> editorGameObjects;
+	int editorZoom;
 public:
 	PlayState() : BaseState("Play") {}
 	
