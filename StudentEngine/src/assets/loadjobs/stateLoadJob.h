@@ -8,6 +8,6 @@ private:
 public:
 	StateLoadJob(BaseState* state);
 
-	bool loadAsset(bool addToProcessQueue = true) override;
-	void processAsset(map<String, AssetBase*>& assets) override;
+	bool LoadAsset(bool addToProcessQueue = true) override;
+	void ProcessAsset(map<String, AssetBase*>& assets) override;
 };

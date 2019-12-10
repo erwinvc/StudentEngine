@@ -6,12 +6,12 @@ private:
 	function<void(void)> m_sync;
 public:
 	CustomLoadJob(const String& name, function<void(void)> aSync, function<void(void)> sync = Utils::nullfunc) : AssetLoadJob(name), m_aSync(aSync), m_sync(sync) {}
-	bool loadAsset(bool addToProcessQueue = true) override {
+	bool LoadAsset(bool addToProcessQueue = true) override {
 		m_aSync();
 		return true;
 	}
 
-	void processAsset(map<String, AssetBase*>& assets) override {
+	void ProcessAsset(map<String, AssetBase*>& assets) override {
 		m_sync();
 	}
 };

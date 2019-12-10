@@ -109,6 +109,7 @@ using namespace std;
 #include "assets/texture/texture.h"
 #include "assets/texture/streamedTexture.h"
 #include "assets/sprite.h"
+#include "assets/audio/audio.h"
 
 #include "input/keyboard.h"
 #include "input/mouse.h"
@@ -129,6 +130,7 @@ using namespace std;
 #include "assets/loadjobs/stateLoadJob.h"
 #include "assets/loadjobs/textureLoadJob.h"
 #include "assets/loadjobs/customLoadJob.h"
+#include "assets/loadjobs/audioLoadJob.h"
 
 #include "assets/assetManager.h"
 
@@ -147,6 +149,8 @@ using namespace std;
 
 #include "AL/al.h"
 #include "AL/alc.h"
+#include "audio/audioManager.h"
+
 #include "states/baseState.h"
 #include "states/loadingState.h"
 #include "states/editState.h"

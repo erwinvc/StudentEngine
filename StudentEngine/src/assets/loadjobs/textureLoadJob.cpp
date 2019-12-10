@@ -14,7 +14,7 @@ TextureLoadJob::~TextureLoadJob() {
 	delete[] m_data;
 }
 
-bool TextureLoadJob::loadAsset(bool addToProcessQueue) {
+bool TextureLoadJob::LoadAsset(bool addToProcessQueue) {
 	if (!m_data) {
 		TextureUtils::LoadTexture(m_filePath.GetFullPath(), m_params.GetFlipY(), [this](const LoadedTexture& data) {
 			m_width = data.m_width;
@@ -29,7 +29,7 @@ bool TextureLoadJob::loadAsset(bool addToProcessQueue) {
 	return addToProcessQueue;
 }
 
-void TextureLoadJob::processAsset(map<String, AssetBase*>& assets) {
+void TextureLoadJob::ProcessAsset(map<String, AssetBase*>& assets) {
 	if (m_data != nullptr) {
 		StreamedTexture* st = GetAssetManager()->Get<StreamedTexture>(m_id);
 		st->FinishStreaming(new Texture(m_width, m_height, m_data, m_params));

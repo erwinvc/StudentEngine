@@ -49,7 +49,7 @@ public:
 		if (m_processAssetQueue.Size() != 0) {
 			AssetLoadJob* currentLoadJob;
 			if (m_processAssetQueue.TryToGet(currentLoadJob)) {
-				currentLoadJob->processAsset(m_assets);
+				currentLoadJob->ProcessAsset(m_assets);
 				m_activeJobs--;
 				delete currentLoadJob;
 			}
@@ -59,7 +59,7 @@ public:
 	template <class T>
 	void AddToLoadQueue(T* assetLoadJob) {
 		GetThreadPool()->DoJob([=] {
-			if (assetLoadJob->loadAsset()) {
+			if (assetLoadJob->LoadAsset()) {
 				AddToProcessQueue(assetLoadJob);
 			} else {
 				delete assetLoadJob;
@@ -99,8 +99,8 @@ public:
 
 	template<typename T>
 	AssetRef<T> ForceLoadAsset(AssetLoadJob* loader) {
-		loader->loadAsset(false);
-		loader->processAsset(m_assets);
+		loader->LoadAsset(false);
+		loader->ProcessAsset(m_assets);
 		T* asset = (T*)m_assets[loader->GetID()];
 		delete loader;
 		return asset;

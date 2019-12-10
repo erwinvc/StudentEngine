@@ -12,9 +12,9 @@ public:
 
 	}
 
-	virtual bool loadAsset(bool addToProcessQueue = true) = 0;
+	virtual bool LoadAsset(bool addToProcessQueue = true) = 0;
 
-	virtual void processAsset(map<String, AssetBase*>& assets) = 0;
+	virtual void ProcessAsset(map<String, AssetBase*>& assets) = 0;
 
 	const String& GetID() { return m_id; }
 };
