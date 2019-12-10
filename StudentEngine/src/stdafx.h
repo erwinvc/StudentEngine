@@ -145,6 +145,8 @@ using namespace std;
 #include "util/undo.h"
 #include "util/fonts/IconsFontAwesome.h"
 
+#include "AL/al.h"
+#include "AL/alc.h"
 #include "states/baseState.h"
 #include "states/loadingState.h"
 #include "states/editState.h"
