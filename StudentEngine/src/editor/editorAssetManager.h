@@ -20,21 +20,12 @@ public:
 
 	//Op het moment is een asset een folder OF een sprite dus we doen het even zo.
 	void InspectorDraw() override {
-
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Name");
-		float width = ImGui::GetContentRegionAvail().x;
-		ImGui::SameLine(width - ImGui::CalcTextSize(m_name.c_str(), NULL, true).x);
-		ImGui::LabelText("##hideName", m_name.c_str());
-
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Filter type");
-		ImGui::SameLine(width / 2);
-		ImGui::PushItemWidth(width / 2);
+		InspectorDrawer::Text("Name", m_name.c_str());
+		
+		static String_t dropDown[] = { "LINEAR", "NEAREST" };
 		TextureParameters params = GetTexture()->GetTexture()->GetTextureParams();
 		int type = params.GetFilterType();
-		static String_t dropDown[] = { "LINEAR", "NEAREST" };
-		if (ImGui::Combo("##filtering", &type, dropDown, NUMOF(dropDown))) {
+		if (InspectorDrawer::Combo("Texture filtering", &type, dropDown, NUMOF(dropDown))) {
 			params.SetFilter(TextureFilter(type));
 			GetTexture()->GetTexture()->SetTextureParameters(params);
 		}

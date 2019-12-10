@@ -88,7 +88,7 @@ void ImGuiManager::End() {
 	glfwMakeContextCurrent(backup);
 }
 
-bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col, const char* label, bool double_click) {
+bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, int frame_padding, bool selected, const char* label, bool double_click) {
 	using namespace ImGui;
 	ImGuiWindow* window = GetCurrentWindow();
 	if (window->SkipItems)
@@ -144,17 +144,17 @@ bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0,
 
 	// Render
 	//const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
-	const ImU32 col = GetColorU32(held ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
-	RenderNavHighlight(bb, id);
-	RenderFrame(bb.Min, bb.Max, col, true, ImClamp((float)ImMin(padding.x, padding.y), 0.0f, style.FrameRounding));
-	if (bg_col.w > 0.0f)
-		window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
+	if (hovered || selected) {
+		const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
+		RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
+		RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
+	}
 
 	void* handle = (void*)texture->GetHandle();
 
 	ImVec2 aspect2 = { image_bb.Max.x * aspect.x, image_bb.Max.y * aspect.y };
 
-	window->DrawList->AddImage(handle, image_bb.Min, image_bb.Max, uv0, uv1, GetColorU32(tint_col));
+	window->DrawList->AddImage(handle, image_bb.Min, image_bb.Max, uv0, uv1, GetColorU32(ImVec4(1.0f, 1.0f, 1.0f, 1.0f)));
 
 	ImRect offset = bb;
 	offset.Min.y = y + padding.y;

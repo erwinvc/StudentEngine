@@ -30,6 +30,7 @@ public:
 	}
 
 	void EditorDraw(RenderingPipeline* pipeline) {
+		if (!GetInspector()->IsSelected(m_selected)) m_selected = nullptr;
 		if (m_selected) EditorGameObject::Draw(pipeline, m_selected);
 	}
 
