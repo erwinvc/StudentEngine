@@ -12,6 +12,9 @@ public:
 
 	}
 
+	virtual ~AssetLoadJob() {
+	}
+
 	virtual bool LoadAsset(bool addToProcessQueue = true) = 0;
 
 	virtual void ProcessAsset(map<String, AssetBase*>& assets) = 0;
