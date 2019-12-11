@@ -16,6 +16,7 @@ void LoadingState::Initialize() {
 
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Keyboard", [] {GetKeyboard()->Initialize(GetApp()->GetWindow()); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Mouse", [] {GetMouse()->Initialize(GetApp()->GetWindow()); }));
+	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Audio", [] {GetAudioManager()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Asset Manager", [] {GetAssetManager()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Undo", [] {Undo::Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Asset Manager", [] {GetEditorAssetManager()->Initialize(); }));
@@ -30,6 +31,8 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerCat", "res/cat.png"));
 
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/Assets/Audio/Bloop.mp3", AudioType::MP3));
+
 	for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
 		if (file.path().extension().string().compare(".png") == 0) {
 			Path path(file.path().string());
@@ -39,7 +42,7 @@ void LoadingState::Initialize() {
 			GetEditorAssetManager()->AddAsset(path, asset);
 		}
 	}
-	
+
 	for (auto& state : GetStateManager()->GetStates()) {
 		if (state != this) {
 			GetAssetManager()->AddToLoadQueue(new StateLoadJob(state));

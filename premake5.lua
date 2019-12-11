@@ -84,10 +84,10 @@ project "StudentEngine"
 		runtime "Debug"
 		symbols "On"
 		defines "DEBUG"
-		kind "WindowedApp"
+		kind "ConsoleApp"
 
 	filter "configurations:Release"
 		flags{"LinkTimeOptimization"}
 		runtime "Release"
 		optimize "On"
-		kind "ConsoleApp"
+		kind "WindowedApp"

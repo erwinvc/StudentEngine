@@ -170,7 +170,9 @@ private:
 
 	Shader(const String& name, const Path& file, bool hasGeometry = false, bool hasTessellation = false) : m_shaderProgram(nullptr), m_hasGeometry(hasGeometry), m_hasTessellation(hasTessellation), m_name(name), m_path(file) {
 		m_shaderProgram = Load();
-		if (!m_shaderProgram) LOG_ERROR("[~bShaders~x] ~1%s~x shader failed to compile", name.c_str());
+		if (!m_shaderProgram) {
+			LOG_ERROR("[~bShaders~x] ~1%s~x shader failed to compile", name.c_str());
+		}
 		m_uniformBuffer.RegisterUniforms(m_shaderProgram);
 	}
 
