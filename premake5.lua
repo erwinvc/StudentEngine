@@ -13,7 +13,6 @@ flags{"MultiProcessorCompile"}
 
 project "StudentEngine"
 	location "StudentEngine"
-	kind "ConsoleApp"
 	language "C++"
 	staticruntime "off"
 	
@@ -84,8 +83,11 @@ project "StudentEngine"
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"
+		defines "DEBUG"
+		kind "WindowedApp"
 
 	filter "configurations:Release"
 		flags{"LinkTimeOptimization"}
 		runtime "Release"
 		optimize "On"
+		kind "ConsoleApp"

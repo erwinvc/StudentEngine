@@ -11,12 +11,12 @@ struct Tracker {
 	Path m_path;
 	filesystem::file_time_type m_time;
 
-	
+
 	Tracker(Path& path, filesystem::file_time_type& time) : m_path(path), m_time(time) {}
 	Tracker() : m_path(), m_time(filesystem::file_time_type()) {}
 };
 
-class AssetWatcher : public Singleton<AssetWatcher> {
+class AssetWatcher {
 private:
 	struct QueueEntry {
 		function<void(const Tracker&)> m_function;
@@ -86,7 +86,3 @@ public:
 	void AddChangeHandler(WatchType type, const String& extention, function<void(const Tracker&)> handler);
 	void HandleQueue();
 };
-
-static AssetWatcher* GetAssetWatcher() {
-	return AssetWatcher::GetInstance();
-}

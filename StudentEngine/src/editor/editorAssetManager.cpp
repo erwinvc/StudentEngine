@@ -10,6 +10,79 @@ StreamedTexture* EditorAsset::GetTexture() {
 	return EditorAssetManager::g_folderTexture;
 }
 
+EditorAssetManager::~EditorAssetManager() {
+	m_assets->Clear();
+	delete m_assets;
+}
+
+void EditorAssetManager::Initialize() {
+	g_folderTexture = GetAssetManager()->Get<StreamedTexture>("FolderIcon");
+}
+
+void EditorAssetManager::AddAsset(const Path& path, AssetBase* asset) {
+	String dir = path.GetDirectory();
+	if (!dir._Starts_with("res/Assets")) LOG_ERROR("Invalid asset path");
+	String relativePath = dir.substr(10, dir.size());
+
+	auto split = Utils::Split(relativePath, "/");
+	EditorAssetFolder* folder = m_assets;
+
+	for (auto& str : split) {
+		if (str.empty()) continue;
+		bool found = false;
+		for (int i = 0; i < folder->m_assets.size(); i++) {
+			if (folder->m_assets[i]->m_type == EditorAssetType::FOLDER && folder->m_assets[i]->m_name == str) {
+				folder = (EditorAssetFolder*)folder->m_assets[i];
+				found = true;
+			}
+		}
+		if (!found) {
+			EditorAssetFolder* newFolder = new EditorAssetFolder(str, folder);
+			folder->m_assets.push_back(newFolder);
+			folder->Sort();
+			folder = newFolder;
+		}
+	}
+	folder->m_assets.push_back(new EditorAsset(path.GetFileName(), path.GetFullPath(), asset, EditorAssetType::SPRITE, folder));
+	folder->Sort();
+}
+
+void EditorAssetManager::RemoveAsset(const Path& path) {
+	String dir = path.GetDirectory();
+	if (!dir._Starts_with("res/Assets")) LOG_ERROR("Invalid asset path");
+	String relativePath = dir.substr(10, dir.size());
+
+	auto split = Utils::Split(relativePath, "/");
+	EditorAssetFolder* folder = m_assets;
+	bool removed = false;
+	for (auto& str : split) {
+		if (str.empty()) continue;
+		for (int i = 0; i < folder->m_assets.size(); i++) {
+			if (folder->m_assets[i]->m_type == EditorAssetType::FOLDER && folder->m_assets[i]->m_name == str) {
+				folder = (EditorAssetFolder*)folder->m_assets[i];
+			}
+		}
+	}
+
+	for (int i = 0; i < folder->m_assets.size(); i++) {
+		if (folder->m_assets[i]->m_fullName == path.GetFullPath()) {
+			delete folder->m_assets[i];
+			Utils::RemoveFromVector(folder->m_assets, folder->m_assets[i]);
+			removed = true;
+			break;
+		}
+	}
+	if (!removed) {
+		LOG_WARN("[~yAssets~x] failed to remove ~1%s~x from editor asset manager", path.GetFullPath().c_str());
+	} else {
+		if (folder->m_assets.size() == 0) {
+			EditorAssetFolder* parent = (EditorAssetFolder*)folder->m_parent;
+			delete folder;
+			Utils::RemoveFromVector(parent->m_assets, (EditorAsset*)folder);
+		}
+	}
+}
+
 void EditorAssetManager::OnImGui() {
 	if (ImGui::Begin("Assets", nullptr)) {
 
@@ -29,7 +102,7 @@ void EditorAssetManager::OnImGui() {
 		for (int n = 0; n < m_currentFolder->m_assets.size(); n++) {
 			EditorAsset* asset = m_currentFolder->m_assets[n];
 			ImGui::PushID(n);
-			
+
 			static int selected = 0;
 			if (ImGui::NamedButton(asset->GetTexture()->GetTexture(), ImVec2(80, 60), ImVec2(0, 1), ImVec2(1, 0), 2, GetInspector()->IsSelected(asset), asset->m_name.c_str(), true)) {
 				selected = n;
@@ -61,7 +134,7 @@ void EditorAssetManager::OnImGui() {
 						}
 						if (dragging || mouseClickPos.Distance(GetMouse()->GetPosition()) > 25) {
 							dragging = true;
-							GameObject* obj = GetEditorManager()->GetGameObjectUnderMouse();
+							GameObject* obj = GetEditor()->GetGameObjectUnderMouse();
 							if (obj) obj->m_sprite.m_singleFrameTexture = asset->GetTexture();
 							tex = asset->GetTexture();
 							ImGuiIO io = ImGui::GetIO();
@@ -75,7 +148,7 @@ void EditorAssetManager::OnImGui() {
 							draw_list->PopClipRect();
 						}
 					} else if (clicked && ImGui::IsMouseReleased(0)) {
-						GameObject* obj = GetEditorManager()->GetGameObjectUnderMouse();
+						GameObject* obj = GetEditor()->GetGameObjectUnderMouse();
 						dragging = false;
 						clicked = false;
 						if (obj) {

@@ -1,8 +1,9 @@
 #include "stdafx.h"
 
+
 void AssetWatcher::Initialize() {
 	if (m_initialized) return;
-	m_thread = GetThreadManager()->RegisterThread("AssetWatcher", [] {GetInstance()->Watch(); });
+	m_thread = GetThreadManager()->RegisterThread("AssetWatcher", [] {GetAssetManager()->GetAssetWatcher()->Watch(); });
 	LOG("[~yAssets~x] Initialized Asset Watcher");
 	AddDirectory("res/shaders", false);
 	AddDirectory("res/Assets", false);

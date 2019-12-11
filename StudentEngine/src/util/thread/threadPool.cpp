@@ -20,8 +20,7 @@ void ThreadPool::DoJob(std::function <void(void)> func) {
 
 void ThreadPool::ThreadEntry() {
 	function <void(void)> job;
-	while (1) {
-		m_queue.WaitForGet(job);
+	if (m_queue.WaitForGet(job)) {
 		job();
 	}
 }

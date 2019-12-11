@@ -15,6 +15,7 @@ public:
 	void Initialize(Window* window);
 	void Begin();
 	void End();
+	void Cleanup();
 };
 
 namespace ImGui

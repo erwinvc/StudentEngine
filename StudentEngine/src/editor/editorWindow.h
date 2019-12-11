@@ -1,7 +1,6 @@
 #pragma once
 
-
-class editorWindow : public Singleton<editorWindow> {
+class EditorWindow {
 private:
 	float m_time = 0;
 	bool m_inEditorMode = true;
@@ -38,9 +37,8 @@ private:
 	void SetupEditorStyle(bool styleDark, float alpha);
 
 public:
-	editorWindow() {}
-	~editorWindow() {}
-	friend Singleton;
+	EditorWindow() { }
+	~EditorWindow();
 	bool m_draggingItem = false;
 	bool m_dragPlacement = false;
 
@@ -65,5 +63,3 @@ public:
 	
 	Vector4 GetViewport() { return m_viewport; }
 };
-
-static editorWindow* GetEditorWindow() { return editorWindow::GetInstance(); }

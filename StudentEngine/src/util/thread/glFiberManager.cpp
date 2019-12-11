@@ -10,21 +10,16 @@ void GLFiberManager::Initialize() {
 }
 
 void GLFiberManager::AddFiber(String name, void(*function)()) {
-	UINT64* args = new UINT64[2]{ (UINT64)function, (UINT64)m_mainFiber };
+	uint64* args = new uint64[2]{ (uint64)function, (uint64)m_mainFiber };
 	LPVOID fiber = CreateFiber(NULL, [](LPVOID lpFiberParameter) {
-		UINT64* arguments = (UINT64*)lpFiberParameter;
-		//try {
+		uint64* arguments = (uint64*)lpFiberParameter;
 		while (true) {
 			((void(*)(void)) arguments[0])();
 			SwitchToFiber((LPVOID)arguments[1]);
 		}
-		//} catch (...) {
-		//	LOG_ERROR("[~rThreads~x] caught exception in fiber");
-		delete[] arguments;
-		//}
 	}, args);
 
-	Fiber newFiber = { fiber, nullptr, (float)glfwGetTime(), name };
+	Fiber newFiber = { fiber, nullptr, (float)glfwGetTime(), name, args };
 	m_fibers.push_back(newFiber);
 
 	for (auto& fiber = m_fibers.begin(); fiber != m_fibers.end(); ++fiber) {
@@ -71,6 +66,7 @@ void GLFiberManager::Delete(String name) {
 void GLFiberManager::Cleanup() {
 	if (!m_cleaned) {
 		for (Fiber& fiber : m_fibers) {
+			delete[] fiber.m_args;
 			DeleteFiber(fiber.m_fiber);
 			LOG("[~rThreads~x] Deleted ~1%s~x fiber", fiber.m_name.c_str());
 		}

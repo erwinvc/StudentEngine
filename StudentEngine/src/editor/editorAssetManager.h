@@ -21,16 +21,18 @@ public:
 	//Op het moment is een asset een folder OF een sprite dus we doen het even zo.
 	void InspectorDraw() override {
 		InspectorDrawer::Text("Name", m_name.c_str());
-		
+
 		static String_t dropDown[] = { "LINEAR", "NEAREST" };
 		TextureParameters params = GetTexture()->GetTexture()->GetTextureParams();
 		int type = params.GetFilterType();
-		if (InspectorDrawer::Combo("Texture filtering", &type, dropDown, NUMOF(dropDown))) {
+		if (InspectorDrawer::Combo("Texture filtering", &type, dropDown, (int)NUMOF(dropDown))) {
 			params.SetFilter(TextureFilter(type));
 			GetTexture()->GetTexture()->SetTextureParameters(params);
 		}
 		ImGui::Separator();
 	}
+
+	virtual void Clear() {}
 };
 
 class EditorAssetFolder : public EditorAsset {
@@ -56,88 +58,29 @@ public:
 		sort(m_assets.begin(), m_assets.end(), CompareEditorAsset);
 	}
 
+	void Clear() override {
+		for (auto& asset : m_assets) {
+			asset->Clear();
+			delete asset;
+		}
+	}
+
 	void InspectorDraw() override {
 	}
 };
 
-class EditorAssetManager : public Singleton<EditorAssetManager> {
+class EditorAssetManager {
 public:
 	static StreamedTexture* g_folderTexture;
 	EditorAssetManager() : m_assets(new EditorAssetFolder("Assets", nullptr)) {
 		m_currentFolder = m_assets;
 	}
+	~EditorAssetManager();
 	EditorAssetFolder* m_assets;
 	EditorAssetFolder* m_currentFolder;
 
-	void Initialize() {
-		g_folderTexture = GetAssetManager()->Get<StreamedTexture>("FolderIcon");
-	}
-
-	void AddAsset(const Path& path, AssetBase* asset) {
-		String dir = path.GetDirectory();
-		if (!dir._Starts_with("res/Assets")) LOG_ERROR("Invalid asset path");
-		String relativePath = dir.substr(10, dir.size());
-
-		auto split = Utils::Split(relativePath, "/");
-		EditorAssetFolder* folder = m_assets;
-
-		for (auto& str : split) {
-			if (str.empty()) continue;
-			bool found = false;
-			for (int i = 0; i < folder->m_assets.size(); i++) {
-				if (folder->m_assets[i]->m_type == EditorAssetType::FOLDER && folder->m_assets[i]->m_name == str) {
-					folder = (EditorAssetFolder*)folder->m_assets[i];
-					found = true;
-				}
-			}
-			if (!found) {
-				EditorAssetFolder* newFolder = new EditorAssetFolder(str, folder);
-				folder->m_assets.push_back(newFolder);
-				folder->Sort();
-				folder = newFolder;
-			}
-		}
-		folder->m_assets.push_back(new EditorAsset(path.GetFileName(), path.GetFullPath(), asset, EditorAssetType::SPRITE, folder));
-		folder->Sort();
-	}
-
-	void RemoveAsset(const Path& path) {
-		String dir = path.GetDirectory();
-		if (!dir._Starts_with("res/Assets")) LOG_ERROR("Invalid asset path");
-		String relativePath = dir.substr(10, dir.size());
-
-		auto split = Utils::Split(relativePath, "/");
-		EditorAssetFolder* folder = m_assets;
-		bool removed = false;
-		for (auto& str : split) {
-			if (str.empty()) continue;
-			for (int i = 0; i < folder->m_assets.size(); i++) {
-				if (folder->m_assets[i]->m_type == EditorAssetType::FOLDER && folder->m_assets[i]->m_name == str) {
-					folder = (EditorAssetFolder*)folder->m_assets[i];
-				}
-			}
-		}
-
-		for (int i = 0; i < folder->m_assets.size(); i++) {
-			if (folder->m_assets[i]->m_fullName == path.GetFullPath()) {
-				delete folder->m_assets[i];
-				Utils::RemoveFromVector(folder->m_assets, folder->m_assets[i]);
-				removed = true;
-				break;
-			}
-		}
-		if (!removed) {
-			LOG_WARN("[~yAssets~x] failed to remove ~1%s~x from editor asset manager", path.GetFullPath().c_str());
-		} else {
-			if (folder->m_assets.size() == 0) {
-				EditorAssetFolder* parent = (EditorAssetFolder*)folder->m_parent;
-				delete folder;
-				Utils::RemoveFromVector(parent->m_assets, (EditorAsset*)folder);
-			}
-		}
-	}
-
+	void Initialize();
+	void AddAsset(const Path& path, AssetBase* asset);
+	void RemoveAsset(const Path& path);
 	void OnImGui();
 };
-
-inline EditorAssetManager* GetEditorAssetManager() { return EditorAssetManager::GetInstance(); }

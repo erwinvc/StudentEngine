@@ -2,6 +2,7 @@
 
 ImFont* ImGuiManager::g_bigFont;
 ImFont* ImGuiManager::g_smallFont;
+
 void ImGuiManager::Initialize(Window* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -60,17 +61,19 @@ void ImGuiManager::Initialize(Window* window) {
 			io.AddInputCharacter((unsigned short)c);
 	});
 
-	g_smallFont = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 10.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-	g_bigFont = io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-
-	// Get the icons from both FA regular & solid (each having their own range of different icons)
-	// And add them to the already existing font
-	ImFontConfig config;
-	config.MergeMode = true;
-	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
-	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
-	io.Fonts->Build();
+	g_smallFont = io.FontDefault;
+	g_bigFont = io.FontDefault;
+	//g_smallFont = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 10.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+	//g_bigFont = io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
+	//
+	//// Get the icons from both FA regular & solid (each having their own range of different icons)
+	//// And add them to the already existing font
+	//ImFontConfig config;
+	//config.MergeMode = true;
+	//const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	//io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
+	//io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
+	//io.Fonts->Build();
 }
 
 void ImGuiManager::Begin() {
@@ -88,45 +91,34 @@ void ImGuiManager::End() {
 	glfwMakeContextCurrent(backup);
 }
 
+void ImGuiManager::Cleanup() {
+	ImGui::DestroyContext();
+}
+
 bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, int frame_padding, bool selected, const char* label, bool double_click) {
-	using namespace ImGui;
 	ImGuiWindow* window = GetCurrentWindow();
-	if (window->SkipItems)
-		return false;
+	if (window->SkipItems) return false;
 
 	ImGuiContext& g = *GImGui;
 	const ImGuiStyle& style = g.Style;
 
-	// Default to using texture ID as ID. User can still push string/integer prefixes.
-	// We could hash the size/uv to create a unique ID but that would prevent the user from animating UV.
-	//PushID((void*)(intptr_t)user_texture_id);
 	const ImGuiID id = window->GetID(label);
 	ImVec2 label_size = CalcTextSize(label, NULL, true);
 	bool popFont = false;
 	float y = 0;
 	if (label_size.x > size.x) {
-		ImGui::PushFont(ImGuiManager::g_smallFont);
+		PushFont(ImGuiManager::g_smallFont);
 		label_size.x = CalcTextSize(label, NULL, true).x;
-		y += ImGui::GetFontSize() * 0.75f;
+		y += GetFontSize() * 0.75f;
 		popFont = true;
 	}
 
-	//PopID();
-
-	// add 3 font size to y for button rectangle height;
 	ImVec2 button_size = size;
 	button_size.y += label_size.y * 2;
 
 	//Get aspect
-	ImVec2 aspect(size.y / size.x, 1.0f);
-	float w = texture->GetWidth();
-	float h = texture->GetHeight();
-	if (w < h) {
-		aspect.x *= w / h;
-	} else if (h < w) {
-		aspect.y *= h / w;
-	}
-
+	Vector2& asp = texture->GetAspect();
+	ImVec2 aspect(size.y / size.x * asp.x, asp.y);
 	ImVec2 aspectSize = aspect * size;
 
 	const ImVec2 padding = (frame_padding >= 0) ? ImVec2((float)frame_padding, (float)frame_padding) : style.FramePadding;
@@ -140,10 +132,8 @@ bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0,
 	}
 
 	bool hovered, held;
-	bool pressed = ButtonBehavior(bb, id, &hovered, &held);
+	bool pressed = ButtonBehavior(bb, id, &hovered, &held, ImGuiButtonFlags_PressedOnClick);
 
-	// Render
-	//const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
 	if (hovered || selected) {
 		const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
 		RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
@@ -159,8 +149,6 @@ bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0,
 	ImRect offset = bb;
 	offset.Min.y = y + padding.y;
 
-
-	//RenderTextWrapped(offset.Min + style.FramePadding, label, NULL, label_size.x - padding.x);
 	offset.Max.x -= style.FramePadding.x;
 	RenderTextClipped(offset.Min + style.FramePadding, offset.Max, label, NULL, &label_size, style.ButtonTextAlign, &offset);
 

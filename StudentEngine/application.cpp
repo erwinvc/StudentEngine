@@ -38,8 +38,11 @@ void App::Initialize() {
 
 	if (glewInit() != GLEW_OK) LOG_ERROR("[GLEW] failed to initialize");
 
-	GetGLCallbackManager()->AddOnResizeCallback(this, &App::OnResize);
-	GetGLCallbackManager()->AddOnCloseCallback(this, &App::OnWindowClose);
+	m_glCallbackManager = new GLCallbackManager();
+	m_glCallbackManager->Initialize(m_window);
+	m_glCallbackManager->AddOnResizeCallback(this, &App::OnResize);
+	m_glCallbackManager->AddOnCloseCallback(this, &App::OnWindowClose);
+	m_glCallbackManager->AddOnFocusCallback(m_window, &Window::OnFocusEvent);
 
 	LOG("[~cGPU~x] %-26s %s", "GPU manufacturer~1", glGetString(GL_VENDOR));
 	LOG("[~cGPU~x] %-26s %s", "GPU~1", glGetString(GL_RENDERER));
@@ -47,7 +50,7 @@ void App::Initialize() {
 
 	m_window->SetIcon(Icon("icon32"));
 
-	GetAssetManager()->Initialize();
+	m_assetManager = new AssetManager();
 	GetStateManager()->Initialize();
 	GetImGuiManager()->Initialize(GetApp()->GetWindow());
 
@@ -56,13 +59,14 @@ void App::Initialize() {
 
 	GetGLFiberManager()->Initialize();
 	GetGLFiberManager()->AddFiber("Main", [] {GetApp()->Run(); });
-	GetGLFiberManager()->AddFiber("AssetManager", [] {GetAssetManager()->Update(); });
+	GetGLFiberManager()->AddFiber("AssetManager", [] {::GetAssetManager()->Update(); });
 	GetGLFiberManager()->AddFiber("Tween", [] {});
 
 	m_window->Show();
 	m_initialized = true;
+	m_timer = Timer();
 
-	while (m_running) {
+	while (m_running && !m_window->ShouldClose()) {
 		GetGLFiberManager()->Tick();
 	}
 }
@@ -75,34 +79,30 @@ void App::HandleQueue() {
 }
 
 void App::Run() {
-	m_timer = Timer();
-	float totalTime = 0;
-	float timer = m_timer.Get();
-	float updateTimer = m_timer.Get();
-	float updateTick = 1000.0f / 60.0f;
-	double delta = 0;
-	int frames = 0, updates = 0;
-	while (m_running) {
-		m_window->Clear();
-		float time = m_timer.Get();
-		if (time - updateTimer > updateTick) {
-			totalTime += time - m_lastFrameTime;
-			Update(TimeStep(time - m_lastFrameTime, totalTime, m_frameCount));
-			m_lastFrameTime = time;
-			updates++;
-			updateTimer += updateTick;
-			m_frameCount++;
-		}
-		delta += (time - updateTimer) / updateTick;
-		Draw();
-		frames++;
-		if (glfwGetTime() - timer > 1.0) {
-			m_window->SetTitle(Format_t("StudentEngine | UPS: %d FPS: %d", updates, frames));
-			m_fps = frames;
-			timer++;
-			updates = frames = 0;
-		}
-		GetGLFiberManager()->GoToMainFiber();
+	static float totalTime = 0;
+	static float timer = m_timer.Get();
+	static float updateTimer = m_timer.Get();
+	static float updateTick = 1000.0f / 60.0f;
+	static double delta = 0;
+	static int frames = 0, updates = 0;
+	m_window->Clear();
+	float time = m_timer.Get();
+	if (time - updateTimer > updateTick) {
+		totalTime += time - m_lastFrameTime;
+		Update(TimeStep(time - m_lastFrameTime, totalTime, m_frameCount));
+		m_lastFrameTime = time;
+		updates++;
+		updateTimer += updateTick;
+		m_frameCount++;
+	}
+	delta += (time - updateTimer) / updateTick;
+	Draw();
+	frames++;
+	if (glfwGetTime() - timer > 1.0) {
+		m_window->SetTitle(Format_t("StudentEngine | UPS: %d FPS: %d", updates, frames));
+		m_fps = frames;
+		timer++;
+		updates = frames = 0;
 	}
 }
 
@@ -113,9 +113,8 @@ void App::Update(TimeStep time) {
 
 	m_pipeline->Update(time);
 
-	GetAssetManager()->Update();
+	m_assetManager->Update();
 
-	GetAssetWatcher()->HandleQueue();
 	HandleQueue();
 }
 
@@ -162,9 +161,18 @@ void App::Draw() {
 	m_window->PollEvents();
 }
 
-void App::Cleanup() {
-	Undo::Cleanup();
+App::~App() {
+	GetFrameBufferManager()->Cleanup();
+	GetGLFiberManager()->Cleanup();
+	GetShaderManager()->Cleanup();
 	GetThreadManager()->Cleanup();
+	GetImGuiManager()->Cleanup();
+	GetTweenManager()->Cleanup();
+	GetStateManager()->Cleanup();
+	Undo::Cleanup();
+	delete m_glCallbackManager;
+	delete m_assetManager;
 	delete m_pipeline;
 	delete m_window;
+	glfwTerminate();
 }

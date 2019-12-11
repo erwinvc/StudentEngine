@@ -175,6 +175,7 @@ private:
 	}
 
 	~Shader() {
+		LOG("[~bShaders~x] Deleted ~1%s ~xshader ", m_name.c_str());
 		delete m_shaderProgram;
 	}
 

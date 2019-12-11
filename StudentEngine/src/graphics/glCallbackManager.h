@@ -1,12 +1,8 @@
 #pragma once
 
 class Window;
-class GLCallbackManager : public Singleton<GLCallbackManager> {
+class GLCallbackManager {
 private:
-	GLCallbackManager() {}
-	~GLCallbackManager() {}
-	friend Singleton;
-
 	vector<function<void(int, int)>>            m_onResizeCallbacks;
 	vector<function<void()>>                    m_onCloseCallbacks;
 	vector<function<void(int, int, int, int)>>  m_onKeyCallbacks;
@@ -54,7 +50,3 @@ public:
 	void AddOnKeyTypedEvent(function<void(uint)> callback) { m_onKeyTypedCallbacks.push_back(move(callback)); }
 	void AddOnFocusCallback(function<void(int)> callback) { m_onFocusCallbacks.push_back(move(callback)); }
 };
-
-static GLCallbackManager* GetGLCallbackManager() {
-	return GLCallbackManager::GetInstance();
-}

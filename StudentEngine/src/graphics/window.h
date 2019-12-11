@@ -8,16 +8,9 @@ private:
 	bool m_vSync;
 	bool m_focussed;
 
-	void OnFocusEvent(int focus) {
-		m_focussed = focus;
-	}
-
 public:
 	Window(String title, int width, int height) : m_title(title), m_width(width), m_height(height), m_vSync(false) {
 		m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
-		GetGLCallbackManager()->Initialize(this);
-		GetGLCallbackManager()->AddOnFocusCallback(this, &Window::OnFocusEvent);
-		if (!m_window)glfwTerminate();
 	}
 
 	inline void SetWidth(uint width) { m_width = width; }
@@ -31,10 +24,12 @@ public:
 
 	inline float GetAspect() { return (float)(m_width) / m_height; }
 
-	~Window() {
-		glfwTerminate();
-	}
+	~Window() {}
 
+	void OnFocusEvent(int focus) {
+		m_focussed = focus;
+	}
+	
 	bool GetFocussed() {
 		return m_focussed;
 	}

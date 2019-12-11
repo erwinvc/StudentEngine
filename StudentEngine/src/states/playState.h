@@ -4,10 +4,11 @@ class PlayState : public BaseState {
 private:
 	Hierarchy* m_hierarchy;
 	vector<GameObject> editorGameObjects;
-	Camera editorCamera;
+	Camera* m_editorCamera;
+	Camera* m_playCamera;
 public:
 	PlayState() : BaseState("Play") {}
-	
+	~PlayState();
 	void Initialize() override;
 	void Update(const TimeStep& time) override;
 	void Draw(RenderingPipeline* pipeline) override;

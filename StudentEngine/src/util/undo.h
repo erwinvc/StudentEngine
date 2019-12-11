@@ -202,6 +202,7 @@ public:
 	}
 	static void Cleanup() {
 		for (auto& type : m_types) delete type;
+		m_types.clear();
 	}
 
 	static void Record(GameObject* gameObject) {

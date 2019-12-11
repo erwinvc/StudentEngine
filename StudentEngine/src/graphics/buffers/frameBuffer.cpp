@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 FrameBuffer::FrameBuffer(String name, FBOScale scale, bool hasDepth, Color& clearColor) : m_name(name), m_width(0), m_height(0), m_color(clearColor), m_hasDepth(hasDepth) {
 	m_scale = scale;
 	m_realWidth = GetApp()->GetWindow()->GetWidth<uint>();
@@ -28,6 +29,7 @@ void FrameBuffer::Resize(uint width, uint height) {
 }
 
 FrameBuffer::~FrameBuffer() {
+	LOG("[~cBuffers~x] Deleted ~1%s~x framebuffer", m_name.c_str());
 	GL(glDeleteFramebuffers(1, &m_fbo));
 	for (AssetRef<Texture> texture : m_textures) {
 		delete texture.Get();

@@ -24,7 +24,7 @@ public:
 	AssetRef<Shader> Get(const String& name) {
 		return m_shaders[name];
 	}
-	
+
 	void ReloadShaderByFileName(const Tracker& file) {
 		for (int i = 0; i < m_shadersVector.size(); i++) {
 			if (m_shadersVector[i]->m_path.GetFullPath().compare(file.m_path.GetFullPath()) == 0) {
@@ -52,7 +52,13 @@ public:
 		}
 	}
 
-
+	void Cleanup() {
+		for (auto& shader : m_shadersVector) {
+			delete shader;
+		}
+		m_shaders.clear();
+		m_shadersVector.clear();
+	}
 };
 
 static ShaderManager* GetShaderManager() { return ShaderManager::GetInstance(); }

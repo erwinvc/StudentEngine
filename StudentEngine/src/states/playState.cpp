@@ -3,6 +3,12 @@
 Hierarchy* m_hierarchy;
 void PlayState::Initialize() {
 	m_hierarchy = new Hierarchy();
+	m_playCamera = new Camera();
+}
+
+PlayState::~PlayState() {
+	delete m_hierarchy;
+	delete m_playCamera;
 }
 
 void PlayState::Update(const TimeStep& time) {
@@ -25,11 +31,10 @@ void PlayState::PostImGuiDraw(RenderingPipeline* pipeline) {
 
 void PlayState::EnterState() {
 	m_hierarchy->Clear();
-	editorCamera = *GetCamera();
-	Camera& cameraObject = *GetCamera();
-	cameraObject = Camera();
+	m_editorCamera = GetCamera();
+	GetApp()->GetPipeline()->SetCamera(m_playCamera);
 
-	Hierarchy& hierarchy = GetEditorManager()->GetHierarchy();
+	Hierarchy& hierarchy = GetEditor()->GetHierarchy();
 	hierarchy.SetSelected(nullptr);
 	for (int i = 0; i < hierarchy.m_gameObjects.size(); i++) {
 		m_hierarchy->AddGameObject(hierarchy.m_gameObjects[i]->Copy());
@@ -40,7 +45,7 @@ void PlayState::EnterState() {
 
 void PlayState::ExitState() {
 	Camera& cameraObject = *GetApp()->GetPipeline()->GetCamera();
-	cameraObject = editorCamera;
+	GetApp()->GetPipeline()->SetCamera(m_editorCamera);
 
 	LOG("[~GStates~x] Exited ~1%s~x state", typeid(*this).name());
 }

@@ -1,34 +1,14 @@
 #pragma once
-class AssetManager : public Singleton<AssetManager> {
-protected:
-	AssetManager() {}
-	~AssetManager() { delete m_nullTexture; }
-
-	friend Singleton;
+class AssetManager {
 private:
-	bool m_initialized;
+	bool m_initialized = false;
 	static int m_activeJobs;
 	map<String, AssetBase*> m_assets;
 	Texture* m_nullTexture;
+	AssetWatcher* m_assetWatcher;
 	AssetRef<Thread> m_loadingThread;
 	AsyncQueue<AssetLoadJob*> m_processAssetQueue;
 	AsyncQueue<AssetLoadJob*> m_loadAssetQueue;
-
-	// Excecute loading jobs on seperate thread.
-	//void ExecuteLoadJobs() {
-	//	if (m_loadAssetQueue.Size() != 0) {
-	//		AssetLoadJob* currentLoadJob;
-	//
-	//		if (m_loadAssetQueue.TryToGet(currentLoadJob)) {
-	//			if (currentLoadJob->loadAsset()) {
-	//				AddToProcessQueue(currentLoadJob);
-	//			} else {
-	//				delete currentLoadJob;
-	//				m_activeJobs--;
-	//			}
-	//		}
-	//	}
-	//}
 
 	template <class T>
 	void AddToProcessQueue(T* assetLoadJob) {
@@ -36,16 +16,28 @@ private:
 	}
 
 public:
-	void Initialize() {
+	AssetManager() {
 		if (m_initialized) return;
-		//m_loadingThread = GetThreadManager()->RegisterThread("AssetManager LoadJobs", []() {GetInstance()->ExecuteLoadJobs(); });
 		m_nullTexture = new Texture(1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
 		m_initialized = true;
 		m_activeJobs = 0;
+		m_assetWatcher = new AssetWatcher();
+	}
+	~AssetManager() {
+		delete m_assetWatcher;
+		delete m_nullTexture;
+		for (auto const& [key, val] : m_assets) {
+			delete val;
+		}
+	}
+
+	void Initialize() {
+		m_assetWatcher->Initialize();
 	}
 
 	// Execute processing jobs on the main thread.
 	void Update() {
+		m_assetWatcher->HandleQueue();
 		if (m_processAssetQueue.Size() != 0) {
 			AssetLoadJob* currentLoadJob;
 			if (m_processAssetQueue.TryToGet(currentLoadJob)) {
@@ -76,7 +68,8 @@ public:
 		T* asset = (T*)m_assets[name];
 		if (!asset) {
 			if (typeid(T) == typeid(StreamedTexture)) {
-				return (T*)(m_assets[name] = new StreamedTexture(m_nullTexture, false));
+				m_assets[name] = new StreamedTexture(m_nullTexture, false);
+				return (T*)m_assets[name];
 			}
 			LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x not found", name.c_str(), typeid(T).name());
 		}
@@ -109,8 +102,6 @@ public:
 	Texture* GetNullTexture() {
 		return m_nullTexture;
 	}
-};
 
-static AssetManager* GetAssetManager() {
-	return AssetManager::GetInstance();
-}
+	AssetWatcher* GetAssetWatcher() { return m_assetWatcher; }
+};

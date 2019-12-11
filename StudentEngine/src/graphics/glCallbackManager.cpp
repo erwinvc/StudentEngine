@@ -3,8 +3,6 @@
 void GLCallbackManager::Initialize(Window* window) {
 	glfwSetWindowUserPointer(window->GetHandle(), this);
 
-	Timer t;
-
 	glfwSetWindowFocusCallback(window->GetHandle(), [](GLFWwindow* wnd, int focussed) {
 		GLCallbackManager* callbackManager = (GLCallbackManager*)glfwGetWindowUserPointer(wnd);
 		for (auto& callback : callbackManager->m_onFocusCallbacks) {

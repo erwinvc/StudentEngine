@@ -12,7 +12,6 @@ private:
 	int m_amount = 0;
 	T* m_offsets = nullptr;
 	T* m_buffer = nullptr;
-	uint32* m_indexBuffer = nullptr;
 	BufferLayout m_layout;
 
 	void Initialize() {
@@ -76,7 +75,6 @@ public:
 	InstancedRenderer(AssetRef<Mesh> mesh, int maxObjects, int indicesCount, const BufferLayout& layout) : m_started(false), m_ended(true), m_maxObjects(maxObjects), m_indicesCount(indicesCount), m_layout(layout), m_mesh(mesh->Copy()) { Initialize(); }
 	~InstancedRenderer() {
 		delete[] m_offsets;
-		delete[] m_indexBuffer;
 		delete m_mesh;
 	}
 };

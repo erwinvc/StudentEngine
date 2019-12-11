@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-/*Non-blocking logger with color formatting*/
-
+#ifdef DEBUG
 struct ImGuiLog {
 private:
 	ImGuiTextBuffer m_buffer;
@@ -116,9 +115,6 @@ bool Logger::m_firstEntry = true;
 bool Logger::m_stopping = false;
 
 HANDLE Logger::m_outputHandle = INVALID_HANDLE_VALUE;
-HANDLE Logger::m_inputHandle = INVALID_HANDLE_VALUE;
-Thread* Logger::m_inputThread;
-Thread* Logger::m_outputThread;
 CONSOLE_SCREEN_BUFFER_INFO Logger::m_screenBuffer;
 
 mutex Logger::m_mutex;
@@ -126,42 +122,27 @@ condition_variable Logger::m_conditionVariable;
 queue<Logger::QueuedMessage> Logger::m_queue;
 
 ImGuiLog* m_imGuiLog;
-void HandleInput() {
-	static String input;
-	getline(cin, input);
-	LOG("~R%s", input.c_str());
-}
-
-/*Retrieve QueuedMessages from the queue (async)*/
-void Logger::HandleQueue() {
-	static QueuedMessage message;
-	{
-		std::unique_lock <mutex> lock(m_mutex);
-		while (m_queue.empty()) m_conditionVariable.wait(lock);
-		if (m_queue.empty())return;
-		message = move(m_queue.front());
-		m_queue.pop();
-	}
-	ProcessMessage(message);
-}
 
 /*Initialize the non-blocking logger*/
 void Logger::Initialize() {
 	if (m_allocated) return;
+	
 	AllocConsole();
 	SetConsoleTitleA("StudentEngine");
 	m_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	m_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
 	GetConsoleScreenBufferInfo(m_outputHandle, &m_screenBuffer);
 
+	//FILE* m_stream;
+	//freopen_s(&m_stream, "CONIN$", "w", stdin);
+	//freopen_s(&m_stream, "CONOUT$", "w", stdout);
+	//freopen_s(&m_stream, "CONOUT$", "w", stderr);
+	
 	const int width = 120;
 	const int height = 30;
 
 	m_allocated = true;
 	m_firstEntry = true;
 
-	m_inputThread = GetThreadManager()->RegisterThread("Console input", HandleInput);
-	m_outputThread = GetThreadManager()->RegisterThread("Console output", HandleQueue);
 	m_imGuiLog = new ImGuiLog();
 
 	LOG("[~2Logging~x] Console allocated");
@@ -175,30 +156,35 @@ void Logger::SetTextColor(const int color) {
 }
 
 /*Get the time as a printable string*/
-const char* Logger::GetTimeAsString(time_t& currentTime) {
+const char* Logger::GetTimeAsString() {
 	struct tm timeStruct;
-	localtime_s(&timeStruct, &currentTime);
+	time_t t = time(nullptr);
+	localtime_s(&timeStruct, &t);
 
 	static char buffer[48];
 	sprintf_s(buffer, "[%02d:%02d:%02d]", timeStruct.tm_hour, timeStruct.tm_min, timeStruct.tm_sec);
 	return buffer;
 }
 
-/*Add QueuedMessage to the async queue*/
-void Logger::AddToQueue(int color, const String& message, const String& type, time_t time) {
-	unique_lock<mutex> l(m_mutex);
-	m_queue.emplace(move(QueuedMessage(color, message, type, time)));
-	m_conditionVariable.notify_one();
-}
-
 /*Process a QueuedMessage (async)*/
-void Logger::ProcessMessage(QueuedMessage& message) {
-	String_t formattedTime = GetTimeAsString(message.m_time);
+void Logger::Message(int color, const char* type, const char* fmt, ...) {
+	if (m_stopping) return;
+	
+	char buffer[0xffff] = { 0 };
+	va_list va_alist;
+
+	va_start(va_alist, fmt);
+	vsprintf_s(buffer, fmt, va_alist);
+	va_end(va_alist);
+
+	String message = buffer;
+	String_t formattedTime = GetTimeAsString();
 	String outputString;
-	String formattedMessage = Utils::ReplaceString(message.m_message, "~", "`~");
+	String formattedMessage = Utils::ReplaceString(message, "~", "`~");
 	vector<String> splitMessage = Utils::Split(formattedMessage, "`");
 
-	SetTextColor(message.m_color);
+	unique_lock <mutex> lock(m_mutex);
+	SetTextColor(color);
 	printf("%s", formattedTime);
 
 	for (auto& splStr : splitMessage) {
@@ -222,8 +208,8 @@ void Logger::ProcessMessage(QueuedMessage& message) {
 				case 'B': SetTextColor((int)ConsoleColor::DARKBLUE); break;
 				case 'b': SetTextColor((int)ConsoleColor::BLUE); break;
 				case 'X':
-				case 'x':SetTextColor(message.m_color); break;
-				default:SetTextColor(message.m_color); break;
+				case 'x':SetTextColor(color); break;
+				default:SetTextColor(color); break;
 			}
 			splStr.erase(0, 2);
 		}
@@ -233,38 +219,11 @@ void Logger::ProcessMessage(QueuedMessage& message) {
 	printf("\n");
 
 	char buffer2[0xffff] = { 0 };
-	sprintf_s(buffer2, "%s%s %s\n", formattedTime, message.m_type.c_str(), outputString.c_str());
+	sprintf_s(buffer2, "%s%s %s\n", formattedTime, type, outputString.c_str());
 	LogToFile(buffer2);
-	m_imGuiLog->AddLog(buffer2, (message.m_color == (int)ConsoleColor::WHITE ? 0 : 1));
+	m_imGuiLog->AddLog(buffer2, (color == (int)ConsoleColor::WHITE ? 0 : 1));
 
 	SetTextColor((int)ConsoleColor::WHITE);
-}
-
-void Logger::Message(int color, const char* type, const char* fmt, ...) {
-	if (m_stopping) return;
-	if (m_queue.size() > MAXQUEUESIZE) {
-		LOG_ERROR("[~2Logging~x] Console queue size exceeded 100. Too many messages are being sent");
-		return;
-	}
-	char buffer[0xffff] = { 0 };
-	va_list va_alist;
-
-	va_start(va_alist, fmt);
-	vsprintf_s(buffer, fmt, va_alist);
-	va_end(va_alist);
-
-	AddToQueue(color, buffer, type, time(nullptr));
-}
-
-void Logger::ForceEmptyQueue() {
-	m_outputThread->Shutdown();
-
-	while (!m_outputThread->IsFinished()) Sleep(0);
-
-	while (!m_queue.empty()) {
-		ProcessMessage(move(m_queue.front()));
-		m_queue.pop();
-	}
 }
 
 /*Print the message to a logging file*/
@@ -286,11 +245,13 @@ void Logger::LogToFile(const char * buff) {
 void Logger::Cleanup() {
 	if (!m_allocated) return;
 	LOG("[~gLogging~x] Deallocating console");
-	ForceEmptyQueue();
 	delete m_imGuiLog;
-	PostMessage(GetConsoleWindow(), WM_CLOSE, 0, 0);
+	//auto window = GetConsoleWindow();
+	//FreeConsole();
+	//PostMessage(window, WM_CLOSE, 0, 0);
 }
 
 void Logger::OnImGui() {
 	m_imGuiLog->Draw();
 }
+#endif

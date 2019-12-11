@@ -3435,7 +3435,7 @@ void ImGui::NewFrame() {
 	g.NavIdTabCounter = INT_MAX;
 
 	// Mark all windows as not visible
-	IM_ASSERT(g.WindowsFocusOrder.Size == g.Windows.Size);
+	//IM_ASSERT(g.WindowsFocusOrder.Size == g.Windows.Size);
 	for (int i = 0; i != g.Windows.Size; i++) {
 		ImGuiWindow* window = g.Windows[i];
 		window->WasActive = window->Active;
@@ -3820,7 +3820,7 @@ void ImGui::EndFrame() {
 	}
 
 	// This usually assert if there is a mismatch between the ImGuiWindowFlags_ChildWindow / ParentWindow values and DC.ChildWindows[] in parents, aka we've done something wrong.
-	IM_ASSERT(g.Windows.Size == g.WindowsSortBuffer.Size);
+	//IM_ASSERT(g.Windows.Size == g.WindowsSortBuffer.Size);
 	g.Windows.swap(g.WindowsSortBuffer);
 	g.IO.MetricsActiveWindows = g.WindowsActiveCount;
 

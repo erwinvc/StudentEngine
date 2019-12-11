@@ -11,7 +11,7 @@ public:
 	void Initialize(int threads);
 	void DoJob(function <void(void)> func);
 	bool IsInitialized() { return m_initialized; }
-	void Shutdown() { m_queue.ReleaseWaitingThreads(); }
+	void Shutdown() { m_queue.ReleaseWaitingThreadsAndCleanup(); }
 };
 
 static ThreadPool* GetThreadPool() { return ThreadPool::GetInstance(); }

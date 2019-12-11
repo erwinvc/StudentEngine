@@ -1,9 +1,10 @@
-//#pragma once
+#pragma once
+
+#ifdef DEBUG
 #define LOG( fmt, ...)					Logger::Message((int)ConsoleColor::WHITE,				" [Info]",		fmt, ##__VA_ARGS__ )
 #define LOG_WARN( fmt, ...)				Logger::Message((int)ConsoleColor::RED,					" [Warn]",		fmt, ##__VA_ARGS__ )
-#define LOG_ERROR( fmt, ...)			{Logger::Message((int)ConsoleColor::RED,			" [Fail]",		fmt, ##__VA_ARGS__ ); Logger::ForceEmptyQueue(); __debugbreak();}
+#define LOG_ERROR( fmt, ...)			{Logger::Message((int)ConsoleColor::RED,			" [Fail]",		fmt, ##__VA_ARGS__ ); __debugbreak();}
 
-class UILoggerComponent;
 
 enum class ConsoleColor {
 	BLACK = 0,
@@ -39,43 +40,35 @@ public:
 	static const int MAXQUEUESIZE = 1000;
 	static void Initialize();
 	static void Message(int color, const char* type, const char* fmt, ...);
-	static void ForceEmptyQueue();
 	static void Cleanup();
 	static void OnImGui();
-
-
-	template <typename... Args>
-	static void LogMessage(Args... args) {
-		char buffer[1024 * 10];
-		int32 position = 0;
-		print_log_internal(buffer, position, forward<Args>(args)...);
-
-		//buffer[position++] = '\n';
-		buffer[position] = 0;
-
-		AddToQueue(ConsoleColor::WHITE, buffer, "[Info]", time(nullptr));
-	}
+	static bool m_allocated;
 
 private:
 	static FILE *m_stream;
 	static HANDLE m_outputHandle;
-	static HANDLE m_inputHandle;
-	static Thread* m_inputThread;
-	static Thread* m_outputThread;
 	static CONSOLE_SCREEN_BUFFER_INFO m_screenBuffer;
-	static bool m_allocated;
 	static bool m_firstEntry;
 	static bool m_stopping;
 
 	static void LogToFile(const char * buff);
 	static void SetTextColor(const int color);
-	static const char* GetTimeAsString(time_t& currentTime);
+	static const char* GetTimeAsString();
 
 	//Queue
 	static mutex m_mutex;
 	static condition_variable m_conditionVariable;
 	static queue<QueuedMessage> m_queue;
-	static void HandleQueue();
-	static void AddToQueue(int color, const String& message, const String& type, time_t time);
-	static void ProcessMessage(QueuedMessage& message);
 };
+
+#else
+#define LOG( fmt, ...)					
+#define LOG_WARN( fmt, ...)				
+#define LOG_ERROR( fmt, ...)
+
+class Logger {
+public:
+	static void Initialize() {}
+	static void Cleanup() {}
+};
+#endif

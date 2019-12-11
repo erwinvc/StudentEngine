@@ -10,7 +10,7 @@ class StateManager : public Singleton<StateManager> {
 protected:
 	StateManager() {}
 	~StateManager() {
-		for (auto& state : m_states) delete state;
+		Cleanup();
 	}
 	friend Singleton;
 
@@ -23,14 +23,14 @@ private:
 	BaseState* RegisterState() {
 		for (BaseState* state : m_states) {
 			if (typeid(state) == typeid(T)) {
-				LOG_ERROR("[~mGameState~x] already registered ~1%s~x", state->GetName().c_str());
+				LOG_ERROR("[~mGameState~x] Already created ~1%s~x", state->GetName().c_str());
 				return (T*)state;
 			}
 		}
 		T* instance = new T();
 
 		m_states.push_back(instance);
-		LOG("[~mGameState~x] registered ~1%s ~xstate", instance->GetName().c_str());
+		LOG("[~mGameState~x] Created ~1%s ~xstate", instance->GetName().c_str());
 		return (T*)instance;
 	}
 
@@ -64,6 +64,14 @@ public:
 	}
 	void OnImGui() {
 		m_state->OnImGui();
+	}
+
+	void Cleanup() {
+		for (auto& state : m_states) {
+			LOG("[~mGameState~x] Deleted ~1%s ~xstate", state->GetName().c_str());
+			delete state;
+		}
+		m_states.clear();
 	}
 };
 

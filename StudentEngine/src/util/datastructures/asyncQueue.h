@@ -39,8 +39,10 @@ public:
 		return true;
 	}
 
-	void ReleaseWaitingThreads() {
+	void ReleaseWaitingThreadsAndCleanup() {
 		m_releaseThreads = true;
+		m_conditionVariable.notify_all();
+		m_queue.empty();
 	}
 
 	int Size() {

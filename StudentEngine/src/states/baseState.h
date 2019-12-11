@@ -6,7 +6,7 @@ private:
 
 public:
 	BaseState(const String& name) : m_name(name) {}
-
+	virtual ~BaseState(){}
 	const String& GetName() { return m_name; }
 	virtual void Initialize() = 0;
 	virtual void EnterState() = 0;

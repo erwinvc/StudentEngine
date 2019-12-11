@@ -6,7 +6,8 @@ private:
 	bool m_wireframe = false;
 	bool m_FXAA = true;
 
-	Camera* m_camera;
+	Camera* m_mainCamera;
+	Camera* m_activeCamera;
 	Mesh* m_quad;
 	SpriteRenderer* m_spriteRenderer;
 	FrameBuffer* m_finalFBO;
@@ -25,12 +26,13 @@ public:
 	void Finish();
 	void OnImGui();
 
-	float Width() { return m_camera->GetRelativeViewport().z; }
-	float Height() { return m_camera->GetRelativeViewport().w; }
+	float Width() { return m_activeCamera->GetRelativeViewport().z; }
+	float Height() { return m_activeCamera->GetRelativeViewport().w; }
 
 	bool Initialized() { return m_initialized; }
 
-	Camera* GetCamera() { return m_camera; }
+	Camera* GetCamera() { return m_activeCamera; }
+	void SetCamera(Camera* camera) { m_activeCamera = camera; }
 	
 	Mesh* GetQuad() { return m_quad; }
 	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
@@ -38,6 +40,6 @@ public:
 	}
 
 	inline void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
-		m_spriteRenderer->Line(x0, y0, x1, y1, color, size * m_camera->GetZoom());
+		m_spriteRenderer->Line(x0, y0, x1, y1, color, size * m_activeCamera->GetZoom());
 	}
 };

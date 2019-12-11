@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-void editorWindow::Initialize() {
+
+void EditorWindow::Initialize() {
 	// TODO: objs was what was used to initially develop the hierarchy interactions
 	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
 	m_folders = vector<HierarchyObject*>();
@@ -9,22 +10,28 @@ void editorWindow::Initialize() {
 	m_folders.push_back(new HierarchyObject("Folder - Background"));
 	m_folders.push_back(new HierarchyObject("Folder - Items"));
 
-	m_folders[0]->AddChild(GetEditorManager()->GetHierarchy().m_gameObjects[0]);
-	m_folders[0]->AddChild(GetEditorManager()->GetHierarchy().m_gameObjects[1]);
+	m_folders[0]->AddChild(GetEditor()->GetHierarchy().m_gameObjects[0]);
+	m_folders[0]->AddChild(GetEditor()->GetHierarchy().m_gameObjects[1]);
 	////GetEditorManager()->GetHierarchy().m_gameObjects[0]->
 
 	SetupEditorStyle(true, 0.5f);
 }
+EditorWindow::~EditorWindow() {
+	for (auto& folder : m_folders) {
+		delete folder;
+	}
+	m_folders.clear();
+}
 
-void editorWindow::Update(const TimeStep& time) {
+void EditorWindow::Update(const TimeStep& time) {
 	if (m_mouseInViewport)GetCamera()->UpdateZoom(time);
 }
 
-void editorWindow::Draw() {
+void EditorWindow::Draw() {
 
 }
 
-void editorWindow::OnImGui() {
+void EditorWindow::OnImGui() {
 	CreateDockingSpace();
 	if (m_inEditorMode) {
 		CreateEditorWindows();
@@ -33,7 +40,7 @@ void editorWindow::OnImGui() {
 	}
 }
 
-void editorWindow::CreateTemporaryPlayMode() {
+void EditorWindow::CreateTemporaryPlayMode() {
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	ImGuiWindowFlags playwindowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
 	if (ImGui::Begin("Play Window"), nullptr, playwindowFlags) {
@@ -54,7 +61,7 @@ void editorWindow::CreateTemporaryPlayMode() {
 	ImGui::End();
 }
 
-void editorWindow::CreateDockingSpace() {
+void EditorWindow::CreateDockingSpace() {
 	//Create initial docking window
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -97,10 +104,13 @@ void editorWindow::CreateDockingSpace() {
 	ImGui::End();
 }
 
-void editorWindow::CreateEditorWindows() {
+void EditorWindow::CreateEditorWindows() {
 	// Menu Bar
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Exit")) {
+				GetApp()->OnWindowClose();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit")) {
@@ -147,7 +157,7 @@ void editorWindow::CreateEditorWindows() {
 
 			// #TODO: Add different responses to each draggable button!
 			AddItem(Vector2(rayPos.x, rayPos.y));
-			GetEditorManager()->GetHierarchy().SetSelected(GetEditorManager()->GetHierarchy().m_gameObjects[GetEditorManager()->GetHierarchy().m_gameObjects.size() - 1]);
+			GetEditor()->GetHierarchy().SetSelected(GetEditor()->GetHierarchy().m_gameObjects[GetEditor()->GetHierarchy().m_gameObjects.size() - 1]);
 		} else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
@@ -184,7 +194,7 @@ void editorWindow::CreateEditorWindows() {
 	GetInspector()->OnImGui();
 }
 
-void editorWindow::CreateItemDrag() {
+void EditorWindow::CreateItemDrag() {
 	if (ImGui::IsItemActive()) {
 		m_draggingItem = true;
 		ImGuiIO io = ImGui::GetIO();
@@ -197,17 +207,17 @@ void editorWindow::CreateItemDrag() {
 	}
 }
 
-void editorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
+void EditorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	ImGui::Begin("Hierarchy", nullptr, flags);
 
-	for (size_t i = 0; i < m_folders.size(); i++) {
-		DisplayFolder(i, ((int)m_folders[i]->GetChildren().size() > 0));
+	for (int i = 0; i < m_folders.size(); i++) {
+		DisplayFolder(i, (m_folders[i]->GetChildren().size() > 0));
 	}
 	ImGui::End();
 }
 
-void editorWindow::DisplayFolder(int index, bool hasChildren) {
+void EditorWindow::DisplayFolder(int index, bool hasChildren) {
 	HierarchyObject* currFolder = m_folders[index];
 	//vector<GameObject*> hierarchyGameObjs = GetEditorManager()->GetHierarchy().m_gameObjects;
 
@@ -245,13 +255,13 @@ void editorWindow::DisplayFolder(int index, bool hasChildren) {
 		ImGui::EndPopup();
 	}*/
 
-	
+
 }
 
-void editorWindow::DisplayObject(GameObject* obj) {
+void EditorWindow::DisplayObject(GameObject* obj) {
 	String title = Format("%s %s", ICON_FA_BOX, obj->m_name.c_str());
 
-	bool selected = (GetEditorManager()->GetHierarchy().GetSelected() == obj);
+	bool selected = (GetEditor()->GetHierarchy().GetSelected() == obj);
 	//if (ImGui::Selectable(title.c_str(), selected))
 	//	OnItemSelect(obj);
 
@@ -264,16 +274,16 @@ void editorWindow::DisplayObject(GameObject* obj) {
 	GetEditorManager()->GetHierarchy().m_selected = obj;
 }*/
 
-void editorWindow::OnItemDelete(int index) {
+void EditorWindow::OnItemDelete(int index) {
 	m_folders.erase(m_folders.begin() + index);
 	//GetEditorManager()->GetHierarchy().
 }
 
-void editorWindow::OnItemRename(int index) {
+void EditorWindow::OnItemRename(int index) {
 
 }
 
-void editorWindow::MoveToFolder(HierarchyObject* folder) {
+void EditorWindow::MoveToFolder(HierarchyObject* folder) {
 	HierarchyObject* oldFolder = FindFolderOfObject(m_movingChild);
 	//TODO: Prevents error that needs cleaning up!
 	if (oldFolder == NULL)
@@ -284,8 +294,8 @@ void editorWindow::MoveToFolder(HierarchyObject* folder) {
 	m_settingNewFolder = false;
 }
 
-HierarchyObject* editorWindow::FindFolderOfObject(GameObject* obj) {
-	for each (HierarchyObject* folder in m_folders) {
+HierarchyObject* EditorWindow::FindFolderOfObject(GameObject* obj) {
+	for each (HierarchyObject * folder in m_folders) {
 		if (folder->ContainsChild(obj)) {
 			return folder;
 		}
@@ -294,7 +304,7 @@ HierarchyObject* editorWindow::FindFolderOfObject(GameObject* obj) {
 	return NULL;
 }
 
-void editorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
+void EditorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
 	if (obj != NULL)
 		m_movingChild = obj;
 
@@ -321,7 +331,7 @@ void editorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
 	Undo::FinishRecording();
 }*/
 
-void editorWindow::AddItem(Vector2 pos = NULL) {
+void EditorWindow::AddItem(Vector2 pos = NULL) {
 	if (pos == NULL) {
 		pos = Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2);
 	}
@@ -330,22 +340,22 @@ void editorWindow::AddItem(Vector2 pos = NULL) {
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
 	StreamedTexture* logo;
 	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
-	String name = Format("Object %i", GetEditorManager()->GetHierarchy().m_gameObjects.size() + 1);
-	GetEditorManager()->AddGameObject(new GameObject(name))
+	String name = Format("Object %i", GetEditor()->GetHierarchy().m_gameObjects.size() + 1);
+	GetEditor()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(pos)
 		.SetTexture(logo);
 
-	m_folders[0]->AddChild(GetEditorManager()->GetHierarchy().m_gameObjects[GetEditorManager()->GetHierarchy().m_gameObjects.size()-1]);
+	m_folders[0]->AddChild(GetEditor()->GetHierarchy().m_gameObjects[GetEditor()->GetHierarchy().m_gameObjects.size() - 1]);
 
 	//m_folders = GetEditorManager()->GetHierarchy().m_gameObjects;
 }
 
-void editorWindow::AddFolder() {
+void EditorWindow::AddFolder() {
 
 }
 
-void editorWindow::CreateViewport() {
+void EditorWindow::CreateViewport() {
 	//if (GetStateManager()->GetState() == States::LOADING) return;
 	ImGuiViewport* viewport = ImGui::GetWindowViewport();
 	ImGuiContext& g = *GImGui;
@@ -360,7 +370,7 @@ void editorWindow::CreateViewport() {
 	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }
 
-void editorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
+void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	// light style from Pacôme Danhiez (user itamago)

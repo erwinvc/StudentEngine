@@ -202,7 +202,9 @@ private:
 	vector<Tween*> m_tweens;
 
 	TweenManager() {}
-	~TweenManager() {}
+	~TweenManager() {
+		Cleanup();
+	}
 
 	void AddTween(Tween* tween) {
 		m_tweens.push_back(tween);
@@ -214,6 +216,7 @@ private:
 			delete tween;
 		}
 	}
+	
 	friend Tween;
 	template<class T> friend class TweenValue;
 	friend Singleton;
@@ -222,6 +225,13 @@ public:
 		for (int i = 0; i < m_tweens.size(); i++) {
 			m_tweens[i]->Update(time);
 		}
+	}
+
+	void Cleanup() {
+		for (auto& tween : m_tweens) {
+			delete tween;
+		}
+		m_tweens.clear();
 	}
 };
 

@@ -124,6 +124,12 @@ public:
 		return AssetRef<FrameBuffer>(fbo);
 	}
 
+	void Cleanup() {
+		for (auto& fbo : m_frameBuffers) {
+			delete fbo;
+		}
+		m_frameBuffers.clear();
+	}
 	void BindDefaultFBO();
 
 	void Delete(AssetRef<FrameBuffer>& fbo) {

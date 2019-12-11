@@ -54,6 +54,17 @@
 
 using namespace std;
 
+#include "util/types.h"
+#include "util/memory.h"
+
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
+//#ifdef _DEBUG
+//#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#define new DEBUG_NEW
+//#endif
+
+
 #include "util/math/vector2.h"
 #include "util/math/vector2I.h"
 #include "util/math/vector3.h"
@@ -63,7 +74,6 @@ using namespace std;
 #include "util/math/math.h"
 #include "util/math/transform.h"
 
-#include "util/types.h"
 #include "util/ref.h"
 #include "util/singleton.h"
 #include "util/fileSystem.h"
@@ -139,7 +149,6 @@ using namespace std;
 #include "editor/hierarchyObject.h"
 #include "editor/hierarchy.h"
 #include "editor/editorGrid.h"
-#include "editor/editorManager.h"
 #include "editor/editorWindow.h"
 #include "editor/editorAssetManager.h"
 #include "util/undo.h"

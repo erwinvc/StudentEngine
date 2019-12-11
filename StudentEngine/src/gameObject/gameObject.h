@@ -100,11 +100,7 @@ public:
 		ImGui::SameLine(width - ImGui::CalcTextSize(m_name.c_str(), NULL, true).x);
 		ImGui::LabelText("##hideName", m_name.c_str());
 
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Color");
-		ImGui::SameLine(width / 2);
-		ImGui::PushItemWidth(width / 2);
-		ImGui::ColorEdit4("##color", (float*)&m_sprite.m_color);
+		m_sprite.InspectorDraw();
 	}
 
 	#pragma endregion

@@ -5,7 +5,7 @@ struct Fiber {
 	Fiber* m_nextFiber;
 	float m_wakeTime;
 	String m_name;
-	thread::id m_glThreadID;
+	uint64* m_args;
 };
 
 class GLFiberManager : public Singleton<GLFiberManager> {
@@ -20,7 +20,7 @@ private:
 	Fiber* m_currentFiber;
 
 	bool m_initialized = false;
-	bool m_cleaned;
+	bool m_cleaned = false;
 	thread::id m_glThreadID;
 
 public:
@@ -35,9 +35,12 @@ public:
 	vector<Fiber> GetFibers() { return m_fibers; }
 	String GetCurrentFiberName() { return m_currentFiber->m_name; }
 
-	bool IsSameThread(thread::id threadId){
+	bool IsSameThread(thread::id threadId) {
 		if (!m_initialized) return true;
 		return(threadId == m_glThreadID);
+	}
+	bool IsCleaned() {
+		return m_cleaned;
 	}
 };
 
