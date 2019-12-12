@@ -14,25 +14,81 @@ AudioManager::~AudioManager() {
 
 void AudioManager::Initialize() {
 	m_device = alcOpenDevice(NULL);
-	if (m_device) {
-		LOG("[~BAudio~x] Created Audio Device");
-		m_context = alcCreateContext(m_device, NULL);
-		alcMakeContextCurrent(m_context);
+	if (!m_device) {
+		LOG_ERROR("[~BAudio~x] Failed opening Audio Device");
+	}
+	LOG("[~BAudio~x] Created Audio Device (%s)", alcGetString(m_device, ALC_DEFAULT_DEVICE_SPECIFIER));
+	m_context = alcCreateContext(m_device, NULL);
+	if (!m_context || alcMakeContextCurrent(m_context) == ALC_FALSE) {
+		alcCloseDevice(m_device);
+		LOG_ERROR("[~BAudio~x] Failed creating Audio Context");
 	}
 }
 
-ALuint* AudioManager::CreateBuffers(int bufferAmount) {
-	ALuint* buffers;
+//ALuint* AudioManager::CreateBuffers(int bufferAmount) {
+//	ALuint* buffers = 0;
+//	alGetError();
+//	alGenBuffers(bufferAmount, &buffers);
+//	if ((m_error = alGetError()) != AL_NO_ERROR) {
+//		LogError("Create Buffers", m_error);
+//		return nullptr;
+//	}
+//	return &buffers;
+//}
+  
+
+void AudioManager::PlayAudio(Audio* audio) {
+	LOG("Start playing audio");
+	ALuint buffer;
+
 	alGetError();
-	alGenBuffers(bufferAmount, buffers);
+	alGenBuffers(1, &buffer);
 	if ((m_error = alGetError()) != AL_NO_ERROR) {
-		LogError("Buffers", m_error);
-		return nullptr;
+		LogError("Create Buffers", m_error);
 	}
-	return buffers;
+
+	ALenum format = (audio->GetChannels() == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+
+	alGetError();
+	alBufferData(buffer, format, audio->GetData(), (ALsizei) audio->GetSize(), (ALsizei) audio->GetSampleRate());
+	if ((m_error = alGetError()) != AL_NO_ERROR) {
+		LogError("Load Buffer Data", m_error);
+	}
+
+	ALuint source;
+	alGetError();
+	alGenSources(1, &source);
+	if ((m_error = alGetError()) != AL_NO_ERROR)
+	{
+		LogError("Create Sources", m_error);
+	}
+
+	alGetError();
+	alSourcei(source, AL_BUFFER, buffer);
+	if ((m_error = alGetError()) != AL_NO_ERROR)
+	{
+		LogError("Attach buffer to source", m_error);
+	}
+
+	alGetError();
+	alSourcePlay(source);
+	ALenum state = AL_PLAYING;
+	while (alGetError() == AL_NO_ERROR && state == AL_PLAYING) {
+		Sleep(1000);
+		alGetSourcei(source, AL_SOURCE_STATE, &state);
+	}
+
+	if ((m_error = alGetError()) != AL_NO_ERROR) {
+		LogError("Playing Sound", m_error);
+	}
+
+	alDeleteBuffers(1, &buffer);
+	alDeleteSources(1, &source);
+	LOG("Finish playing audio");
 }
 
 void AudioManager::LogError(const char* id, ALenum& error) {
+	int errorCode = error;
 	const char* errorMessage;
 	switch (error) {
 	case AL_NO_ERROR:
@@ -42,10 +98,10 @@ void AudioManager::LogError(const char* id, ALenum& error) {
 		errorMessage = "Bad name passed to OpenAL function";
 		break;
 	case AL_INVALID_ENUM:
-		errorMessage = "Invalid enum value pased to OpenAL function";
+		errorMessage = "Invalid enum value passed to OpenAL function";
 		break;
 	case AL_INVALID_VALUE:
-		errorMessage = "Invalid value pased to OpenAL function";
+		errorMessage = "Invalid value passed to OpenAL function";
 		break;
 	case AL_INVALID_OPERATION:
 		errorMessage = "Requested OpenAL operation is not valid";
@@ -57,5 +113,5 @@ void AudioManager::LogError(const char* id, ALenum& error) {
 		errorMessage = "Unknown error";
 		break;
 	}
-	LOG_ERROR("[Audio] OpenAL error (%s): %s", id, errorMessage);
+	LOG_ERROR("[Audio] OpenAL errorcode %d (%s): %s", errorCode, id, errorMessage);
 }

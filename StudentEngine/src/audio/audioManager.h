@@ -6,7 +6,7 @@ private:
 	ALCcontext* m_context;
 	ALenum m_error;
 
-	ALuint* CreateBuffers(int bufferAmount);
+	//ALuint* CreateBuffers(int bufferAmount);
 public:
 	AudioManager();
 	~AudioManager();
@@ -14,7 +14,7 @@ public:
 	friend Singleton;
 
 	void Initialize();
-	void Play();
+	void PlayAudio(Audio* audio);
 	void LogError(const char* id, ALenum& error);
 };
 

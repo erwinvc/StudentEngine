@@ -58,6 +58,9 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (m_hierarchy.UpdateSelected(time, m_mouseRayPosition)) return;
 
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
+		// Play bloop sound for testing purposes.
+		//GetAudioManager()->PlayAudio(GetAssetManager()->Get<Audio>("BloopSound"));
+
 		GameObject* obj = GetGameObjectUnderMouse();
 		m_hierarchy.SetSelected(obj);
 		GetInspector()->SetSelected(obj);
