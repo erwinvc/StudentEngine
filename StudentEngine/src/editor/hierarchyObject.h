@@ -3,6 +3,7 @@
 class HierarchyObject {
 private:
 	vector<GameObject*> m_children;
+	char m_renameHelper[32];
 
 public:
 	String m_name;
@@ -17,6 +18,7 @@ public:
 	void GuiItemDrag(int index);
 	void FolderExtra();
 	void OnItemSelect(GameObject* obj);
+	void OnItemDelete(int index);
 
 	void AddChild(GameObject* gameObject);
 	void RemoveChild(GameObject* gameObject);

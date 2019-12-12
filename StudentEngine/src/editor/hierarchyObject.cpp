@@ -4,6 +4,7 @@ void HierarchyObject::OnImGui() {
 	String title = Format("%s %s", ICON_FA_FOLDER, m_name.c_str());
 	bool open = false;
 
+
 	if (ImGui::TreeNode(title.c_str())) {
 		open = true;
 		RightClick(-1, true);
@@ -57,22 +58,44 @@ void HierarchyObject::OnItemSelect(GameObject* obj) {
 void HierarchyObject::RightClick(int index, bool folder) {
 	if (ImGui::BeginPopupContextItem(nullptr, 1)) {
 		if (folder) {
-			if (ImGui::Selectable("Confirm Folder")) {
+			if (ImGui::Button("Confirm Folder")) {
 				GetEditorWindow()->MoveToFolder(this);
 			}
-			if (ImGui::Selectable("Cancel Setting Parent")) {
+			if (ImGui::Button("Cancel Setting Parent")) {
 				GetEditorWindow()->ToggleSettingNewParent(NULL);
 			}
 		}
 		else {
 			//Automatically preventing the player to set multiple parents at the same time
-			if (ImGui::Selectable("Change Folder") && !GetEditorWindow()->SettingNewFolder()) {
+			if (ImGui::Button("Change Folder") && !GetEditorWindow()->SettingNewFolder()) {
 				GetEditorWindow()->ToggleSettingNewParent(m_children[index]);
 			}
 			// TODO: Reimplement deleting
-			/*if (ImGui::Selectable("Delete")) {
-				//OnItemDelete(index);
-			}*/
+			if (ImGui::Button("Delete")) {
+				OnItemDelete(index);
+			}
+
+			if (ImGui::Button("Rename Item")) {
+				//We copy the name here into our helper variable to prevent it from reapplying it every frame
+				strcpy(m_renameHelper, m_children[index]->m_name.c_str());
+				ImGui::OpenPopup("Rename Item");
+			}
+            
+
+			if (ImGui::BeginPopupModal("Rename Item", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("Enter name here\n\n");
+				ImGui::Separator();
+				ImGui::InputText("", m_renameHelper, IM_ARRAYSIZE(m_renameHelper));
+				if (ImGui::Button("OK", ImVec2(120, 0))) { 
+					ImGui::CloseCurrentPopup();
+					m_children[index]->m_name = Format("%s", m_renameHelper);
+				}
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+				ImGui::EndPopup();
+			}
 		}
 
 		ImGui::EndPopup();
@@ -94,13 +117,19 @@ void HierarchyObject::GuiItemDrag(int index) {
 }
 
 void HierarchyObject::AddChild(GameObject* gameObject) {
-	//gameObject->SetParent(this);
 	m_children.push_back(gameObject);
 }
 
 void HierarchyObject::RemoveChild(GameObject* gameObject) {
 	m_children.erase(remove(m_children.begin(), m_children.end(), gameObject), m_children.end());
 }
+
+void HierarchyObject::OnItemDelete(int index) {
+	GetEditor()->GetHierarchy().DeleteGameObject(m_children[index]);
+
+	RemoveChild(m_children[index]);
+}
+
 
 vector<GameObject*> HierarchyObject::GetChildren() {
 	return m_children;
