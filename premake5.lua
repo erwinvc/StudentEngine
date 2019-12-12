@@ -43,7 +43,6 @@ project "StudentEngine"
 		"%{prj.name}/vendor/GLFW/include",
 		"%{prj.name}/vendor/GLEW/include",
 		"%{prj.name}/vendor/imgui",
-		"%{prj.name}/vendor/OpenAL/include",
 		"%{prj.name}",
 		"%{prj.name}/src"
 	}
@@ -53,7 +52,6 @@ project "StudentEngine"
 		"$(SolutionDir)%{prj.name}/vendor/GLFW/lib-vc2015",
 		"$(SolutionDir)%{prj.name}/vendor/AssImp",
 		"$(SolutionDir)%{prj.name}/vendor/GLEW/lib/Release/x64",
-		"$(SolutionDir)%{prj.name}/vendor/OpenAL/libs/Win64",
 		"$(SolutionDir)%{prj.name}/vendor/"
 	}
 
@@ -62,7 +60,6 @@ project "StudentEngine"
 		"glfw3",
 		"glew32s",
 		"opengl32",
-		"OpenAL32",
 		"IrrXML",
 		"zlib.lib",
 		"zlibstatic",
