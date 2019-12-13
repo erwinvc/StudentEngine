@@ -31,7 +31,7 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerCat", "res/cat.png"));
 
-	//GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/Assets/Audio/Bloop.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/Assets/Audio/Bloop.wav"));
 
 	for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
 		if (file.path().extension().string().compare(".png") == 0) {

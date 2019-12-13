@@ -169,6 +169,7 @@ App::~App() {
 	GetImGuiManager()->Cleanup();
 	GetTweenManager()->Cleanup();
 	GetStateManager()->Cleanup();
+	GetAudioManager()->Cleanup();
 	Undo::Cleanup();
 	delete m_glCallbackManager;
 	delete m_assetManager;

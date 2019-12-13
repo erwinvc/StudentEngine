@@ -53,7 +53,7 @@ void EditState::EditorControls(const TimeStep& time) {
 		GameObject* obj = m_scene.GetGameObjectUnderMouse();
 		m_scene.m_hierarchy.SetSelected(obj);
 		// Play bloop sound for testing purposes.
-		GetAudioManager()->Play("res/Assets/Audio/Bloop.wav");
+		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 
 		GetInspector()->SetSelected(obj);
 	}

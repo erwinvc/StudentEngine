@@ -4,10 +4,12 @@ void AudioManager::Initialize() {
 	audioCore.init();
 }
 
-void AudioManager::Play(const Path& filePath) {
-	SoLoud::Wav waveFile;
-	waveFile.load(filePath.GetFullPath().c_str());
-	audioCore.play(waveFile);
+void AudioManager::Cleanup() {
+	audioCore.deinit();
+}
+
+void AudioManager::Play(Audio* audio) {
+	audioCore.play(audio->GetWav());
 	while (audioCore.getActiveVoiceCount() > 0) {
 		SoLoud::Thread::sleep(100);
 	}

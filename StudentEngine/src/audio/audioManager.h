@@ -5,7 +5,8 @@ private:
 	SoLoud::Soloud audioCore;
 public:
 	void Initialize();
-	void Play(const Path& filePath);
+	void Cleanup();
+	void Play(Audio* audio);
 };
 
 static AudioManager* GetAudioManager() {
