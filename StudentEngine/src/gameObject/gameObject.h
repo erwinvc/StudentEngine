@@ -4,14 +4,21 @@ class GameObject : public InspectorDrawable {
 private:
 	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
+	PhysicsObject m_physicsObject;
 
 public:
 	String m_name;
 	Transform m_transform;
 	Sprite m_sprite;
 
-	GameObject(const String& name) : m_name(name) {}
-	GameObject() : m_name("") {}
+	GameObject(const String& name) : m_name(name), m_physicsObject(PhysicsObject(this)) {
+		m_transform.m_gameObject = this;
+	}
+	GameObject() : m_name(""), m_physicsObject(PhysicsObject(this)) {
+		m_transform.m_gameObject = this;
+	}
+	~GameObject() {
+	}
 
 	virtual GameObject* Copy() {
 		return new GameObject(*this);
@@ -94,6 +101,8 @@ public:
 	}
 
 	void InspectorDraw() override {
+		InspectorDrawer::EditText("Name", m_name);
+		m_transform.InspectorDraw();
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Name");
 		float width = ImGui::GetContentRegionAvail().x;

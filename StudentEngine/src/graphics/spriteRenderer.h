@@ -120,6 +120,14 @@ public:
 		m_instancedRenderer->Submit(vertices);
 	}
 
+	void LineRect(Rectangle& rect, Color& color = Color::White(), float lineSize = 1.0f) {
+		float halfLineSize = lineSize / 2;
+		Line(rect.XMin() - halfLineSize, rect.YMin() - halfLineSize, rect.XMin() - halfLineSize, rect.YMax() + halfLineSize, color, lineSize);
+		Line(rect.XMax() + halfLineSize, rect.YMin() - halfLineSize, rect.XMax() + halfLineSize, rect.YMax() + halfLineSize, color, lineSize);
+		Line(rect.XMin() - halfLineSize, rect.YMin() - halfLineSize, rect.XMax() + halfLineSize, rect.YMin() - halfLineSize, color, lineSize);
+		Line(rect.XMin() - halfLineSize, rect.YMax() + halfLineSize, rect.XMax() + halfLineSize, rect.YMax() + halfLineSize, color, lineSize);
+	}
+
 	void Begin() {
 		m_textures.clear();
 		SubmitTexture(m_defaultTexture);

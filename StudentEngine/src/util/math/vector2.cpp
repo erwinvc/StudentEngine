@@ -208,3 +208,12 @@ Vector2 Vector2::Normalized() const {
 	float length = Magnitude();
 	return Vector2(x / length, y / length);
 }
+
+//Checks if point is within rect
+bool Vector2::Within(Rectangle& other) const {
+	bool withinX = Math::Within(x, other.position.x - other.size.x / 2, other.position.x + other.size.x / 2);
+	if (!withinX) return false;
+	bool withinY = Math::Within(y, other.position.y - other.size.y / 2, other.position.y + other.size.y / 2);
+	if (!withinY) return false;
+	return true;
+}

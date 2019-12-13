@@ -140,7 +140,7 @@ bool ImGui::NamedButton(Texture* texture, const ImVec2& size, const ImVec2& uv0,
 		RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
 	}
 
-	void* handle = (void*)texture->GetHandle();
+	void* handle = texture->GetImGuiHandle();
 
 	ImVec2 aspect2 = { image_bb.Max.x * aspect.x, image_bb.Max.y * aspect.y };
 

@@ -2,10 +2,10 @@
 
 class EditState : public BaseState {
 private:
+	Scene m_scene;
 	EditorWindow* m_window;
 	EditorAssetManager* m_assetManager;
-	Hierarchy m_hierarchy;
-	Vector2 m_mouseRayPosition;
+
 	GameObject* m_sample;
 
 public:
@@ -25,18 +25,14 @@ public:
 	void ExitState() override;
 	void OnImGui() override;
 
-	GameObject* GetGameObjectUnderMouse();
 	void EditorControls(const TimeStep& time);
 
-	GameObject& AddGameObject(GameObject* gameObject) {
-		return *m_hierarchy.AddGameObject(gameObject);
-	}
-
-	inline Hierarchy& GetHierarchy() { return m_hierarchy; }
+	inline Scene* GetScene() { return &m_scene; }
 	inline EditorWindow* GetWindow() { return m_window; }
 	inline EditorAssetManager* GetEditorAssetManager() { return m_assetManager; }
 };
 
 EditState* GetEditor();
+inline Scene* GetScene() { return GetEditor()->GetScene(); }
 inline EditorWindow* GetEditorWindow() { return GetEditor()->GetWindow(); }
 inline EditorAssetManager* GetEditorAssetManager() { return GetEditor()->GetEditorAssetManager(); }

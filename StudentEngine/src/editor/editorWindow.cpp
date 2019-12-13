@@ -10,8 +10,8 @@ void EditorWindow::Initialize() {
 	m_folders.push_back(new HierarchyObject("Folder - Background"));
 	m_folders.push_back(new HierarchyObject("Folder - Items"));
 
-	m_folders[0]->AddChild(GetEditor()->GetHierarchy().m_gameObjects[0]);
-	m_folders[0]->AddChild(GetEditor()->GetHierarchy().m_gameObjects[1]);
+	m_folders[0]->AddChild(GetScene()->GetHierarchy().m_gameObjects[0]);
+	m_folders[0]->AddChild(GetScene()->GetHierarchy().m_gameObjects[1]);
 	////GetEditorManager()->GetHierarchy().m_gameObjects[0]->
 
 	SetupEditorStyle(true, 0.5f);
@@ -157,7 +157,7 @@ void EditorWindow::CreateEditorWindows() {
 
 			// #TODO: Add different responses to each draggable button!
 			AddItem(Vector2(rayPos.x, rayPos.y));
-			GetEditor()->GetHierarchy().SetSelected(GetEditor()->GetHierarchy().m_gameObjects[GetEditor()->GetHierarchy().m_gameObjects.size() - 1]);
+			GetScene()->GetHierarchy().SetSelected(GetScene()->GetHierarchy().m_gameObjects[GetScene()->GetHierarchy().m_gameObjects.size() - 1]);
 		} else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
@@ -261,7 +261,7 @@ void EditorWindow::DisplayFolder(int index, bool hasChildren) {
 void EditorWindow::DisplayObject(GameObject* obj) {
 	String title = Format("%s %s", ICON_FA_BOX, obj->m_name.c_str());
 
-	bool selected = (GetEditor()->GetHierarchy().GetSelected() == obj);
+	bool selected = (GetScene()->GetHierarchy().GetSelected() == obj);
 	//if (ImGui::Selectable(title.c_str(), selected))
 	//	OnItemSelect(obj);
 
@@ -340,13 +340,13 @@ void EditorWindow::AddItem(Vector2 pos = NULL) {
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
 	StreamedTexture* logo;
 	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
-	String name = Format("Object %i", GetEditor()->GetHierarchy().m_gameObjects.size() + 1);
-	GetEditor()->AddGameObject(new GameObject(name))
+	String name = Format("Object %i", GetScene()->GetHierarchy().m_gameObjects.size() + 1);
+	GetScene()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(pos)
 		.SetTexture(logo);
 
-	m_folders[0]->AddChild(GetEditor()->GetHierarchy().m_gameObjects[GetEditor()->GetHierarchy().m_gameObjects.size() - 1]);
+	m_folders[0]->AddChild(GetScene()->GetHierarchy().m_gameObjects[GetScene()->GetHierarchy().m_gameObjects.size() - 1]);
 
 	//m_folders = GetEditorManager()->GetHierarchy().m_gameObjects;
 }
@@ -367,7 +367,7 @@ void EditorWindow::CreateViewport() {
 
 	m_viewport = Vector4(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
 	m_mouseInViewport = ImGui::IsWindowHovered(ImGuiHoveredFlags_RectOnly);
-	ImGui::Image((void*)GetApp()->GetPipeline()->GetFinalTexture()->GetHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
+	ImGui::Image(GetApp()->GetPipeline()->GetFinalTexture()->GetImGuiHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
 }
 
 void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {

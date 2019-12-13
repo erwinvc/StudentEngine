@@ -3,7 +3,7 @@
 class ThreadPool : public Singleton<ThreadPool>{
 private:
 	bool m_initialized = false;
-	AsyncQueue<function <void(void)>> m_queue;
+	AsyncQueue<function<void(void)>> m_queue;
 
 	void ThreadEntry();
 

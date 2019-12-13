@@ -3,7 +3,12 @@
 struct Matrix4;
 
 struct Vector4 {
-	float x, y, z, w;
+	union
+	{
+		struct { float x, y, z, w; };
+		struct { float x, y, width, height; };
+		float values[4];
+	};
 
 	Vector4() = default;
 	Vector4(float scalar);

@@ -1,6 +1,7 @@
 #pragma once
 
 #define _HAS_STD_BYTE 0
+#define NOGDI /*We don't want mingdi.h*/
 #pragma warning (disable: 4244) /*type_traits conversion warning*/
 
 // Windows Header Files:
@@ -72,7 +73,6 @@ using namespace std;
 #include "util/math/matrix4.h"
 #include "util/math/Rectangle.h"
 #include "util/math/math.h"
-#include "util/math/transform.h"
 
 #include "util/ref.h"
 #include "util/singleton.h"
@@ -95,6 +95,8 @@ using namespace std;
 
 #include "editor/inspector/inspectorDrawable.h"
 #include "editor/inspector/inspector.h"
+
+#include "util/math/transform.h"
 
 #include "assets/assetBase.h"
 #include "assets/icon.h"
@@ -144,6 +146,12 @@ using namespace std;
 
 #include "assets/assetManager.h"
 
+
+#include "physics/physicsObject.h"
+#include "physics/dynamicObject.h"
+#include "physics/staticObject.h"
+#include "physics/quadTree.h"
+
 #include "application.h"
 #include "gameObject/gameObject.h"
 #include "gameObject/editorGameObject.h"
@@ -155,6 +163,8 @@ using namespace std;
 #include "editor/editorAssetManager.h"
 #include "util/undo.h"
 #include "util/fonts/IconsFontAwesome.h"
+
+#include "scene.h"
 
 #include "AL/al.h"
 #include "AL/alc.h"

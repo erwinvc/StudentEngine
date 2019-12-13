@@ -134,7 +134,7 @@ void EditorAssetManager::OnImGui() {
 						}
 						if (dragging || mouseClickPos.Distance(GetMouse()->GetPosition()) > 25) {
 							dragging = true;
-							GameObject* obj = GetEditor()->GetGameObjectUnderMouse();
+							GameObject* obj = GetScene()->GetGameObjectUnderMouse();
 							if (obj) obj->m_sprite.m_singleFrameTexture = asset->GetTexture();
 							tex = asset->GetTexture();
 							ImGuiIO io = ImGui::GetIO();
@@ -144,11 +144,11 @@ void EditorAssetManager::OnImGui() {
 							aspect *= asset->GetTexture()->GetTexture()->GetAspect();
 							ImVec2 size(aspect.x * 80, aspect.y * 60);
 							draw_list->AddLine(io.MouseClickedPos[0], io.MousePos, ImGui::GetColorU32(ImGuiCol_Button), 4.0f);
-							draw_list->AddImage((void*)asset->GetTexture()->GetTexture()->GetHandle(), io.MousePos - size / 2, io.MousePos + size / 2, ImVec2(0, 1), ImVec2(1, 0));
+							draw_list->AddImage(asset->GetTexture()->GetTexture()->GetImGuiHandle(), io.MousePos - size / 2, io.MousePos + size / 2, ImVec2(0, 1), ImVec2(1, 0));
 							draw_list->PopClipRect();
 						}
 					} else if (clicked && ImGui::IsMouseReleased(0)) {
-						GameObject* obj = GetEditor()->GetGameObjectUnderMouse();
+						GameObject* obj = GetScene()->GetGameObjectUnderMouse();
 						dragging = false;
 						clicked = false;
 						if (obj) {

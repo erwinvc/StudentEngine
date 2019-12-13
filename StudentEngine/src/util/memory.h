@@ -3,6 +3,9 @@
 #ifdef DEBUG
 #pragma warning (disable: 4291) /*no matching operator delete found*/
 
+#pragma warning (push)
+#pragma warning (disable: 4595) /*no matching operator delete found*/
+
 class Memory {
 	struct MemoryAllocation {
 		MemoryAllocation* m_next;
@@ -49,6 +52,7 @@ inline void operator delete[](void* _ptr) noexcept {
 	if (_ptr)
 		Memory::Free(_ptr, true);
 }
+#pragma warning (pop)
 
 #define new new(__FILE__, __LINE__)
 #else

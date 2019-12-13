@@ -9,7 +9,6 @@ public:
 	}
 
 	AssetLoadJob(const String& id) : m_id(id) {
-
 	}
 
 	virtual ~AssetLoadJob() {

@@ -19,6 +19,7 @@ public:
 	void SetTextureParameters(TextureParameters& params);
 	void SetData(byte* data);
 	uint GetHandle() { return m_textureID; }
+	void* GetImGuiHandle() { return (void*)(uint64)m_textureID; }
 	void Bind(uint slot = 0) const;
 	void Unbind(uint slot = 0) const;
 	void Resize(int width, int height);

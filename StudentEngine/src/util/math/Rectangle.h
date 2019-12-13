@@ -1,15 +1,29 @@
 #pragma once
 
-class Rectangle {
-public:
-	Vector2 m_position;
-	Vector2 m_size;
-	Rectangle() : m_position(Vector2()), m_size(Vector2()) {}
+struct Rectangle {
+	union {
+		struct {
+			Vector2 position;
+			Vector2 size;
+		};
+		struct {
+			float x, y, w, h;
+		};
+	};
 
-	Rectangle(float x, float y, float w, float h) : m_position(Vector2(x, y)), m_size(Vector2(w, h)) {}
-	Rectangle(int x, int y, int w, int h) : m_position(Vector2((float)x, (float)y)), m_size(Vector2((float)w, (float)h)) {}
+	Rectangle() :x(0), y(0), w(0), h(0) {}
+	Rectangle(float _x, float _y, float _w, float _h) : x(_x), y(_y), w(_w), h(_h) {}
+	Rectangle(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h) {}
+	Rectangle(Vector2& _position, Vector2& _size) : position(_position), size(_size) {}
 
-	Vector4 GetCornerPositions() const {
-		return { m_position - m_size / 2, m_position + m_size / 2 };
+	Rectangle GetCornerPositions() const {
+		return { position - size / 2, position + size / 2 };
 	}
+
+	bool Within(Rectangle& other);
+
+	float XMin() { return position.x - size.x / 2; }
+	float XMax() { return position.x + size.x / 2; }
+	float YMin() { return position.y - size.y / 2; }
+	float YMax() { return position.y + size.y / 2; }
 };

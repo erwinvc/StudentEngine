@@ -101,16 +101,22 @@ namespace Math {
 		*val = *val < min ? min : *val > max ? max : *val;
 	}
 
-	template<typename T>
-	inline bool Within(T val, T min, T max) {
+	inline bool Within(float val, float min, float max) {
 		return val <= max && val >= min;
 	}
 
-	template<typename T>
-	inline bool Within(T valMin, T valMax, T min, T max) {
-		return valMin < max && valMax > min;
+	inline bool Within(float valMin, float valMax, float min, float max) {
+		return valMin <= max && valMax >= min;
 	}
 
+	inline bool Within(int val, int min, int max) {
+		return val <= max && val >= min;
+	}
+
+	inline bool Within(int valMin, int valMax, int min, int max) {
+		return valMin <= max && valMax >= min;
+	}
+	
 	inline float RandomFloat(float min, float max) {
 		float r = (float)rand() / (float)RAND_MAX;
 		return r * (max - min) + min;

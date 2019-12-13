@@ -42,7 +42,7 @@ public:
 	void ReleaseWaitingThreadsAndCleanup() {
 		m_releaseThreads = true;
 		m_conditionVariable.notify_all();
-		m_queue.empty();
+		queue<T>().swap(m_queue);
 	}
 
 	int Size() {

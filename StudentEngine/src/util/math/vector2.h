@@ -2,6 +2,7 @@
 
 struct Vector3;
 struct Vector2I;
+struct Rectangle;
 
 struct Vector2 {
 	float x, y;
@@ -62,4 +63,7 @@ struct Vector2 {
 	float SqrDistance(const Vector2& other) const;
 	float Distance(const Vector2& other) const;
 	float Dot(const Vector2& other) const;
+
+	//Checks if point is within rect
+	bool Within(Rectangle& other) const;
 };
