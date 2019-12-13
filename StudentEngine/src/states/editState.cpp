@@ -52,6 +52,9 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		GameObject* obj = m_scene.GetGameObjectUnderMouse();
 		m_scene.m_hierarchy.SetSelected(obj);
+		// Play bloop sound for testing purposes.
+		GetAudioManager()->Play("res/Assets/Audio/Bloop.wav");
+
 		GetInspector()->SetSelected(obj);
 	}
 }

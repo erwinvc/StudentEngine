@@ -1,4 +1,3 @@
-#pragma once
 
 class Hierarchy {
 private:
@@ -43,6 +42,11 @@ public:
 			delete obj;
 		}
 		m_gameObjects.clear();
+	}
+	
+	void DeleteGameObject(GameObject* obj) {
+		m_gameObjects.erase(remove(m_gameObjects.begin(), m_gameObjects.end(), obj), m_gameObjects.end());
+		delete obj;
 	}
 
 	void SetSelected(GameObject* selected) {
