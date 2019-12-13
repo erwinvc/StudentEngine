@@ -52,6 +52,10 @@
 #include "vendor/json.h"
 #include "vendor/stb_image.h"
 
+#include "soloud.h"
+#include "soloud_wav.h"
+#include "soloud_thread.h"
+
 using namespace std;
 
 #include "util/types.h"

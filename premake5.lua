@@ -22,6 +22,7 @@ project "StudentEngine"
 	files
 	{
 		"%{prj.name}/**.h",
+		"%{prj.name}/**.c",
 		"%{prj.name}/**.cpp",
 		"%{prj.name}/**.vert",
 		"%{prj.name}/**.frag",
@@ -30,7 +31,11 @@ project "StudentEngine"
 	}
 
 	filter { "files:StudentEngine/vendor/**.cpp" }
-		flags "NoPCH"	
+		flags "NoPCH"
+	filter {}
+
+	filter { "files:StudentEngine/vendor/**.c" }
+		flags "NoPCH"
 	filter {}
 	
 	pchheader "stdafx.h"
@@ -43,6 +48,7 @@ project "StudentEngine"
 		"%{prj.name}/vendor/GLFW/include",
 		"%{prj.name}/vendor/GLEW/include",
 		"%{prj.name}/vendor/imgui",
+		"%{prj.name}/vendor/soloud/include",
 		"%{prj.name}",
 		"%{prj.name}/src"
 	}
@@ -73,7 +79,8 @@ project "StudentEngine"
 		defines
 		{
 			"GLEW_STATIC",
-			"_CRT_SECURE_NO_WARNINGS"
+			"_CRT_SECURE_NO_WARNINGS",
+			"WITH_WINMM=1"
 		}
 
 
