@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-Audio::Audio(const Path& filePath) : m_filePath(filePath) {
+Audio::Audio(const Path& filePath) : AssetBase(filePath) {
 	m_wav.load(filePath.GetFullPath().c_str());
 }
 

@@ -77,6 +77,18 @@ public:
 	}
 
 	template<typename T>
+	vector<AssetBase*> GetAllOfType() {
+		vector<AssetBase*> results;
+		map<String, AssetBase*>::iterator mapIterator;
+		for (mapIterator = m_assets.begin(); mapIterator != m_assets.end(); mapIterator++) {
+			if (dynamic_cast<Audio*>(mapIterator->second)) {
+				results.push_back(mapIterator->second);
+			}
+		}
+		return results;
+	}
+
+	template<typename T>
 	void Add(const String& name, T* asset) {
 		if (m_assets[name]) LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x already exists", name.c_str(), typeid(T).name());
 		else m_assets[name] = asset;

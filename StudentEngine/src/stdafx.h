@@ -160,6 +160,7 @@ using namespace std;
 #include "gameObject/gameObject.h"
 #include "gameObject/editorGameObject.h"
 #include "gameObject/playerObject.h"
+#include "editor/assetSelectWindow.h"
 #include "editor/hierarchyObject.h"
 #include "editor/hierarchy.h"
 #include "editor/editorGrid.h"

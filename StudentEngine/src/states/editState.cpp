@@ -52,8 +52,6 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		GameObject* obj = m_scene.GetGameObjectUnderMouse();
 		m_scene.m_hierarchy.SetSelected(obj);
-		// Play bloop sound for testing purposes.
-		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 
 		GetInspector()->SetSelected(obj);
 	}
@@ -66,6 +64,12 @@ void EditState::Update(const TimeStep& time) {
 	if (KeyDown(LCTRL)) {
 		if (KeyJustDown('Z')) Undo::UndoOne();
 		if (KeyJustDown('Y')) Undo::RedoOne();
+	}
+
+	// Testing Asset Selection Window
+	if (KeyJustDown(GLFW_KEY_K)) {
+		GetAssetSelect()->Prepare<Audio>([](AssetBase* asset) {LOG("Selected %s", asset->GetFilePath().GetFileName().c_str()); });
+		GetAssetSelect()->Open();
 	}
 
 	if (KeyJustDown(VK_SPACE)) {
