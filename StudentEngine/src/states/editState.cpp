@@ -68,7 +68,7 @@ void EditState::Update(const TimeStep& time) {
 
 	// Testing Asset Selection Window
 	if (KeyJustDown(GLFW_KEY_K)) {
-		GetAssetSelect()->Prepare<Audio>([](AssetBase* asset) {LOG("Selected %s", asset->GetFilePath().GetFileName().c_str()); });
+		GetAssetSelect()->Prepare<StreamedTexture>([](AssetBase* asset) {LOG("Selected %s", asset->GetFullFileName().c_str()); });
 		GetAssetSelect()->Open();
 	}
 

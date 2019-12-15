@@ -81,7 +81,7 @@ public:
 		vector<AssetBase*> results;
 		map<String, AssetBase*>::iterator mapIterator;
 		for (mapIterator = m_assets.begin(); mapIterator != m_assets.end(); mapIterator++) {
-			if (dynamic_cast<Audio*>(mapIterator->second)) {
+			if (dynamic_cast<T*>(mapIterator->second)) {
 				results.push_back(mapIterator->second);
 			}
 		}

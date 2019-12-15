@@ -7,10 +7,11 @@ private:
 	Texture* m_texture;
 	bool m_streamed;
 
-	void FinishStreaming(Texture* texture) {
+	void FinishStreaming(const Path& filePath, Texture* texture) {
 		if (m_streamed) return;
 		m_texture = texture;
 		m_streamed = true;
+		m_filePath = filePath;
 	}
 	friend TextureLoadJob;
 public:

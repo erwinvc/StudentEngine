@@ -1,15 +1,25 @@
 #pragma once
 
 class AssetBase {
-private:
+protected:
 	Path m_filePath;
 public:
 	AssetBase() {};
 	AssetBase(const Path& filePath) : m_filePath(filePath) {};
 	virtual ~AssetBase() {}
+
 	Path& GetFilePath() {
 		return m_filePath;
 	}
+
+	String GetFullFileName() {
+		return m_filePath.GetFileName() + "." + m_filePath.GetExtention();
+	}
+
+	virtual AssetBase* GetTexture() {
+		return NULL;
+	}
+
 	//String m_fullName;
 	//String m_displayName;
 	//

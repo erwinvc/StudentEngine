@@ -7,4 +7,5 @@ public:
 	Audio(const Path& filePath);
 	~Audio();
 	SoLoud::Wav& GetWav();
+	Texture* GetTexture() override;
 };
