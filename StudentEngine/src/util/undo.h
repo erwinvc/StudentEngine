@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace UndoTypes {
 	class UndoType {
 	public:
@@ -112,61 +111,61 @@ namespace UndoTypes {
 		}
 	};
 
-
-	class UndoParent : public UndoType {
+	/*class UndoObjectCreation : public UndoType {
 	private:
-		GameObject* m_parent;
-		GameObject* m_redoParent;
+		GameObject* m_object;
 	public:
 		void Register(GameObject* gameObject) override {
-			m_parent = gameObject->GetParent();
+			m_object = gameObject;
 		}
 		UndoType* CheckChanged(GameObject* gameObject) override {
-			UndoParent* toReturn = nullptr;
-			if (gameObject->GetParent() != m_parent) {
-				toReturn = new UndoParent();
-				toReturn->m_parent = m_parent;
+			UndoObjectCreation* toReturn = nullptr;
+			if (GetEditor()->GetHierarchy().Contains(gameObject)) {
+
+			}
+			if (gameObject->m_sprite.m_color != m_color) {
+				toReturn = new UndoColor();
+				toReturn->m_color = m_color;
 			}
 			return toReturn;
 		}
 		void Undo(GameObject* gameObject) override {
-			m_redoParent = gameObject->GetParent();
-			gameObject->SetParent(m_parent);
+			m_redoColor = gameObject->m_sprite.m_color;
+			gameObject->m_sprite.m_color = m_color;
 		}
-
 		void Redo(GameObject* gameObject) override {
-			gameObject->SetParent(m_redoParent);
+			gameObject->m_sprite.m_color = m_redoColor;
 		}
-	};
+	};*/
 
-	class UndoChild : public UndoType {
+	class UndoFolderSwitch : public UndoType {
 	private:
-		vector<GameObject*> m_children;
-		int m_childrenCount;
-		vector<GameObject*> m_redoChildren;
+		HierarchyObject* m_folder;
+		HierarchyObject* m_redoFolder;
+		GameObject* m_object;
 	public:
 		void Register(GameObject* gameObject) override {
-			m_children = gameObject->GetChildren();
-			m_childrenCount = (int)m_children.size();
+			m_object = gameObject;
+			m_folder = GetEditorWindow()->FindFolderOfObject(gameObject);
 		}
 		UndoType* CheckChanged(GameObject* gameObject) override {
-			UndoChild* toReturn = nullptr;
-			bool hasChanged = gameObject->GetChildren().size() != m_children.size();
-			if (gameObject->GetChildren().size() != m_children.size()) {
-				toReturn = new UndoChild();
-				toReturn->m_children = m_children;
+			UndoFolderSwitch* toReturn = nullptr;
+			if (GetEditorWindow()->FindFolderOfObject(gameObject) != m_folder) {
+				toReturn = new UndoFolderSwitch();
+				toReturn->m_folder = m_folder;
 			}
 			return toReturn;
 		}
 		void Undo(GameObject* gameObject) override {
-			m_redoChildren = gameObject->GetChildren();
-			gameObject->SetChildren(m_children);
+			m_redoFolder = GetEditorWindow()->FindFolderOfObject(gameObject);
+			GetEditorWindow()->MoveToFolder(m_folder, gameObject);
 		}
-
 		void Redo(GameObject* gameObject) override {
-			gameObject->SetChildren(m_redoChildren);
+			GetEditorWindow()->MoveToFolder(m_redoFolder, gameObject);
 		}
 	};
+
+
 };
 
 using namespace UndoTypes;
@@ -196,8 +195,9 @@ public:
 		m_types.push_back(new UndoSize());
 		m_types.push_back(new UndoTexture());
 		m_types.push_back(new UndoColor());
-		m_types.push_back(new UndoParent());
-		m_types.push_back(new UndoChild());
+		m_types.push_back(new UndoFolderSwitch());
+		//m_types.push_back(new UndoParent());
+		//m_types.push_back(new UndoChild());
 		LOG("[~cUndo~x] Initialized Undo");
 	}
 	static void Cleanup() {

@@ -15,7 +15,7 @@ public:
 	void OnImGui();
 	void RightClick(int index, bool folder);
 	void DisplayChild(int index);
-	void GuiItemDrag(int index);
+	void GuiObjectDrag(int index);
 	void FolderExtra();
 	void OnItemSelect(GameObject* obj);
 	void OnItemDelete(int index);

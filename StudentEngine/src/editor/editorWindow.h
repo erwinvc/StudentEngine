@@ -5,9 +5,13 @@ private:
 	float m_time = 0;
 	bool m_inEditorMode = true;
 	bool m_settingNewFolder = false;
+
+	bool m_dragPlacement = false;
+	bool m_draggingItem = false;
+	bool m_dragSourceExternal = false;
 	//SET BACK TO METHODS AAA
 	//bool m_draggingItem = false;
-	GameObject* m_movingChild;
+	//GameObject* m_movingChild;
 	vector<HierarchyObject*> m_folders;
 
 	ImGuiID m_dockspaceCenter;
@@ -26,11 +30,7 @@ private:
 	void CreateViewport();
 	void CreateSceneOverview(ImGuiWindowFlags flags);
 
-	void DisplayFolder(int index, bool hasChildren);
 	void DisplayObject(GameObject* obj);
-	//void OnItemSelect(GameObject* obj);
-	void OnItemDelete(int index);
-	void OnItemRename(int index);
 	void AddItem(Vector2 pos);
 	void AddFolder();
 	void CreateItemDrag();
@@ -39,18 +39,20 @@ private:
 public:
 	EditorWindow() { }
 	~EditorWindow();
-	bool m_draggingItem = false;
-	bool m_dragPlacement = false;
+	GameObject* m_movingChild;
 
 	void Initialize();
 	void OnImGui();
 	void Draw();
 	void Update(const TimeStep& time);
 
-	void MoveToFolder(HierarchyObject* folder);
+	void MoveToFolder(HierarchyObject* folder, GameObject* movingChild);
 	HierarchyObject* FindFolderOfObject(GameObject* obj);
 	void ToggleSettingNewParent(GameObject* obj);
 	bool SettingNewFolder() { return m_settingNewFolder; }
+	void InstantiateDragging(bool externalSource);
+	bool IsInDragPlacement() { return m_dragPlacement; }
+	void SetDragPlacement(bool value) { m_dragPlacement = value; }
 	
 	
 	

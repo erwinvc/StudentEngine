@@ -2,8 +2,6 @@
 
 
 void EditorWindow::Initialize() {
-	// TODO: objs was what was used to initially develop the hierarchy interactions
-	// Do we replace each 'objs' line with the rediculous long line or create a pointer/variable that references to it?
 	m_folders = vector<HierarchyObject*>();
 	//m_hierarchyyyy = vector<HierarchyObject*>();
 	//m_folders.push_back(GetEditorManager()->GetHierarchy());
@@ -16,6 +14,7 @@ void EditorWindow::Initialize() {
 
 	SetupEditorStyle(true, 0.5f);
 }
+
 EditorWindow::~EditorWindow() {
 	for (auto& folder : m_folders) {
 		delete folder;
@@ -150,8 +149,9 @@ void EditorWindow::CreateEditorWindows() {
 
 		Vector2 pos = GetMouse()->GetPosition();
 		bool inWindow = Math::Within(pos.x, m_viewport.x, m_viewport.x + m_viewport.z) && Math::Within(pos.y, m_viewport.y, m_viewport.y + m_viewport.w);
-
-		if (inWindow) {
+		
+		//Currently whenever the drag source (in hierachyObject) is external, that means we aren't creating an object, just moving folders
+		if (inWindow && !m_dragSourceExternal) {
 			Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
 			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
@@ -192,19 +192,16 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
 	GetInspector()->OnImGui();
-
-	GetAssetSelect()->OnImGui();
 }
 
 void EditorWindow::CreateItemDrag() {
 	if (ImGui::IsItemActive()) {
-		m_draggingItem = true;
+		InstantiateDragging(false);
 		ImGuiIO io = ImGui::GetIO();
 		// Draw a line between the button and the mouse cursor
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		draw_list->PushClipRectFullScreen();
 		draw_list->AddLine(io.MouseClickedPos[0], io.MousePos, ImGui::GetColorU32(ImGuiCol_Button), 4.0f);
-		//draw_list->AddText(ImVec2(io.MousePos.x, io.MousePos.y - 20), ImU32("#ffffff"), "Object");
 		draw_list->PopClipRect();
 	}
 }
@@ -214,79 +211,23 @@ void EditorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 	ImGui::Begin("Hierarchy", nullptr, flags);
 
 	for (int i = 0; i < m_folders.size(); i++) {
-		DisplayFolder(i, (m_folders[i]->GetChildren().size() > 0));
+		m_folders[i]->OnImGui();
 	}
 	ImGui::End();
-}
-
-void EditorWindow::DisplayFolder(int index, bool hasChildren) {
-	HierarchyObject* currFolder = m_folders[index];
-	//vector<GameObject*> hierarchyGameObjs = GetEditorManager()->GetHierarchy().m_gameObjects;
-
-	currFolder->OnImGui();
-
-	//GuiItemDrag();
-
-	//Right Click 
-	/*if (ImGui::BeginPopupContextItem(nullptr, 1)) {
-		if (m_settingNewParent) {
-			// We check whether the selected obj is the to-be child && if they already are a child of that GameObject && if they're going to eachother's parent
-			// If all of these are false, then we'll have a normal, functioning hierachy
-			bool canSetParent = (index != m_childObjIndex && !m_folders[index]->ContainsChild(m_folders[m_childObjIndex]) && !(m_folders[index]->GetParent() == m_folders[m_childObjIndex]));
-			if (canSetParent && ImGui::Selectable("Confirm Parent")) {
-				SettingNewParent(index, m_childObjIndex);
-			}
-			if (ImGui::Selectable("Cancel Setting Parent")) {
-				ToggleSettingNewParent();
-			}
-		} else {
-			if (ImGui::Selectable("Set parent")) {
-				//Using a class variable so we can use it when the user confirms the parent (by clicking on the parent, so we need to remember the child)
-				m_childObjIndex = index;
-				ToggleSettingNewParent();
-			}
-			if (ImGui::Selectable("Delete")) {
-				//OnItemDelete(index);
-			}
-		}
-		/*if (ImGui::Selectable("Rename")) {
-			ImGui::OpenPopup("Rename Item?");
-			//OnItemRename(i);
-		}
-
-		ImGui::EndPopup();
-	}*/
-
-
 }
 
 void EditorWindow::DisplayObject(GameObject* obj) {
 	String title = Format("%s %s", ICON_FA_BOX, obj->m_name.c_str());
 
 	bool selected = (GetScene()->GetHierarchy().GetSelected() == obj);
-	//if (ImGui::Selectable(title.c_str(), selected))
-	//	OnItemSelect(obj);
-
-
-	//GuiItemDrag();
 }
 
-/*void editorWindow::OnItemSelect(GameObject* obj) {
-	//LOG("%s", obj->m_name.c_str());
-	GetEditorManager()->GetHierarchy().m_selected = obj;
-}*/
+void EditorWindow::MoveToFolder(HierarchyObject* folder, GameObject* movingChild) {
+	if (movingChild == nullptr) {
+		movingChild = m_movingChild;
+	}
 
-void EditorWindow::OnItemDelete(int index) {
-	m_folders.erase(m_folders.begin() + index);
-	//GetEditorManager()->GetHierarchy().
-}
-
-void EditorWindow::OnItemRename(int index) {
-
-}
-
-void EditorWindow::MoveToFolder(HierarchyObject* folder) {
-	HierarchyObject* oldFolder = FindFolderOfObject(m_movingChild);
+	HierarchyObject* oldFolder = FindFolderOfObject(movingChild);
 	//TODO: Prevents error that needs cleaning up!
 	if (oldFolder == NULL)
 		return;
@@ -312,26 +253,6 @@ void EditorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
 
 	m_settingNewFolder = !m_settingNewFolder;
 }
-
-/*void editorWindow::SettingNewParent(int parent, int child) {
-	if (m_folders[child]->HasParent()) {
-		Undo::Record(m_folders[child]->GetParent());
-
-		m_folders[child]->GetParent()->RemoveChild(m_folders[child]);
-		m_folders[child]->SetParent(NULL);
-	}
-
-	Undo::Record(m_folders[child]);
-	m_folders[child]->SetParent(m_folders[parent]);
-
-	Undo::FinishRecording();
-
-	Undo::Record(m_folders[parent]);
-	m_folders[parent]->AddChild(m_folders[child]);
-	ToggleSettingNewParent();
-
-	Undo::FinishRecording();
-}*/
 
 void EditorWindow::AddItem(Vector2 pos = NULL) {
 	if (pos == NULL) {
@@ -370,6 +291,11 @@ void EditorWindow::CreateViewport() {
 	m_viewport = Vector4(actualWindowPosition.x, actualWindowPosition.y, actualWindowSize.x, actualWindowSize.y);
 	m_mouseInViewport = ImGui::IsWindowHovered(ImGuiHoveredFlags_RectOnly);
 	ImGui::Image(GetApp()->GetPipeline()->GetFinalTexture()->GetImGuiHandle(), actualWindowSize, { 0, 1 }, { 1, 0 });
+}
+
+void EditorWindow::InstantiateDragging(bool externalSource) {
+	m_dragSourceExternal = externalSource;
+	m_draggingItem = true;
 }
 
 void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {

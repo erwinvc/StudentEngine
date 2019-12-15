@@ -166,7 +166,6 @@ using namespace std;
 #include "editor/editorGrid.h"
 #include "editor/editorWindow.h"
 #include "editor/editorAssetManager.h"
-#include "util/undo.h"
 #include "util/fonts/IconsFontAwesome.h"
 
 #include "scene.h"
@@ -178,3 +177,4 @@ using namespace std;
 #include "states/editState.h"
 #include "states/playState.h"
 #include "states/stateManager.h"
+#include "util/undo.h"

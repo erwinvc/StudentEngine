@@ -4,7 +4,6 @@ void HierarchyObject::OnImGui() {
 	String title = Format("%s %s", ICON_FA_FOLDER, m_name.c_str());
 	bool open = false;
 
-
 	if (ImGui::TreeNode(title.c_str())) {
 		open = true;
 		RightClick(-1, true);
@@ -23,10 +22,11 @@ void HierarchyObject::OnImGui() {
 }
 
 void HierarchyObject::FolderExtra() {
-	if (GetEditorWindow()->m_dragPlacement && ImGui::IsItemHovered()) {
-		GetEditorWindow()->MoveToFolder(this);
-		//TODO fklgdfjkgdfhkgdfgkjhg
-		GetEditorWindow()->m_dragPlacement = false;
+	if (GetEditorWindow()->IsInDragPlacement() && ImGui::IsItemHovered()) {
+		Undo::Record(GetEditorWindow()->m_movingChild);
+		GetEditorWindow()->MoveToFolder(this, nullptr);
+		GetEditorWindow()->SetDragPlacement(false);
+		Undo::FinishRecording();
 	}
 
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
@@ -42,7 +42,7 @@ void HierarchyObject::DisplayChild(int index) {
 		OnItemSelect(child);
 
 	RightClick(index, false);
-	GuiItemDrag(index);
+	GuiObjectDrag(index);
 
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
 	ImGui::Selectable(Format_t("%s", ICON_FA_EYE));
@@ -50,27 +50,13 @@ void HierarchyObject::DisplayChild(int index) {
 
 
 void HierarchyObject::OnItemSelect(GameObject* obj) {
-	//LOG("%s", obj->m_name.c_str());
 	GetScene()->GetHierarchy().SetSelected(obj);
 	GetInspector()->SetSelected(obj);
 }
 
 void HierarchyObject::RightClick(int index, bool folder) {
 	if (ImGui::BeginPopupContextItem(nullptr, 1)) {
-		if (folder) {
-			if (ImGui::Button("Confirm Folder")) {
-				GetEditorWindow()->MoveToFolder(this);
-			}
-			if (ImGui::Button("Cancel Setting Parent")) {
-				GetEditorWindow()->ToggleSettingNewParent(NULL);
-			}
-		}
-		else {
-			//Automatically preventing the player to set multiple parents at the same time
-			if (ImGui::Button("Change Folder") && !GetEditorWindow()->SettingNewFolder()) {
-				GetEditorWindow()->ToggleSettingNewParent(m_children[index]);
-			}
-			// TODO: Reimplement deleting
+		if (!folder) {
 			if (ImGui::Button("Delete")) {
 				OnItemDelete(index);
 			}
@@ -80,7 +66,6 @@ void HierarchyObject::RightClick(int index, bool folder) {
 				strcpy(m_renameHelper, m_children[index]->m_name.c_str());
 				ImGui::OpenPopup("Rename Item");
 			}
-            
 
 			if (ImGui::BeginPopupModal("Rename Item", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 			{
@@ -102,9 +87,9 @@ void HierarchyObject::RightClick(int index, bool folder) {
 	}
 }
 
-void HierarchyObject::GuiItemDrag(int index) {
+void HierarchyObject::GuiObjectDrag(int index) {
 	if (ImGui::IsItemActive()) {
-		GetEditorWindow()->m_draggingItem = true;
+		GetEditorWindow()->InstantiateDragging(true);
 		GetEditorWindow()->ToggleSettingNewParent(m_children[index]);
 		ImGuiIO io = ImGui::GetIO();
 		// Draw a line between the button and the mouse cursor
@@ -129,7 +114,6 @@ void HierarchyObject::OnItemDelete(int index) {
 
 	RemoveChild(m_children[index]);
 }
-
 
 vector<GameObject*> HierarchyObject::GetChildren() {
 	return m_children;
