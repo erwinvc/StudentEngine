@@ -192,6 +192,8 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
 	GetInspector()->OnImGui();
+
+	GetAssetSelect()->OnImGui();
 }
 
 void EditorWindow::CreateItemDrag() {
