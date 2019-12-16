@@ -50,6 +50,7 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (m_scene.m_hierarchy.UpdateSelected(time, m_scene.GetCursorWorldPosition())) return;
 
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
+		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		GameObject* obj = m_scene.GetGameObjectUnderMouse();
 		m_scene.m_hierarchy.SetSelected(obj);
 
