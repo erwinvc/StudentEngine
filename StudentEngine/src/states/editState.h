@@ -4,7 +4,7 @@ class EditState : public BaseState {
 private:
 	Scene m_scene;
 	EditorWindow* m_window;
-	EditorAssetManager* m_assetManager;
+	//EditorAssetManager* m_assetManager;
 
 	GameObject* m_sample;
 
@@ -29,10 +29,10 @@ public:
 
 	inline Scene* GetScene() { return &m_scene; }
 	inline EditorWindow* GetWindow() { return m_window; }
-	inline EditorAssetManager* GetEditorAssetManager() { return m_assetManager; }
+	//inline EditorAssetManager* GetEditorAssetManager() { return m_assetManager; }
 };
 
 EditState* GetEditor();
 inline Scene* GetScene() { return GetEditor()->GetScene(); }
 inline EditorWindow* GetEditorWindow() { return GetEditor()->GetWindow(); }
-inline EditorAssetManager* GetEditorAssetManager() { return GetEditor()->GetEditorAssetManager(); }
+//inline EditorAssetManager* GetEditorAssetManager() { return GetEditor()->GetEditorAssetManager(); }

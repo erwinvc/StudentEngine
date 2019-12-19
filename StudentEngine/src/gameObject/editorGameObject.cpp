@@ -88,7 +88,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 
 			if (g_selectedButton == 0 || g_selectedButton == 3) scaled.x *= -1;
 
-			if (KeyDown(LCTRL)) transform.m_size = g_draggingSizeBackup + Math::RoundToNumber(scaled, Vector2(50, 50));
+			if (!KeyDown(LCTRL)) transform.m_size = g_draggingSizeBackup + Math::RoundToNumber(scaled, Vector2(50, 50));
 			else transform.m_size = g_draggingSizeBackup + scaled;
 
 			if (transform.m_size.x < g_minObjectSize) transform.m_size.x = g_minObjectSize;
@@ -112,7 +112,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 					if (mouseMovedDistance.y > g_draggingSizeBackup.y - g_minObjectSize) mouseMovedDistance.y = g_draggingSizeBackup.y - g_minObjectSize;
 				} break;
 			}
-			if (KeyDown(LCTRL)) {
+			if (!KeyDown(LCTRL)) {
 				transform.m_position = g_draggingPositionBackup + Math::RoundToNumber(mouseMovedDistance, Vector2(50, 50)) / 2.0f;
 			} else {
 				transform.m_position = g_draggingPositionBackup + mouseMovedDistance / 2.0f;
@@ -128,7 +128,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 				if (scaled.y < g_minObjectSize) scaled.y = g_minObjectSize;
 			}
 
-			if (KeyDown(LCTRL)) {
+			if (!KeyDown(LCTRL)) {
 				transform.m_size.x = Math::RoundToNumber(Math::Abs(scaled.x), 100.0f);
 				transform.m_size.y = Math::RoundToNumber(Math::Abs(scaled.y), 100.0f);
 			} else {

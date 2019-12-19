@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-
+#if 0
 void AssetWatcher::Initialize() {
 	if (m_initialized) return;
 	m_thread = GetThreadManager()->RegisterThread("AssetWatcher", [] {GetAssetManager()->GetAssetWatcher()->Watch(); });
@@ -65,3 +65,4 @@ void AssetWatcher::HandleQueue() {
 		}
 	}
 }
+#endif

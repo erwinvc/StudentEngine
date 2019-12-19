@@ -5,7 +5,7 @@ private:
 	static int m_activeJobs;
 	map<String, AssetBase*> m_assets;
 	Texture* m_nullTexture;
-	AssetWatcher* m_assetWatcher;
+	//AssetWatcher* m_assetWatcher;
 	AssetRef<Thread> m_loadingThread;
 	AsyncQueue<AssetLoadJob*> m_processAssetQueue;
 	AsyncQueue<AssetLoadJob*> m_loadAssetQueue;
@@ -21,10 +21,10 @@ public:
 		m_nullTexture = new Texture(1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
 		m_initialized = true;
 		m_activeJobs = 0;
-		m_assetWatcher = new AssetWatcher();
+		//m_assetWatcher = new AssetWatcher();
 	}
 	~AssetManager() {
-		delete m_assetWatcher;
+		//delete m_assetWatcher;
 		delete m_nullTexture;
 		for (auto const& [key, val] : m_assets) {
 			delete val;
@@ -32,12 +32,12 @@ public:
 	}
 
 	void Initialize() {
-		m_assetWatcher->Initialize();
+		//m_assetWatcher->Initialize();
 	}
 
 	// Execute processing jobs on the main thread.
 	void Update() {
-		m_assetWatcher->HandleQueue();
+		//m_assetWatcher->HandleQueue();
 		if (m_processAssetQueue.Size() != 0) {
 			AssetLoadJob* currentLoadJob;
 			if (m_processAssetQueue.TryToGet(currentLoadJob)) {
@@ -115,5 +115,5 @@ public:
 		return m_nullTexture;
 	}
 
-	AssetWatcher* GetAssetWatcher() { return m_assetWatcher; }
+	//AssetWatcher* GetAssetWatcher() { return m_assetWatcher; }
 };

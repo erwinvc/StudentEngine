@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#ifdef DEBUG
+#ifdef DEBUG_0
 int64 Memory::g_allocated = 0;
 int64 Memory::g_totalAllocations = 0;
 Memory::MemoryAllocation Memory::g_base = { &Memory::g_base, &Memory::g_base, 0, false, NULL, 0 };

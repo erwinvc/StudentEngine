@@ -19,7 +19,7 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Audio", [] {GetAudioManager()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Asset Manager", [] {GetAssetManager()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Undo", [] {Undo::Initialize(); }));
-	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Asset Manager", [] {GetEditorAssetManager()->Initialize(); }));
+	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Asset Manager", [] {GetEditorAssetManager()->Initialize(); }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));
 
@@ -33,15 +33,15 @@ void LoadingState::Initialize() {
 
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/Assets/Audio/Bloop.wav"));
 
-	for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
-		if (file.path().extension().string().compare(".png") == 0) {
-			Path path(file.path().string());
-			String fullPath = path.GetFullPath();
-			GetAssetManager()->AddToLoadQueue(new TextureLoadJob(fullPath, path));
-			AssetBase* asset = GetAssetManager()->Get<StreamedTexture>(fullPath);
-			GetEditorAssetManager()->AddAsset(path, asset);
-		}
-	}
+	//for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
+	//	if (file.path().extension().string().compare(".png") == 0) {
+	//		Path path(file.path().string());
+	//		String fullPath = path.GetFullPath();
+	//		GetAssetManager()->AddToLoadQueue(new TextureLoadJob(fullPath, path));
+	//		AssetBase* asset = GetAssetManager()->Get<StreamedTexture>(fullPath);
+	//		GetEditorAssetManager()->AddAsset(path, asset);
+	//	}
+	//}
 
 	for (auto& state : GetStateManager()->GetStates()) {
 		if (state != this) {

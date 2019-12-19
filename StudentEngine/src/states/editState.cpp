@@ -27,11 +27,11 @@ void EditState::Initialize() {
 }
 
 EditState::EditState() : BaseState("Edit") {
-	m_assetManager = new EditorAssetManager();
+	//m_assetManager = new EditorAssetManager();
 	m_window = new EditorWindow();
 }
 EditState::~EditState() {
-	delete m_assetManager;
+	//delete m_assetManager;
 	delete m_window;
 }
 

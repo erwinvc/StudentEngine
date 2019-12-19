@@ -187,8 +187,8 @@ void EditorWindow::CreateEditorWindows() {
 
 
 	// Throwing the logger in there for debugging purposes (for now)
-	ImGui::SetNextWindowDockID(m_dockspaceBottom, ImGuiCond_Always);
-	GetEditorAssetManager()->OnImGui();
+	//ImGui::SetNextWindowDockID(m_dockspaceBottom, ImGuiCond_Always);
+	//GetEditorAssetManager()->OnImGui();
 
 	ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
 	GetInspector()->OnImGui();

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#if 0
 StreamedTexture* EditorAssetManager::g_folderTexture;
 
 StreamedTexture* EditorAsset::GetTexture() {
@@ -171,3 +171,4 @@ void EditorAssetManager::OnImGui() {
 	}
 	ImGui::End();
 }
+#endif

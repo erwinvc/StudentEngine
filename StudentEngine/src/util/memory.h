@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef DEBUG
+#ifdef DEBUG_0
 #pragma warning (disable: 4291) /*no matching operator delete found*/
 
 #pragma warning (push)

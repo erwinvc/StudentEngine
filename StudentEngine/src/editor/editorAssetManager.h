@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 enum class EditorAssetType {
 	FOLDER,
 	SPRITE,
@@ -84,3 +85,4 @@ public:
 	void RemoveAsset(const Path& path);
 	void OnImGui();
 };
+#endif

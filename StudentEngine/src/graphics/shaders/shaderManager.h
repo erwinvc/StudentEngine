@@ -25,13 +25,13 @@ public:
 		return m_shaders[name];
 	}
 
-	void ReloadShaderByFileName(const Tracker& file) {
-		for (int i = 0; i < m_shadersVector.size(); i++) {
-			if (m_shadersVector[i]->m_path.GetFullPath().compare(file.m_path.GetFullPath()) == 0) {
-				m_shadersVector[i]->Reload();
-			}
-		}
-	}
+	//void ReloadShaderByFileName(const Tracker& file) {
+	//	for (int i = 0; i < m_shadersVector.size(); i++) {
+	//		if (m_shadersVector[i]->m_path.GetFullPath().compare(file.m_path.GetFullPath()) == 0) {
+	//			m_shadersVector[i]->Reload();
+	//		}
+	//	}
+	//}
 	void OnImGui() {
 		if (ImGui::BeginTabItem("Shaders")) {
 			static int currentlySelectedShader = 0;

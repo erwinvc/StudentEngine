@@ -1,4 +1,6 @@
 #pragma once
+
+#if 0
 #include <filesystem>
 
 enum class WatchType {
@@ -86,3 +88,4 @@ public:
 	void AddChangeHandler(WatchType type, const String& extention, function<void(const Tracker&)> handler);
 	void HandleQueue();
 };
+#endif
