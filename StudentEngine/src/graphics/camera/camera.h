@@ -20,8 +20,11 @@ public:
 
 	void UpdateZoom(const TimeStep& time) {
 		if (zoomEnabled) {
-			float zoom = GetMouse()->GetScroll().y / 10;
 			float oldZoom = m_zoom;
+			if (KeyJustDown('F')) {
+				m_zoom = 1.0f;
+			}
+			float zoom = GetMouse()->GetScroll().y / 10;
 			m_zoom = Math::Clamp(m_zoom - zoom, 0.1f, 10.0f);
 			m_zoom = Math::RoundToNumber(m_zoom, 0.1f);
 			float difference = oldZoom - m_zoom;
