@@ -91,6 +91,34 @@ public:
 		m_instancedRenderer->Submit(vertices);
 	}
 
+	void Rect(float x, float y, float w, float h, float uMin, float uMax, float vMin, float vMax, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
+		float textureSlot = 0.0f;
+		if (texture) textureSlot = SubmitTexture(*texture);
+		Vertex vertices[4] = { 0 };
+		Matrix4 rot = Matrix4::Rotate(rotation, Vector3::ZAxis());
+		//Top left
+		vertices[0].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(-w / 2, h / 2));
+		vertices[0].m_uv = Vector2(uMin, vMax);
+		vertices[0].m_textureID = textureSlot;
+		vertices[0].m_color = color;
+		//Top right
+		vertices[1].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, h / 2));
+		vertices[1].m_uv = Vector2(uMax, vMax);
+		vertices[1].m_textureID = textureSlot;
+		vertices[1].m_color = color;
+		//Bottom right
+		vertices[2].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, -h / 2));
+		vertices[2].m_uv = Vector2(uMax, vMin);
+		vertices[2].m_textureID = textureSlot;
+		vertices[2].m_color = color;
+		//Bottom left
+		vertices[3].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(-w / 2, -h / 2));
+		vertices[3].m_uv = Vector2(uMin, vMin);
+		vertices[3].m_textureID = textureSlot;
+		vertices[3].m_color = color;
+
+		m_instancedRenderer->Submit(vertices);
+	}
 	void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
 		float textureSlot = 0.0f;
 		Vector2 normal = Vector2(y1 - y0, -(x1 - x0)).Normalize() * size;

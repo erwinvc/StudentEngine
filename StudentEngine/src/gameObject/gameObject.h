@@ -37,8 +37,7 @@ public:
 	}
 
 	void Draw(RenderingPipeline* pipeline) {
-		pipeline->Rect(m_transform.m_position.x, m_transform.m_position.y, m_transform.m_size.x, m_transform.m_size.y, m_transform.m_rotation, m_sprite.m_color, m_sprite.m_singleFrameTexture ? m_sprite.m_singleFrameTexture : m_sprite.m_texture);
-		if (m_sprite.m_singleFrameTexture) m_sprite.m_singleFrameTexture = nullptr;
+		m_sprite.Draw(pipeline, m_transform);
 	}
 
 	#pragma region ChainFunctions
@@ -64,6 +63,11 @@ public:
 
 	GameObject& SetColor(Color color) {
 		m_sprite.m_color = color;
+		return *this;
+	}
+
+	GameObject& Set9Slice() {
+		m_sprite.m_9Slice = true;
 		return *this;
 	}
 

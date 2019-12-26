@@ -1,5 +1,10 @@
 #pragma once
 
+enum class EditorObjectType {
+	TERRAIN,
+	GAMEOBJECT
+};
+
 class EditorWindow {
 private:
 	float m_time = 0;
@@ -9,6 +14,7 @@ private:
 	bool m_dragPlacement = false;
 	bool m_draggingItem = false;
 	bool m_dragSourceExternal = false;
+	EditorObjectType m_currentlyDraggedEditorObjectType;
 	//SET BACK TO METHODS AAA
 	//bool m_draggingItem = false;
 	//GameObject* m_movingChild;
@@ -31,9 +37,8 @@ private:
 	void CreateSceneOverview(ImGuiWindowFlags flags);
 
 	void DisplayObject(GameObject* obj);
-	void AddItem(Vector2 pos);
 	void AddFolder();
-	void CreateItemDrag();
+	void CreateItemDrag(EditorObjectType type);
 	void SetupEditorStyle(bool styleDark, float alpha);
 
 public:

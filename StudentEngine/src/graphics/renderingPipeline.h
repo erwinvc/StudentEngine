@@ -48,6 +48,10 @@ public:
 		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture);
 	}
 
+	inline void Rect(float x, float y, float w, float h, float uMin, float uMax, float vMin, float vMax, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
+		m_spriteRenderer->Rect(x, y, w, h, uMin, uMax, vMin, vMax, rotation, color, texture);
+
+	}
 	inline void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
 		m_spriteRenderer->Line(x0, y0, x1, y1, color, size * m_activeCamera->GetZoom());
 	}

@@ -13,7 +13,7 @@ public:
 	StreamedTexture* g_buttonGizmo;
 	StreamedTexture* g_arrowGizmo;
 	StreamedTexture* g_squareGizmo;
-	
+
 	EditState();
 	~EditState();
 	void Initialize() override;
@@ -26,7 +26,7 @@ public:
 	void OnImGui() override;
 
 	void EditorControls(const TimeStep& time);
-
+	GameObject* AddEditorObject(Vector2 pos, EditorObjectType type);
 	inline Scene* GetScene() { return &m_scene; }
 	inline EditorWindow* GetWindow() { return m_window; }
 	//inline EditorAssetManager* GetEditorAssetManager() { return m_assetManager; }

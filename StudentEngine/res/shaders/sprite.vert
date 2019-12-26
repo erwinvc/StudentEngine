@@ -17,10 +17,11 @@ uniform mat4 _Projection;
 uniform mat4 _View;
 
 void main(){
-	fsData.uv = vsUv;
 	fsData.textureID = vsTextureID;
 	fsData.color = vsColor;
 
 	gl_Position = _Projection * _View * vec4(vsPosition, 1.0);
+	fsData.uv = vsUv;
+
 	//gl_Position = vec4(vsPosition, 1.0);
 }
