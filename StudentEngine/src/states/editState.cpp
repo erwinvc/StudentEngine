@@ -7,22 +7,23 @@ void EditState::Initialize() {
 	g_squareGizmo = GetAssetManager()->Get<StreamedTexture>("SquareGizmo");
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
-	m_scene.AddGameObject(new GameObject("Object 1"))
+	m_scene->AddGameObject(new GameObject("Object 1"))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
 		.SetTexture(g_logo);
 
 	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("PlayerCat");
-	m_scene.AddGameObject(new PlayerObject("Player Object", 5))
-		.SetSize(Vector2(64, 64))
+	PlayerObject* po = new PlayerObject("Player Object", 0.5);
+	po->SetSize(Vector2(64, 64))
 		.SetPosition(Vector2(500.0f, 500.0f))
 		.SetTexture(playerSprite);
+	m_scene->AddGameObject(po);
 
 	m_sample = &GetScene()->AddGameObject(new GameObject("A"))
 		.SetSize(Vector2(500, 500))
-		.SetPosition(m_scene.GetCursorWorldPosition())
+		.SetPosition(m_scene->GetCursorWorldPosition())
 		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
-	
+
 	m_window->Initialize();
 }
 
@@ -47,19 +48,19 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (!GetEditorWindow()->IsMouseInViewport() || dragging) return;
 	if (ButtonJustDown(VK_MOUSE_MIDDLE)) dragging = true;
 
-	if (m_scene.m_hierarchy.UpdateSelected(time, m_scene.GetCursorWorldPosition())) return;
+	if (m_scene->m_hierarchy.UpdateSelected(time, m_scene->GetCursorWorldPosition())) return;
 
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
-		GameObject* obj = m_scene.GetGameObjectUnderMouse();
-		m_scene.m_hierarchy.SetSelected(obj);
+		GameObject* obj = m_scene->GetGameObjectUnderMouse();
+		m_scene->m_hierarchy.SetSelected(obj);
 
 		GetInspector()->SetSelected(obj);
 	}
 }
 void EditState::Update(const TimeStep& time) {
 	m_window->Update(time);
-	m_scene.Update(time);
+	m_scene->Update(time);
 	EditorGrid::Update(time);
 
 	if (KeyDown(LCTRL)) {
@@ -73,12 +74,12 @@ void EditState::Update(const TimeStep& time) {
 		GetAssetSelect()->Open();
 	}
 
-	if (KeyJustDown(VK_SPACE)) {
-		m_scene.m_quadtree.Insert(&GetScene()->AddGameObject(new GameObject("A"))
-			.SetSize(Vector2(500, 500))
-			.SetPosition(m_scene.GetCursorWorldPosition())
-			.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo")).m_transform);
-	}
+	//if (KeyJustDown(VK_SPACE)) {
+		//m_scene->m_quadtree.Insert(&GetScene()->AddGameObject(new GameObject("A"))
+		//	.SetSize(Vector2(500, 500))
+		//	.SetPosition(m_scene->GetCursorWorldPosition())
+		//	.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo")).m_transform);
+	//}
 
 	EditorControls(time);
 }
@@ -87,7 +88,7 @@ void EditState::Draw(RenderingPipeline* pipeline) {
 	GetFrameBufferManager()->OnResize(GetEditorWindow()->GetViewport().z, GetEditorWindow()->GetViewport().w);
 	GetCamera()->SetViewport(GetEditorWindow()->GetViewport());
 
-	m_scene.Draw(pipeline);
+	m_scene->Draw(pipeline);
 
 	EditorGrid::Draw(pipeline);
 	//int count = 0;

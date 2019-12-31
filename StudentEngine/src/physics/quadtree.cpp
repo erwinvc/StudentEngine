@@ -4,7 +4,7 @@ void QuadTreeNode::Draw(RenderingPipeline* pipeline) {
 	for (int i = 0; i < 4; i++) {
 		if (m_nodes[i]) m_nodes[i]->Draw(pipeline);
 	}
-	if (GetScene()->GetCursorWorldPosition().Within(m_bounds)) {
+	if (GetEditorScene()->GetCursorWorldPosition().Within(m_bounds)) {
 		pipeline->Rect(m_bounds, 0, Color(1.0f, 1.0f, 1.0f, 0.5f));
 	} else {
 		pipeline->LineRect(m_bounds, Color(1.0f, 1.0f, 1.0f, 0.5f));

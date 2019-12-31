@@ -10,13 +10,14 @@ public:
 
 	vector<GameObject*> m_gameObjects;
 
-	GameObject* AddGameObject(GameObject* gameObject) {
+	template<typename T>
+	T* AddGameObject(T* gameObject) {
 		m_gameObjects.push_back(gameObject);
 		return gameObject;
 	}
 
 	void Update(const TimeStep& time) {
-		for (auto gObj : m_gameObjects) {
+		for (auto& gObj : m_gameObjects) {
 			gObj->Update(time);
 		}
 	}
@@ -25,6 +26,12 @@ public:
 		for (auto gObj : m_gameObjects) {
 			gObj->Draw(pipeline);
 			if (gObj == m_selected) EditorGameObject::Draw(pipeline, m_selected);
+
+			//for (auto oObj : m_gameObjects) {
+			//	if (gObj != oObj && gObj->m_transform.CollidesWith(oObj, 0, 0)) {
+			//		pipeline->LineRect(gObj->m_transform.AsRectangle(), Color::Cyan(), 0.5f);
+			//	}
+			//}
 		}
 	}
 
@@ -43,7 +50,7 @@ public:
 		}
 		m_gameObjects.clear();
 	}
-	
+
 	void DeleteGameObject(GameObject* obj) {
 		m_gameObjects.erase(remove(m_gameObjects.begin(), m_gameObjects.end(), obj), m_gameObjects.end());
 		delete obj;
@@ -53,7 +60,14 @@ public:
 		m_selected = selected;
 	}
 
+	int Size() {
+		return m_gameObjects.size();
+	}
+	
 	GameObject* GetSelected() {
 		return m_selected;
 	}
+
+	vector<GameObject*>::iterator begin() { return m_gameObjects.begin(); }
+	vector<GameObject*>::iterator end() { return m_gameObjects.end(); }
 };

@@ -37,7 +37,7 @@ void HierarchyObject::DisplayChild(int index) {
 	GameObject* child = m_children[index];
 	String title = Format("%s %s", ICON_FA_BOX, child->m_name.c_str()); 
 
-	bool selected = (GetScene()->GetHierarchy().GetSelected() == child);
+	bool selected = (GetEditorScene()->GetHierarchy().GetSelected() == child);
 	if (ImGui::Selectable(title.c_str(), selected))
 		OnItemSelect(child);
 
@@ -50,7 +50,7 @@ void HierarchyObject::DisplayChild(int index) {
 
 
 void HierarchyObject::OnItemSelect(GameObject* obj) {
-	GetScene()->GetHierarchy().SetSelected(obj);
+	GetEditorScene()->GetHierarchy().SetSelected(obj);
 	GetInspector()->SetSelected(obj);
 }
 
@@ -110,7 +110,7 @@ void HierarchyObject::RemoveChild(GameObject* gameObject) {
 }
 
 void HierarchyObject::OnItemDelete(int index) {
-	GetScene()->GetHierarchy().DeleteGameObject(m_children[index]);
+	GetEditorScene()->GetHierarchy().DeleteGameObject(m_children[index]);
 
 	RemoveChild(m_children[index]);
 }

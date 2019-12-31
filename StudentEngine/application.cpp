@@ -108,6 +108,7 @@ void App::Run() {
 
 void App::Update(TimeStep time) {
 	GetMouse()->Update();
+	GetKeyboard()->Update();
 	GetStateManager()->Update(time);
 	GetTweenManager()->Update(time);
 

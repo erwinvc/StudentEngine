@@ -1,9 +1,8 @@
 #include "stdafx.h"
 
 void Keyboard::Initialize(Window* window) {
-    m_window = window;
     for (int i = 0; i < KEYSIZE; i++) {
-        m_keyStates[i] = Key();
+		m_keyStates[i] = Key();
     }
 
     GetGLCallbackManager()->AddOnKeyCallback(this, &Keyboard::OnKey);
@@ -12,14 +11,40 @@ void Keyboard::Initialize(Window* window) {
 
 void Keyboard::OnKey(int key, int scancode, int action, int mods) {
     if ((int)key < KEYSIZE) {
-        GetKeyboard()->m_keyStates[key].time = GetTickCount();
-        GetKeyboard()->m_keyStates[key].m_wasDownBefore = GetKeyboard()->m_keyStates[key].m_justDown;
         if (action == GLFW_RELEASE) {
-            GetKeyboard()->m_keyStates[key].m_isUpNow = true;
+			if ((int)key < KEYSIZE) {
+				GetKeyboard()->m_queue.emplace_back(key, false, GetKeyboard()->m_keyStates[key].m_isUpNow, true);
+			}
         } else if (action == GLFW_PRESS) {
-            GetKeyboard()->m_keyStates[key].m_isUpNow = false;
+			if ((int)key < KEYSIZE) {
+				GetKeyboard()->m_queue.emplace_back(key, false, GetKeyboard()->m_keyStates[key].m_isUpNow, false);
+			}
         }
-        if (!GetKeyboard()->m_keyStates[key].m_wasDownBefore) GetKeyboard()->m_keyStates[key].m_justDown = (action == GLFW_PRESS);
+        //if (!GetKeyboard()->m_keyStates[key].m_wasDownBefore) GetKeyboard()->m_keyStates[key].m_justDown = (action == GLFW_PRESS);
         if (action == GLFW_PRESS) GetKeyboard()->m_lastKey = key;
     }
+}
+
+void Keyboard::Update() {
+	for (int i = 0; i < KEYSIZE; i++) {
+		m_keyStates[i].m_wasDownBefore = !m_keyStates[i].m_isUpNow;
+	}
+	for (KeyboardMessage& message : m_queue) {
+		m_keyStates[message.key].m_isWithAlt = message.is_with_alt;
+		m_keyStates[message.key].m_isUpNow = message.is_up_now;
+		if (message.is_up_now) m_lastKey = message.key;
+	}
+	m_queue.clear();
+}
+
+bool Keyboard::KeyDown(DWORD key) {
+	return ((int)key < KEYSIZE) && !m_keyStates[key].m_isUpNow;
+}
+
+bool Keyboard::KeyJustUp(DWORD key) {
+	return ((int)key < KEYSIZE) && m_keyStates[key].m_isUpNow && m_keyStates[key].m_wasDownBefore;
+}
+
+bool Keyboard::KeyJustDown(DWORD key) {
+	return ((int)key < KEYSIZE) && !m_keyStates[key].m_isUpNow && !m_keyStates[key].m_wasDownBefore;
 }

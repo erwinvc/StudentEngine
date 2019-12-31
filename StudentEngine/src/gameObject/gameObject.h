@@ -4,24 +4,22 @@ class GameObject : public InspectorDrawable {
 private:
 	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
-	PhysicsObject m_physicsObject;
 
 public:
 	String m_name;
 	Transform m_transform;
+	PhysicsObject m_physicsObject;
 	Sprite m_sprite;
 
-	GameObject(const String& name) : m_name(name), m_physicsObject(PhysicsObject(this)) {
-		m_transform.m_gameObject = this;
-	}
-	GameObject() : m_name(""), m_physicsObject(PhysicsObject(this)) {
-		m_transform.m_gameObject = this;
-	}
-	~GameObject() {
-	}
+	GameObject(const String& name, bool dynamic = false) : m_name(name), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()) {}
+	GameObject() : m_name(""), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, false)), m_sprite(Sprite()) {}
+	GameObject(const GameObject& other) : m_name(other.m_name), m_transform(Transform(other.m_transform, this)), m_physicsObject(PhysicsObject(other.m_physicsObject, this)), m_sprite(other.m_sprite) {}
 
 	virtual GameObject* Copy() {
 		return new GameObject(*this);
+	}
+
+	~GameObject() {
 	}
 
 	void AddChild(GameObject* gameObject) {
@@ -34,6 +32,7 @@ public:
 	}
 
 	virtual void Update(const TimeStep& time) {
+		m_physicsObject.Update(time);
 	}
 
 	void Draw(RenderingPipeline* pipeline) {

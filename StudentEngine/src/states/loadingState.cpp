@@ -23,6 +23,7 @@ void LoadingState::Initialize() {
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));
 
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("9slice", "res/grass.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("FolderIcon", "res/folderIcon.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));

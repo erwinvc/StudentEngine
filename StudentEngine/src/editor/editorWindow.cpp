@@ -8,8 +8,8 @@ void EditorWindow::Initialize() {
 	m_folders.push_back(new HierarchyObject("Folder - Background"));
 	m_folders.push_back(new HierarchyObject("Folder - Items"));
 
-	m_folders[0]->AddChild(GetScene()->GetHierarchy().m_gameObjects[0]);
-	m_folders[0]->AddChild(GetScene()->GetHierarchy().m_gameObjects[1]);
+	m_folders[0]->AddChild(GetEditorScene()->GetHierarchy().m_gameObjects[0]);
+	m_folders[0]->AddChild(GetEditorScene()->GetHierarchy().m_gameObjects[1]);
 	////GetEditorManager()->GetHierarchy().m_gameObjects[0]->
 
 	SetupEditorStyle(true, 0.5f);
@@ -155,24 +155,22 @@ void EditorWindow::CreateEditorWindows() {
 			Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
 			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
-			// #TODO: Add different responses to each draggable button!
-			//AddItem(Vector2(rayPos.x, rayPos.y));
-			String name = Format("Object %i", GetScene()->GetHierarchy().m_gameObjects.size() + 1);
-			GameObject& obj = GetScene()->AddGameObject(new GameObject(name))
-				.SetSize(Vector2(500, 500))
-				.SetPosition(rayPos);
+			String name = Format("Object %i", GetEditorScene()->GetHierarchy().m_gameObjects.size() + 1);
+			GameObject& obj = GetEditorScene()->AddGameObject(new GameObject(name, false))
+				.SetSize(Vector2(400, 400))
+				.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(50.0f, 50.0f)));
 
 			switch (m_currentlyDraggedEditorObjectType) {
 				case EditorObjectType::TERRAIN:
-					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("Terrain")).Set9Slice();
+					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice")).Set9Slice();
 					break;
 				case EditorObjectType::GAMEOBJECT:
 					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
 					break;
 			}
 
-			m_folders[0]->AddChild(GetScene()->GetHierarchy().m_gameObjects[GetScene()->GetHierarchy().m_gameObjects.size() - 1]);
-			GetScene()->GetHierarchy().SetSelected(GetScene()->GetHierarchy().m_gameObjects[GetScene()->GetHierarchy().m_gameObjects.size() - 1]);
+			m_folders[0]->AddChild(&obj);
+			GetEditorScene()->GetHierarchy().SetSelected(&obj);
 		} else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
@@ -240,7 +238,7 @@ void EditorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 void EditorWindow::DisplayObject(GameObject* obj) {
 	String title = Format("%s %s", ICON_FA_BOX, obj->m_name.c_str());
 
-	bool selected = (GetScene()->GetHierarchy().GetSelected() == obj);
+	bool selected = (GetEditorScene()->GetHierarchy().GetSelected() == obj);
 }
 
 void EditorWindow::MoveToFolder(HierarchyObject* folder, GameObject* movingChild) {

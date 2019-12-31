@@ -3,6 +3,7 @@
 void Scene::Update(const TimeStep& time) {
 	Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
 	m_cursorWorldPosition = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
+	if (GetStateManager()->GetState() == States::PLAY) m_hierarchy.Update(time);
 }
 GameObject* Scene::GetGameObjectUnderMouse() {
 	if (!GetEditorWindow()->IsMouseInViewport()) {
