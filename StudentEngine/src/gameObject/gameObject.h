@@ -70,6 +70,15 @@ public:
 		return *this;
 	}
 
+	GameObject& SetAtlasValues(int numberOfRows, int frameCount, float frameTime, int frameOffset = 0) {
+		m_sprite.m_numberOfRows = numberOfRows;
+		m_sprite.m_frameCount = frameCount;
+		m_sprite.m_frameTime = frameTime;
+		m_sprite.m_frameOffset = frameOffset;
+		ASSERT(m_sprite.m_frameOffset + m_sprite.m_frameCount < m_sprite.m_numberOfRows * m_sprite.m_numberOfRows, "Sprite offset is bigger than the total amount of sprites");
+		return *this;
+	}
+
 	void SetChildren(vector<GameObject*> children) {
 		m_children = children;
 	}

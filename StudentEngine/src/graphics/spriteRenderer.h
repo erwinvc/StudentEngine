@@ -9,6 +9,7 @@ public:
 		Vector2 m_uv;
 		float m_textureID;
 		Color m_color;
+		Vector3 vsAtlasValues;
 	};
 
 	vector<const Texture*> m_textures;
@@ -22,7 +23,8 @@ public:
 		{VertexBufferDataType::Float3, "vsPos", 0},
 		{VertexBufferDataType::Float2, "vsUv", 0},
 		{VertexBufferDataType::Float, "vsTextureID", 0},
-		{VertexBufferDataType::Float4, "vsColor", 0}
+		{VertexBufferDataType::Float4, "vsColor", 0},
+		{VertexBufferDataType::Float3, "vsAtlasValues", 0}
 	};
 
 	Shader* m_shader;
@@ -62,7 +64,7 @@ public:
 		delete m_instancedRenderer;
 	}
 
-	void Rect(float x, float y, float w, float h, float rotation, const Color& color, const StreamedTexture* texture = nullptr) {
+	void Rect(float x, float y, float w, float h, float rotation, const Color& color, const StreamedTexture* texture = nullptr, const Vector3& atlasValues = Vector3(1, 0, 0)) {
 		float textureSlot = 0.0f;
 		if (texture) textureSlot = SubmitTexture(*texture);
 		Vertex vertices[4] = { 0 };
@@ -72,26 +74,30 @@ public:
 		vertices[0].m_uv = Vector2(0.0f, 1.0f);
 		vertices[0].m_textureID = textureSlot;
 		vertices[0].m_color = color;
+		vertices[0].vsAtlasValues = atlasValues;
 		//Top right
 		vertices[1].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, h / 2));
 		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_color = color;
+		vertices[1].vsAtlasValues = atlasValues;
 		//Bottom right
 		vertices[2].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, -h / 2));
 		vertices[2].m_uv = Vector2(1.0f, 0.0f);
 		vertices[2].m_textureID = textureSlot;
 		vertices[2].m_color = color;
+		vertices[2].vsAtlasValues = atlasValues;
 		//Bottom left
 		vertices[3].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(-w / 2, -h / 2));
 		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_color = color;
+		vertices[3].vsAtlasValues = atlasValues;
 
 		m_instancedRenderer->Submit(vertices);
 	}
 
-	void Rect(float x, float y, float w, float h, float uMin, float uMax, float vMin, float vMax, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
+	void Rect(float x, float y, float w, float h, float uMin, float uMax, float vMin, float vMax, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr, const Vector3& atlasValues = Vector3(1, 0, 0)) {
 		float textureSlot = 0.0f;
 		if (texture) textureSlot = SubmitTexture(*texture);
 		Vertex vertices[4] = { 0 };
@@ -101,49 +107,56 @@ public:
 		vertices[0].m_uv = Vector2(uMin, vMax);
 		vertices[0].m_textureID = textureSlot;
 		vertices[0].m_color = color;
+		vertices[0].vsAtlasValues = atlasValues;
 		//Top right
 		vertices[1].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, h / 2));
 		vertices[1].m_uv = Vector2(uMax, vMax);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_color = color;
+		vertices[1].vsAtlasValues = atlasValues;
 		//Bottom right
 		vertices[2].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(w / 2, -h / 2));
 		vertices[2].m_uv = Vector2(uMax, vMin);
 		vertices[2].m_textureID = textureSlot;
 		vertices[2].m_color = color;
+		vertices[2].vsAtlasValues = atlasValues;
 		//Bottom left
 		vertices[3].m_position = Vector3(x, y, 0) + rot.Multiply(Vector3(-w / 2, -h / 2));
 		vertices[3].m_uv = Vector2(uMin, vMin);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_color = color;
+		vertices[3].vsAtlasValues = atlasValues;
 
 		m_instancedRenderer->Submit(vertices);
 	}
 	void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
 		float textureSlot = 0.0f;
 		Vector2 normal = Vector2(y1 - y0, -(x1 - x0)).Normalize() * size;
-
 		Vertex vertices[4] = { 0 };
 
 		vertices[0].m_position = Vector3(x0 + normal.x, y0 + normal.y, 0.0f);
 		vertices[0].m_uv = Vector2(0.0f, 1.0f);
 		vertices[0].m_textureID = textureSlot;
 		vertices[0].m_color = color;
+		vertices[0].vsAtlasValues = Vector3(1, 0, 0);
 
 		vertices[1].m_position = Vector3(x1 + normal.x, y1 + normal.y, 0.0f);
 		vertices[1].m_uv = Vector2(1.0f, 1.0f);
 		vertices[1].m_textureID = textureSlot;
 		vertices[1].m_color = color;
+		vertices[1].vsAtlasValues = Vector3(1, 0, 0);
 
 		vertices[2].m_position = Vector3(x1 - normal.x, y1 - normal.y, 0.0f);
 		vertices[2].m_uv = Vector2(1.0f, 0.0f);
 		vertices[2].m_textureID = textureSlot;
 		vertices[2].m_color = color;
-
+		vertices[2].vsAtlasValues = Vector3(1, 0, 0);
+		
 		vertices[3].m_position = Vector3(x0 - normal.x, y0 - normal.y, 0.0f);
 		vertices[3].m_uv = Vector2(0.0f, 0.0f);
 		vertices[3].m_textureID = textureSlot;
 		vertices[3].m_color = color;
+		vertices[3].vsAtlasValues = Vector3(1, 0, 0);
 
 		m_instancedRenderer->Submit(vertices);
 	}

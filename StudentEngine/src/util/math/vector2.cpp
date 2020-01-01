@@ -73,8 +73,8 @@ Vector2& Vector2::Divide(const Vector2I& other) {
 	return *this;
 }
 
-Vector2& Vector2::Pow(float pow) {
-	return Vector2((float)::pow(x, pow), (float)::pow(y, pow));
+Vector2 Vector2::Pow(float pow) {
+	return { (float)::pow(x, pow), (float)::pow(y, pow) };
 }
 
 Vector2& Vector2::Add(float value) {

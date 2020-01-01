@@ -13,14 +13,13 @@ void Keyboard::OnKey(int key, int scancode, int action, int mods) {
     if ((int)key < KEYSIZE) {
         if (action == GLFW_RELEASE) {
 			if ((int)key < KEYSIZE) {
-				GetKeyboard()->m_queue.emplace_back(key, false, GetKeyboard()->m_keyStates[key].m_isUpNow, true);
+				GetKeyboard()->m_queue.emplace_back(key, GetKeyboard()->m_keyStates[key].m_isUpNow, true);
 			}
         } else if (action == GLFW_PRESS) {
 			if ((int)key < KEYSIZE) {
-				GetKeyboard()->m_queue.emplace_back(key, false, GetKeyboard()->m_keyStates[key].m_isUpNow, false);
+				GetKeyboard()->m_queue.emplace_back(key, GetKeyboard()->m_keyStates[key].m_isUpNow, false);
 			}
         }
-        //if (!GetKeyboard()->m_keyStates[key].m_wasDownBefore) GetKeyboard()->m_keyStates[key].m_justDown = (action == GLFW_PRESS);
         if (action == GLFW_PRESS) GetKeyboard()->m_lastKey = key;
     }
 }
@@ -30,9 +29,8 @@ void Keyboard::Update() {
 		m_keyStates[i].m_wasDownBefore = !m_keyStates[i].m_isUpNow;
 	}
 	for (KeyboardMessage& message : m_queue) {
-		m_keyStates[message.key].m_isWithAlt = message.is_with_alt;
-		m_keyStates[message.key].m_isUpNow = message.is_up_now;
-		if (message.is_up_now) m_lastKey = message.key;
+		m_keyStates[message.m_key].m_isUpNow = message.m_isUpNow;
+		if (message.m_isUpNow) m_lastKey = message.m_key;
 	}
 	m_queue.clear();
 }

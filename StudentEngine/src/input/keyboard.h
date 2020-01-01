@@ -49,11 +49,10 @@ class Keyboard : public Singleton<Keyboard> {
 private:
 
 	struct KeyboardMessage {
-		DWORD key;
-		DWORD is_with_alt;
-		BOOL was_down_before;
-		BOOL is_up_now;
-		KeyboardMessage(DWORD k, DWORD iwa, BOOL wdb, BOOL iun) : key(k), is_with_alt(iwa), was_down_before(wdb), is_up_now(iun) {}
+		DWORD m_key;
+		BOOL m_wasDownBefore;
+		BOOL m_isUpNow;
+		KeyboardMessage(DWORD k, BOOL wdb, BOOL iun) : m_key(k), m_wasDownBefore(wdb), m_isUpNow(iun) {}
 	};
 
 	struct Key{

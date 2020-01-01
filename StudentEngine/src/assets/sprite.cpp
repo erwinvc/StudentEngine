@@ -45,7 +45,14 @@ void Sprite::Draw(RenderingPipeline* pipeline, const Transform& transform) {
 
 		pipeline->Rect(pos.x, pos.y, size.x - twoSlSize, size.y - twoSlSize, partSize, 1.0f - partSize, partSize, 1.0f - partSize, 0.0f, Color::White(), tex);
 	} else {
-		pipeline->Rect(transform.m_position.x, transform.m_position.y, transform.m_size.x, transform.m_size.y, transform.m_rotation, m_color, tex);
+		if (m_frameCount > 0) {
+			int textureIndex = (int)(GetApp()->GetTotalFrameTime() / (1000.0f * m_frameTime)) % m_frameCount;
+			textureIndex += m_frameOffset;
+			float row = m_numberOfRows - (textureIndex / m_numberOfRows) - 1;
+			float column = textureIndex % m_numberOfRows;
+			m_atlasValues = Vector3(m_numberOfRows, column / m_numberOfRows, row / m_numberOfRows);
+		}
+		pipeline->Rect(transform.m_position.x, transform.m_position.y, transform.m_size.x, transform.m_size.y, transform.m_rotation, m_color, tex, m_atlasValues);
 		if (m_singleFrameTexture) m_singleFrameTexture = nullptr;
 	}
 }

@@ -7,29 +7,29 @@ public:
 	uint8 B;
 	uint8 A;
 
-	Color8() : R(0), G(0), B(0), A(0) {}
-	Color8(uint8 r, uint8 g, uint8 b, uint8 a) : R(r), G(g), B(b), A(a) {}
+	constexpr Color8() : R(0), G(0), B(0), A(0) {}
+	constexpr Color8(uint8 r, uint8 g, uint8 b, uint8 a) : R(r), G(g), B(b), A(a) {}
 
 	operator uint8* () const { return (uint8*)this; }
 };
 
 class Color {
 public:
-	static Color White() { return Color(1, 1, 1); }
-	static Color Black() { return Color(0, 0, 0); }
-	static Color Gray() { return Color(0.5f, 0.5f, 0.5f); }
-	static Color Silver() { return Color(0.75f, 0.75f, 0.75f); }
+	constexpr static Color White() { return Color(1, 1, 1); }
+	constexpr static Color Black() { return Color(0, 0, 0); }
+	constexpr static Color Gray() { return Color(0.5f, 0.5f, 0.5f); }
+	constexpr static Color Silver() { return Color(0.75f, 0.75f, 0.75f); }
 
-	static Color Red() { return Color(1, 0, 0); }
-	static Color Green() { return Color(0, 1, 0); }
-	static Color Blue() { return Color(0, 0, 1); }
+	constexpr static Color Red() { return Color(1, 0, 0); }
+	constexpr static Color Green() { return Color(0, 1, 0); }
+	constexpr static Color Blue() { return Color(0, 0, 1); }
 
-	static Color Yellow() { return Color(1, 1, 0); }
-	static Color Magenta() { return Color(1, 0, 1); }
-	static Color Cyan() { return Color(0, 1, 1); }
+	constexpr static Color Yellow() { return Color(1, 1, 0); }
+	constexpr static Color Magenta() { return Color(1, 0, 1); }
+	constexpr static Color Cyan() { return Color(0, 1, 1); }
 
-	static Color Transparent() { return Color(0, 0, 0, 0); }
-	static Color NormalMap() { return Color(0.5f, 0.5f, 1); }
+	constexpr static Color Transparent() { return Color(0, 0, 0, 0); }
+	constexpr static Color NormalMap() { return Color(0.5f, 0.5f, 1); }
 
 	union {
 		struct {
@@ -41,17 +41,17 @@ public:
 		float values[4];
 	};
 
-	Color() : R(0), G(0), B(0), A(0) {}
+	constexpr Color() : R(0), G(0), B(0), A(0) {}
 	Color(int32 hexValue) {
 		R = ((hexValue >> 16) & 0xFF) / 255.0f;
 		G = ((hexValue >> 8) & 0xFF) / 255.0f;
 		B = ((hexValue) & 0xFF) / 255.0f;
 		A = 1;
 	}
-	Color(float val) : R(val), G(val), B(val), A(val) {}
-	Color(float r, float g, float b, float a = 1.0f) : R(r), G(g), B(b), A(a) {}
+	constexpr Color(float val) : R(val), G(val), B(val), A(val) {}
+	constexpr Color(float r, float g, float b, float a = 1.0f) : R(r), G(g), B(b), A(a) {}
 
-	Color8 ToColor8() {
+	Color8 ToColor8() const {
 		uint8 r = (uint8)Math::Round(R * 255);
 		uint8 g = (uint8)Math::Round(G * 255);
 		uint8 b = (uint8)Math::Round(B * 255);
@@ -89,6 +89,11 @@ public:
 		return col;
 	}
 
+	uint Pack() const {
+		Color8 col8 = ToColor8();
+		return (col8.R << 24) + (col8.G << 16) + (col8.B << 8) + (col8.A);
+	}
+
 	friend Color operator*(const Color& color, float value) {
 		return Color(color.R * value, color.G * value, color.B * value, color.A * value);
 	}
@@ -104,7 +109,7 @@ public:
 	bool operator==(const Color& other) const {
 		return this->R == other.R && this->G == other.G && this->B == other.B && this->A == other.A;
 	}
-	
+
 	bool operator!=(const Color& other) const {
 		return !(*this == other);
 	}

@@ -79,7 +79,6 @@ void App::HandleQueue() {
 }
 
 void App::Run() {
-	static float totalTime = 0;
 	static float timer = m_timer.Get();
 	static float updateTimer = m_timer.Get();
 	static float updateTick = 1000.0f / 60.0f;
@@ -88,8 +87,8 @@ void App::Run() {
 	m_window->Clear();
 	float time = m_timer.Get();
 	if (time - updateTimer > updateTick) {
-		totalTime += time - m_lastFrameTime;
-		Update(TimeStep(time - m_lastFrameTime, totalTime, m_frameCount));
+		m_totalFrameTime += time - m_lastFrameTime;
+		Update(TimeStep(time - m_lastFrameTime, m_totalFrameTime, m_frameCount));
 		m_lastFrameTime = time;
 		updates++;
 		updateTimer += updateTick;
