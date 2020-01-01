@@ -1,19 +1,28 @@
 #pragma once
 
+static bool nullfunc(GameObject* ths, GameObject* gameObject) { return true; }
+
 class GameObject : public InspectorDrawable {
 private:
 	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
+	function<bool(GameObject*, GameObject*)> m_onCollisionCallback;
 
+	bool OnCollision(GameObject* other) {
+		return m_onCollisionCallback(this, other);
+	}
+
+	friend PhysicsObject;
 public:
+	bool m_destroyNextFrame = false;
 	String m_name;
 	Transform m_transform;
 	PhysicsObject m_physicsObject;
 	Sprite m_sprite;
 
-	GameObject(const String& name, bool dynamic = false) : m_name(name), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()) {}
-	GameObject() : m_name(""), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, false)), m_sprite(Sprite()) {}
-	GameObject(const GameObject& other) : m_name(other.m_name), m_transform(Transform(other.m_transform, this)), m_physicsObject(PhysicsObject(other.m_physicsObject, this)), m_sprite(other.m_sprite) {}
+	GameObject(const String& name, bool dynamic = false) : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()) {}
+	GameObject() : m_name(""), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, false)), m_sprite(Sprite()) {}
+	GameObject(const GameObject& other) : m_name(other.m_name), m_onCollisionCallback(other.m_onCollisionCallback), m_transform(Transform(other.m_transform, this)), m_physicsObject(PhysicsObject(other.m_physicsObject, this)), m_sprite(other.m_sprite) {}
 
 	virtual GameObject* Copy() {
 		return new GameObject(*this);
@@ -39,7 +48,22 @@ public:
 		m_sprite.Draw(pipeline, m_transform);
 	}
 
+	void Destroy() {
+		m_destroyNextFrame = true;
+		//GetActiveScene()->DeleteGameObject(this);
+	}
+
+	template<typename T>
+	bool IsOfType() {
+		return dynamic_cast<const T*>(this) != nullptr;
+	}
+
 	#pragma region ChainFunctions
+	GameObject& SetOnCollision(function<bool(GameObject*, GameObject*)> func) {
+		m_onCollisionCallback = func;
+		return *this;
+	}
+
 	GameObject& SetPosition(Vector2 position) {
 		m_transform.m_position = position;
 		return *this;

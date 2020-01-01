@@ -1,6 +1,7 @@
 #pragma once
 
 class Camera;
+class GameObject;
 
 #define ASSERT(x, ...) \
 		if (!(x)) {\

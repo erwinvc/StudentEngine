@@ -17,8 +17,11 @@ public:
 	}
 
 	void Update(const TimeStep& time) {
-		for (auto& gObj : m_gameObjects) {
-			gObj->Update(time);
+		for (auto it = m_gameObjects.begin(); it != m_gameObjects.end();) {
+			(*it)->Update(time);
+			if ((*it)->m_destroyNextFrame) {
+				it = m_gameObjects.erase(it);
+			} else it++;
 		}
 	}
 
@@ -56,6 +59,12 @@ public:
 		delete obj;
 	}
 
+	GameObject* FindObjectByName(const String& name) {
+		auto it = find_if(m_gameObjects.begin(), m_gameObjects.end(), [name](GameObject* s) { return s->m_name == name; });
+		if (it != m_gameObjects.end()) return *it;
+		return nullptr;
+	}
+
 	void SetSelected(GameObject* selected) {
 		m_selected = selected;
 	}
@@ -63,7 +72,7 @@ public:
 	int Size() {
 		return m_gameObjects.size();
 	}
-	
+
 	GameObject* GetSelected() {
 		return m_selected;
 	}

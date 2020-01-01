@@ -9,6 +9,7 @@ GameObject* Scene::GetGameObjectUnderMouse() {
 	if (!GetEditorWindow()->IsMouseInViewport()) {
 		return nullptr;
 	}
+
 	for (int i = (int)m_hierarchy.m_gameObjects.size() - 1; i >= 0; i--) {
 		GameObject*& gObj = m_hierarchy.m_gameObjects[i];
 		if (gObj->m_transform.IsPointWithin(m_cursorWorldPosition.x, m_cursorWorldPosition.y)) {

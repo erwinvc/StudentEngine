@@ -20,6 +20,14 @@ public:
 		//m_quadtree.Draw(pipeline);
 	}
 
+	void DeleteGameObject(GameObject* obj) {
+		m_hierarchy.DeleteGameObject(obj);
+	}
+	
+	GameObject* FindObjectByName(const String& name) {
+		return m_hierarchy.FindObjectByName(name);
+	}
+
 	Vector2	GetCursorWorldPosition() {
 		return m_cursorWorldPosition;
 	}

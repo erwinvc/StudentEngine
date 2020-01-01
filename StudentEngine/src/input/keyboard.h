@@ -52,6 +52,7 @@ private:
 		DWORD m_key;
 		BOOL m_wasDownBefore;
 		BOOL m_isUpNow;
+		KeyboardMessage() : m_key(0), m_wasDownBefore(false), m_isUpNow(true) {}
 		KeyboardMessage(DWORD k, BOOL wdb, BOOL iun) : m_key(k), m_wasDownBefore(wdb), m_isUpNow(iun) {}
 	};
 
@@ -62,7 +63,7 @@ private:
 		Key() : m_isWithAlt(false), m_wasDownBefore(false), m_isUpNow(true) {}
 	} m_keyStates[KEYSIZE];
 
-	vector<KeyboardMessage> m_queue;
+	AsyncQueue<KeyboardMessage> m_queue;
 	int m_lastKey;
 
 	void OnKey(int key, int scancode, int action, int mods);

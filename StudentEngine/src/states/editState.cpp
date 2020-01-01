@@ -28,7 +28,12 @@ void EditState::Initialize() {
 		GetScene()->AddGameObject(new GameObject(Format("Animation test %d", i)))
 			.SetSize(Vector2(50.0f + Math::RandomFloat(75.0f), 50.0f + Math::RandomFloat(75.0f)))
 			.SetPosition(Vector2(250.0f + i * 125.0f, 250.0f))
-			.SetAtlasValues(8, 8, 0.125f, + i * 8)
+			.SetAtlasValues(8, 8, 0.125f, +i * 8)
+			.SetOnCollision([i](GameObject* ths, GameObject* other)
+		{
+			LOG("a");
+			if (other->IsOfType<PlayerObject>()) ths->Destroy(); return false;
+		})
 			.SetTexture(GetAssetManager()->Get<StreamedTexture>("Gems"));
 	}
 

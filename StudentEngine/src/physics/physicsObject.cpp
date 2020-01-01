@@ -8,7 +8,7 @@ void PhysicsObject::Update(const TimeStep& time) {
 bool PhysicsObject::CheckCollision(float xa, float ya) {
 	for (auto& other : GetActiveScene()->GetHierarchy()) {
 		if (m_gameObject->m_transform.CollidesWith(other, xa, ya)) {
-			return true;
+			if(other->OnCollision(m_gameObject)) return true;
 		}
 	}
 	return false;
