@@ -40,14 +40,18 @@ public:
 		m_spriteRenderer->LineRect(rect, color, lineSize * m_activeCamera->GetZoom());
 	}
 	
-	inline void Rect(Rectangle& rect, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
-		m_spriteRenderer->Rect(rect.x, rect.y, rect.w, rect.h, rotation, color, texture);
+	inline void Rect(Rectangle& rect, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr, const Vector3 atlasValues = Vector3(1, 0, 0)) {
+		m_spriteRenderer->Rect(rect.x, rect.y, rect.w, rect.h, rotation, color, texture, atlasValues);
 	}
 	
-	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr) {
-		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture);
+	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr, const Vector3 atlasValues = Vector3(1, 0, 0)) {
+		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture, atlasValues);
 	}
 
+	inline void Rect(float x, float y, float w, float h, float uMin, float uMax, float vMin, float vMax, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr, const Vector3 atlasValues = Vector3(1, 0, 0)) {
+		m_spriteRenderer->Rect(x, y, w, h, uMin, uMax, vMin, vMax, rotation, color, texture, atlasValues);
+
+	}
 	inline void Line(float x0, float y0, float x1, float y1, Color& color = Color::White(), float size = 1.0f) {
 		m_spriteRenderer->Line(x0, y0, x1, y1, color, size * m_activeCamera->GetZoom());
 	}

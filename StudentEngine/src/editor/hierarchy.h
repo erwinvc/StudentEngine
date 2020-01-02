@@ -41,6 +41,12 @@ public:
 	void Draw(RenderingPipeline* pipeline) {
 		for (auto gObj : m_layers) {
 			gObj->Draw(pipeline, m_selected);
+
+			//for (auto oObj : m_gameObjects) {
+			//	if (gObj != oObj && gObj->m_transform.CollidesWith(oObj, 0, 0)) {
+			//		pipeline->LineRect(gObj->m_transform.AsRectangle(), Color::Cyan(), 0.5f);
+			//	}
+			//}
 		}
 	}
 
@@ -60,7 +66,7 @@ public:
 		}
 		m_layers.clear();
 	}
-	
+
 	void DeleteGameObject(GameObject* obj) {
 		GetInspector()->ResetSelected();
 		m_selected = nullptr;
@@ -71,11 +77,30 @@ public:
 		delete obj;
 	}
 
+	GameObject* FindObjectByName(const String& name) {
+		for each (auto layer in m_layers) {
+			auto it = find_if(layer->m_objects.begin(), layer->m_objects.end(), [name](GameObject* s) { return s->m_name == name; });
+		}
+		
+		//if (it != m_gameObjects.end()) return *it;
+		return nullptr;
+	}
+
 	void SetSelected(GameObject* selected) {
 		m_selected = selected;
+	}
+
+	int Size() {
+		int totalSize = 0;
+		for each (auto layer in m_layers) totalSize += layer->m_objects.size();
+
+		return totalSize;
 	}
 
 	GameObject* GetSelected() {
 		return m_selected;
 	}
+
+	//vector<GameObject*>::iterator begin() { return m_gameObjects.begin(); }
+	//vector<GameObject*>::iterator end() { return m_gameObjects.end(); }
 };

@@ -23,7 +23,8 @@ struct Vector2 {
 	Vector2& Multiply(const Vector2I& other);
 	Vector2& Divide(const Vector2& other);
 	Vector2& Divide(const Vector2I& other);
-
+	Vector2 Pow(float pow);
+	
 	Vector2& Add(float value);
 	Vector2& Subtract(float value);
 	Vector2& Multiply(float value);

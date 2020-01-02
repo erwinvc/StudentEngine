@@ -15,6 +15,7 @@ private:
 	bool m_running = true;
 	bool m_ImGuiOpen = true;
 
+	float m_totalFrameTime = 0;
 	uint64 m_frameCount = 0;
 	float m_lastFrameTime = 0;
 	int m_fps = 0;
@@ -24,7 +25,8 @@ public:
 
 	App() {}
 	~App();
-	
+
+	float GetTotalFrameTime() { return m_totalFrameTime; }
 	AssetRef<Window> GetWindow() { return m_window; }
 	void OnWindowClose();
 	void OnResize(int width, int height);

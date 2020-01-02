@@ -9,6 +9,7 @@ enum class VertexBufferDataType {
 	Float2,
 	Float3,
 	Float4,
+	UInt,
 	Int,
 	Int2,
 	Int3,
@@ -22,6 +23,7 @@ static uint32 VertexBufferDataTypeToSize(VertexBufferDataType type) {
 	case VertexBufferDataType::Float2: return 4 * 2;
 	case VertexBufferDataType::Float3: return 4 * 3;
 	case VertexBufferDataType::Float4: return 4 * 4;
+	case VertexBufferDataType::UInt: return 4;
 	case VertexBufferDataType::Int: return 4;
 	case VertexBufferDataType::Int2: return 4 * 2;
 	case VertexBufferDataType::Int3: return 4 * 3;
@@ -38,6 +40,7 @@ static GLenum VertexBufferDataTypeToOpenGLBaseType(VertexBufferDataType type) {
 	case VertexBufferDataType::Float2:
 	case VertexBufferDataType::Float3:
 	case VertexBufferDataType::Float4: return GL_FLOAT;
+	case VertexBufferDataType::UInt: return GL_UNSIGNED_INT;
 	case VertexBufferDataType::Int:
 	case VertexBufferDataType::Int2:
 	case VertexBufferDataType::Int3:
@@ -65,6 +68,7 @@ struct BufferElement {
 		case VertexBufferDataType::Float2: return 2;
 		case VertexBufferDataType::Float3: return 3;
 		case VertexBufferDataType::Float4: return 4;
+		case VertexBufferDataType::UInt: return 1;
 		case VertexBufferDataType::Int: return 1;
 		case VertexBufferDataType::Int2: return 2;
 		case VertexBufferDataType::Int3: return 3;
@@ -81,7 +85,6 @@ public:
 	BufferLayout(const initializer_list<BufferElement>& elements) : m_elements(elements) {
 		CalculateOffsetsAndStride();
 	}
-
 
 	uint32 GetTotalComponentCountSize() {
 		uint32 count = 0;

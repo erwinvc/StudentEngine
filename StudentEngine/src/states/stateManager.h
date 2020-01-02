@@ -75,6 +75,6 @@ public:
 	}
 };
 
-static StateManager* GetStateManager() {
-	return StateManager::GetInstance();
-}
+inline StateManager* GetStateManager() { return StateManager::GetInstance(); }
+inline Scene* GetActiveScene() { return GetStateManager()->GetState()->GetScene(); }
+inline Scene* GetEditorScene() { return States::EDIT->GetScene(); }

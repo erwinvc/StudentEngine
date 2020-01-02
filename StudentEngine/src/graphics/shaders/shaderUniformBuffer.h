@@ -3,6 +3,7 @@
 class ShaderProgram;
 
 enum class ShaderUniformType {
+	UINT,
 	INT,
 	FLOAT,
 	VEC2,
@@ -53,6 +54,7 @@ private:
 
 	static uint ShaderUniformTypeToSize(ShaderUniformType type) {
 		switch (type) {
+			case ShaderUniformType::UINT: return 4;
 			case ShaderUniformType::INT: return 4;
 			case ShaderUniformType::FLOAT: return 4;
 			case ShaderUniformType::VEC2: return 2 * 4;
@@ -71,6 +73,7 @@ private:
 			case GL_FLOAT_VEC2: 		return ShaderUniformType::VEC2;
 			case GL_FLOAT_VEC3: 		return ShaderUniformType::VEC3;
 			case GL_FLOAT_VEC4: 		return ShaderUniformType::VEC4;
+			case GL_UNSIGNED_INT: 		return ShaderUniformType::UINT;
 			case GL_INT: 				return ShaderUniformType::INT;
 			case GL_FLOAT_MAT4: 		return ShaderUniformType::MAT4;
 			case GL_SAMPLER_1D: 		return ShaderUniformType::INT;
@@ -93,6 +96,7 @@ private:
 		uint offset = uniform.GetOffset();
 		uint count = uniform.GetCount();
 		switch (uniform.GetType()) {
+			case ShaderUniformType::UINT: SetGL(location, (uint*)&m_data[offset], count); break;
 			case ShaderUniformType::INT: SetGL(location, (int*)&m_data[offset], count); break;
 			case ShaderUniformType::FLOAT: SetGL(location, (float*)&m_data[offset], count); break;
 			case ShaderUniformType::VEC2: SetGL(location, (Vector2*)&m_data[offset], count); break;
@@ -102,6 +106,7 @@ private:
 		}
 	}
 
+	void SetGL(uint location, const uint* value, uint count) { glUniform1uiv(location, count, (uint*)value); }
 	void SetGL(uint location, const int* value, uint count) { glUniform1iv(location, count, (int*)value); }
 	//void SetGL(uint location, const bool* value, uint count) { glUniform1i(location, 1, value); }
 	void SetGL(uint location, const Vector2I* value, uint count) { glUniform2iv(location, count, (int*)value); }

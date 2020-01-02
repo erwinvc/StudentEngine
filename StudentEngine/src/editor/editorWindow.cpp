@@ -3,17 +3,9 @@
 
 void EditorWindow::Initialize() {
 	m_layers = vector<HierarchyObject*>();
-	//m_hierarchyyyy = vector<HierarchyObject*>();
-	//m_folders.push_back(GetEditorManager()->GetHierarchy());
-
-	for (auto& layer : GetScene()->GetHierarchy().m_layers) {
+	for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
 		m_layers.push_back(new HierarchyObject(layer));
 	}
-
-	//link layers here to hierarchy's layer
-
-	//m_layers[0]->AddChild(GetScene()->GetHierarchy().m_layers[0]);
-	//m_layers[0]->AddChild(GetScene()->GetHierarchy().m_layers[1])
 
 	SetupEditorStyle(true, 0.5f);
 }
@@ -158,12 +150,22 @@ void EditorWindow::CreateEditorWindows() {
 			Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
 			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
-			// #TODO: Add different responses to each draggable button!
-			AddItem(Vector2(rayPos.x, rayPos.y));
-			// #TODO: WUT DIS
-			//GetScene()->GetHierarchy().SetSelected(GetScene()->GetHierarchy().m_layers[GetScene()->GetHierarchy().m_layers.size() - 1]);
+			String name = Format("Object %i", GetEditorScene()->GetHierarchy().Size() + 1);
+			GameObject& obj = GetEditorScene()->AddGameObject(new GameObject(name, false))
+				.SetSize(Vector2(400, 400))
+				.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(50.0f, 50.0f)));
 
+			switch (m_currentlyDraggedEditorObjectType) {
+				case EditorObjectType::TERRAIN:
+					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice")).Set9Slice();
+					break;
+				case EditorObjectType::GAMEOBJECT:
+					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
+					break;
+			}
 
+			//m_layers[0]->AddChild(&obj);
+			GetEditorScene()->GetHierarchy().SetSelected(&obj);
 		} else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
@@ -177,17 +179,20 @@ void EditorWindow::CreateEditorWindows() {
 	// Drag 'n Drop
 	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
+		if (ImGui::Button("Terrain", ImVec2(100, 100))) {}
+		CreateItemDrag(EditorObjectType::TERRAIN);
+		ImGui::SameLine();
 		if (ImGui::Button("Sprite", ImVec2(100, 100))) {}
-		CreateItemDrag();
+		CreateItemDrag(EditorObjectType::GAMEOBJECT);
 		ImGui::SameLine();
 		if (ImGui::Button("GameObject", ImVec2(100, 100))) {}
-		CreateItemDrag();
+		CreateItemDrag(EditorObjectType::GAMEOBJECT);
 		ImGui::SameLine();
 		if (ImGui::Button("Scripts...", ImVec2(100, 100))) {}
-		CreateItemDrag();
-		ImGui::SameLine();
+		CreateItemDrag(EditorObjectType::GAMEOBJECT);
+		//ImGui::SameLine();
 		if (ImGui::Button("Stuff", ImVec2(100, 100))) {}
-		CreateItemDrag();
+		CreateItemDrag(EditorObjectType::GAMEOBJECT);
 	}
 	ImGui::End();
 
@@ -202,8 +207,9 @@ void EditorWindow::CreateEditorWindows() {
 	GetAssetSelect()->OnImGui();
 }
 
-void EditorWindow::CreateItemDrag() {
+void EditorWindow::CreateItemDrag(EditorObjectType type) {
 	if (ImGui::IsItemActive()) {
+		m_currentlyDraggedEditorObjectType = type;
 		InstantiateDragging(false);
 		ImGuiIO io = ImGui::GetIO();
 		// Draw a line between the button and the mouse cursor
@@ -227,7 +233,7 @@ void EditorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 void EditorWindow::DisplayObject(GameObject* obj) {
 	String title = Format("%s %s", ICON_FA_BOX, obj->m_name.c_str());
 
-	bool selected = (GetScene()->GetHierarchy().GetSelected() == obj);
+	bool selected = (GetEditorScene()->GetHierarchy().GetSelected() == obj);
 }
 
 void EditorWindow::MoveToFolder(HierarchyObject* folder, GameObject* movingChild) {
@@ -264,7 +270,7 @@ void EditorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
 	m_settingNewFolder = !m_settingNewFolder;
 }
 
-void EditorWindow::AddItem(Vector2 pos = NULL) {
+/*void EditorWindow::AddItem(Vector2 pos = NULL) {
 	if (pos == NULL) {
 		pos = Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2);
 	}
@@ -273,7 +279,7 @@ void EditorWindow::AddItem(Vector2 pos = NULL) {
 	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
 	StreamedTexture* logo;
 	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
-	String name = Format("Object %i", GetScene()->GetHierarchy().m_layers.size() + 1);
+	String name = Format("Object %i", GetEditorScene()->GetHierarchy().m_layers.size() + 1);
 	GetScene()->AddGameObject(new GameObject(name))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(pos)
@@ -282,11 +288,11 @@ void EditorWindow::AddItem(Vector2 pos = NULL) {
 
 	//TODO: UHDGIUHDGH
 	//m_layers[0]->AddChild(GetScene()->GetHierarchy().m_layers[GetScene()->GetHierarchy().m_layers.size() - 1]);
-	
+
 
 	//m_folders = GetEditorManager()->GetHierarchy().m_gameObjects;
-}
-
+}*/
+	
 void EditorWindow::AddFolder() {
 
 }

@@ -9,6 +9,13 @@ private:
 	bool m_releaseThreads = false;
 
 public:
+
+	template<typename... Args>
+	void Emplace(Args&& ... args) {
+		m_queue.emplace(T(forward<Args>(args)...));
+		m_conditionVariable.notify_one();
+	}
+	
 	void Add(T obj) {
 		unique_lock <mutex> l(m_lock);
 		m_queue.emplace(std::move(obj));

@@ -1,24 +1,21 @@
 #include "stdafx.h"
 
-Hierarchy* m_hierarchy;
 void PlayState::Initialize() {
-	m_hierarchy = new Hierarchy();
 	m_playCamera = new Camera();
 }
 
 PlayState::~PlayState() {
-	delete m_hierarchy;
 	delete m_playCamera;
 }
 
 void PlayState::Update(const TimeStep& time) {
-	m_hierarchy->Update(time);
+	m_scene->Update(time);
 }
 
 void PlayState::Draw(RenderingPipeline* pipeline) {
 	GetFrameBufferManager()->OnResize(GetEditorWindow()->GetViewport().z, GetEditorWindow()->GetViewport().w);
 	GetCamera()->SetViewport(GetEditorWindow()->GetViewport());
-	m_hierarchy->Draw(pipeline);
+	m_scene->Draw(pipeline);
 }
 
 void PlayState::PostDraw(RenderingPipeline* pipeline) {
@@ -30,21 +27,17 @@ void PlayState::PostImGuiDraw(RenderingPipeline* pipeline) {
 }
 
 void PlayState::EnterState() {
-	m_hierarchy->Clear();
+	m_scene->Clear();
+	m_scene->GetHierarchy().Initialize();
+	m_scene->Copy(States::EDIT->GetScene());
+
 	m_editorCamera = GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_playCamera);
 
-	Hierarchy& hierarchy = GetScene()->GetHierarchy();
-	hierarchy.SetSelected(nullptr);
-	for (int i = 0; i < hierarchy.m_layers.size(); i++) {
-		for (size_t j = 0; j < hierarchy.m_layers[i]->m_objects.size(); j++) {
-			m_hierarchy->AddGameObject(hierarchy.m_layers[i]->m_objects[j]->Copy());
-		}
-
-	}
-
 	LOG("[~GStates~x] Entered ~1%s~x state", typeid(*this).name());
 }
+
+
 
 void PlayState::ExitState() {
 	Camera& cameraObject = *GetApp()->GetPipeline()->GetCamera();

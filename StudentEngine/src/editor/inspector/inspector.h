@@ -15,6 +15,7 @@ public:
 	static void Text(String_t name, String_t text);
 	static bool EditText(String_t name, String& text);
 	static bool Vec2(String_t name, Vector2& vec);
+	static bool Vec3(String_t name, Vector3& vec);
 	static void Color(String_t name, ::Color& color);
 	static bool Combo(String_t name, int* item, String_t const items[], int itemCount);
 	static void Texture(String_t name, StreamedTexture* texture);

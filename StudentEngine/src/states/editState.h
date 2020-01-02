@@ -2,7 +2,6 @@
 
 class EditState : public BaseState {
 private:
-	Scene m_scene;
 	EditorWindow* m_window;
 	//EditorAssetManager* m_assetManager;
 
@@ -13,7 +12,7 @@ public:
 	StreamedTexture* g_buttonGizmo;
 	StreamedTexture* g_arrowGizmo;
 	StreamedTexture* g_squareGizmo;
-	
+
 	EditState();
 	~EditState();
 	void Initialize() override;
@@ -26,13 +25,11 @@ public:
 	void OnImGui() override;
 
 	void EditorControls(const TimeStep& time);
-
-	inline Scene* GetScene() { return &m_scene; }
+	GameObject* AddEditorObject(Vector2 pos, EditorObjectType type);
 	inline EditorWindow* GetWindow() { return m_window; }
 	//inline EditorAssetManager* GetEditorAssetManager() { return m_assetManager; }
 };
 
 EditState* GetEditor();
-inline Scene* GetScene() { return GetEditor()->GetScene(); }
 inline EditorWindow* GetEditorWindow() { return GetEditor()->GetWindow(); }
 //inline EditorAssetManager* GetEditorAssetManager() { return GetEditor()->GetEditorAssetManager(); }
