@@ -10,6 +10,7 @@ public:
 	String m_name;
 	Transform m_transform;
 	Sprite m_sprite;
+	String m_layer = "Objects";
 
 	GameObject(const String& name) : m_name(name), m_physicsObject(PhysicsObject(this)) {
 		m_transform.m_gameObject = this;

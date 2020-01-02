@@ -1,15 +1,15 @@
 #include "stdafx.h"
 
 void HierarchyObject::OnImGui() {
-	String title = Format("%s %s", ICON_FA_FOLDER, m_name.c_str());
+	String title = Format("%s %s", ICON_FA_FOLDER, m_layer->m_layerName.c_str());
 	bool open = false;
 
 	if (ImGui::TreeNode(title.c_str())) {
 		open = true;
-		RightClick(-1, true);
+		RightClick(NULL, true);
 		FolderExtra();
-		for (int c = 0; c < m_children.size(); c++) {
-			DisplayChild(c);
+		for (int c = 0; c < m_layer->m_objects.size(); c++) {
+			DisplayChild(m_layer->m_objects[c]);
 		}
 
 		ImGui::TreePop();
@@ -22,30 +22,30 @@ void HierarchyObject::OnImGui() {
 }
 
 void HierarchyObject::FolderExtra() {
-	if (GetEditorWindow()->IsInDragPlacement() && ImGui::IsItemHovered()) {
+	/*if (GetEditorWindow()->IsInDragPlacement() && ImGui::IsItemHovered()) {
 		Undo::Record(GetEditorWindow()->m_movingChild);
 		GetEditorWindow()->MoveToFolder(this, nullptr);
 		GetEditorWindow()->SetDragPlacement(false);
 		Undo::FinishRecording();
-	}
+	}*/
 
 	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
 	ImGui::Selectable(Format_t("%s", ICON_FA_EYE));
 }
 
-void HierarchyObject::DisplayChild(int index) {
-	GameObject* child = m_children[index];
+void HierarchyObject::DisplayChild(GameObject* child) {
+	//GameObject* child = m_layer->m_objects[index];
 	String title = Format("%s %s", ICON_FA_BOX, child->m_name.c_str()); 
 
 	bool selected = (GetScene()->GetHierarchy().GetSelected() == child);
 	if (ImGui::Selectable(title.c_str(), selected))
 		OnItemSelect(child);
 
-	RightClick(index, false);
-	GuiObjectDrag(index);
+	RightClick(child, false);
+	//GuiObjectDrag(index);
 
-	ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
-	ImGui::Selectable(Format_t("%s", ICON_FA_EYE));
+	//ImGui::SameLine(ImGui::GetContentRegionAvail().x - 75);
+	//ImGui::Selectable(Format_t("%s", ICON_FA_EYE));
 }
 
 
@@ -54,16 +54,16 @@ void HierarchyObject::OnItemSelect(GameObject* obj) {
 	GetInspector()->SetSelected(obj);
 }
 
-void HierarchyObject::RightClick(int index, bool folder) {
+void HierarchyObject::RightClick(GameObject* obj, bool folder) {
 	if (ImGui::BeginPopupContextItem(nullptr, 1)) {
 		if (!folder) {
 			if (ImGui::Button("Delete")) {
-				OnItemDelete(index);
+				OnItemDelete(obj);
 			}
 
 			if (ImGui::Button("Rename Item")) {
 				//We copy the name here into our helper variable to prevent it from reapplying it every frame
-				strcpy(m_renameHelper, m_children[index]->m_name.c_str());
+				strcpy(m_renameHelper, obj->m_name.c_str());
 				ImGui::OpenPopup("Rename Item");
 			}
 
@@ -74,7 +74,7 @@ void HierarchyObject::RightClick(int index, bool folder) {
 				ImGui::InputText("", m_renameHelper, IM_ARRAYSIZE(m_renameHelper));
 				if (ImGui::Button("OK", ImVec2(120, 0))) { 
 					ImGui::CloseCurrentPopup();
-					m_children[index]->m_name = Format("%s", m_renameHelper);
+					obj->m_name = Format("%s", m_renameHelper);
 				}
 				ImGui::SetItemDefaultFocus();
 				ImGui::SameLine();
@@ -90,7 +90,7 @@ void HierarchyObject::RightClick(int index, bool folder) {
 void HierarchyObject::GuiObjectDrag(int index) {
 	if (ImGui::IsItemActive()) {
 		GetEditorWindow()->InstantiateDragging(true);
-		GetEditorWindow()->ToggleSettingNewParent(m_children[index]);
+		GetEditorWindow()->ToggleSettingNewParent(m_layer->m_objects[index]);
 		ImGuiIO io = ImGui::GetIO();
 		// Draw a line between the button and the mouse cursor
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -101,32 +101,25 @@ void HierarchyObject::GuiObjectDrag(int index) {
 	}
 }
 
-void HierarchyObject::AddChild(GameObject* gameObject) {
-	m_children.push_back(gameObject);
-}
 
-void HierarchyObject::RemoveChild(GameObject* gameObject) {
-	m_children.erase(remove(m_children.begin(), m_children.end(), gameObject), m_children.end());
-}
-
-void HierarchyObject::OnItemDelete(int index) {
-	GetScene()->GetHierarchy().DeleteGameObject(m_children[index]);
-
-	RemoveChild(m_children[index]);
+void HierarchyObject::OnItemDelete(GameObject* obj) {
+	GetScene()->GetHierarchy().DeleteGameObject(obj);
+	
+	//RemoveChild(, obj);
 }
 
 vector<GameObject*> HierarchyObject::GetChildren() {
-	return m_children;
+	return m_layer->m_objects;
 }
 
 GameObject* HierarchyObject::GetChildAt(int index) {
-	return m_children[index];
+	return m_layer->m_objects[index];
 }
 
 bool HierarchyObject::ContainsChild(GameObject* child) {
 	bool foundChild = false;
-	for (size_t i = 0; i < m_children.size(); i++) {
-		foundChild = m_children[i] == child;
+	for (size_t i = 0; i < m_layer->m_objects.size(); i++) {
+		foundChild = m_layer->m_objects[i] == child;
 	}
 	return foundChild;
 }

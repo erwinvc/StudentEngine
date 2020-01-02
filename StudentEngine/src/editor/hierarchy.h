@@ -8,23 +8,39 @@ public:
 		Clear();
 	}
 
-	vector<GameObject*> m_gameObjects;
+	void Initialize() {
+		m_layers.push_back(new ObjectLayer("Background"));
+		m_layers.push_back(new ObjectLayer("Objects"));
+		m_layers.push_back(new ObjectLayer("Pickups"));
+		m_layers.push_back(new ObjectLayer("Foreground"));
+	}
+
+	vector<ObjectLayer*> m_layers;
 
 	GameObject* AddGameObject(GameObject* gameObject) {
-		m_gameObjects.push_back(gameObject);
+		FindLayerByName(gameObject->m_layer)->m_objects.push_back(gameObject);
 		return gameObject;
 	}
 
+	ObjectLayer* FindLayerByName(String layer) {
+		for (size_t i = 0; i < m_layers.size(); i++) {
+			if (m_layers[i]->m_layerName == layer) {
+				return m_layers[i];
+			}
+		}
+		LOG("%s", "Couldn't find the layer by name!");
+		return NULL;
+	}
+
 	void Update(const TimeStep& time) {
-		for (auto gObj : m_gameObjects) {
-			gObj->Update(time);
+		for (auto layer : m_layers) {
+			layer->Update(time);
 		}
 	}
 
 	void Draw(RenderingPipeline* pipeline) {
-		for (auto gObj : m_gameObjects) {
-			gObj->Draw(pipeline);
-			if (gObj == m_selected) EditorGameObject::Draw(pipeline, m_selected);
+		for (auto gObj : m_layers) {
+			gObj->Draw(pipeline, m_selected);
 		}
 	}
 
@@ -38,14 +54,20 @@ public:
 	}
 
 	void Clear() {
-		for (auto& obj : m_gameObjects) {
-			delete obj;
+		for (auto& layer : m_layers) {
+			layer->Clear();
+			delete layer;
 		}
-		m_gameObjects.clear();
+		m_layers.clear();
 	}
 	
 	void DeleteGameObject(GameObject* obj) {
-		m_gameObjects.erase(remove(m_gameObjects.begin(), m_gameObjects.end(), obj), m_gameObjects.end());
+		GetInspector()->ResetSelected();
+		m_selected = nullptr;
+
+		//vector<GameObject*> objects = FindLayerByName(obj->m_layer)->m_objects;
+		//direct ref with objects didnt work??? :thonk:
+		FindLayerByName(obj->m_layer)->m_objects.erase(remove(FindLayerByName(obj->m_layer)->m_objects.begin(), FindLayerByName(obj->m_layer)->m_objects.end(), obj), FindLayerByName(obj->m_layer)->m_objects.end());
 		delete obj;
 	}
 

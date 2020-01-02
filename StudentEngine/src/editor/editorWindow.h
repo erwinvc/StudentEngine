@@ -9,10 +9,7 @@ private:
 	bool m_dragPlacement = false;
 	bool m_draggingItem = false;
 	bool m_dragSourceExternal = false;
-	//SET BACK TO METHODS AAA
-	//bool m_draggingItem = false;
-	//GameObject* m_movingChild;
-	vector<HierarchyObject*> m_folders;
+	vector<HierarchyObject*> m_layers;
 
 	ImGuiID m_dockspaceCenter;
 	ImGuiID m_dockspaceLeft;

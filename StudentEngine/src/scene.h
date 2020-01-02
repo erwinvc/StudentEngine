@@ -27,6 +27,7 @@ public:
 
 	Scene() {
 		m_quadtree.Initialize(10000, 10000);
+		m_hierarchy.Initialize();
 	}
 	~Scene() {
 		m_hierarchy.Clear();

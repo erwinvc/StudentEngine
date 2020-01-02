@@ -36,8 +36,11 @@ void PlayState::EnterState() {
 
 	Hierarchy& hierarchy = GetScene()->GetHierarchy();
 	hierarchy.SetSelected(nullptr);
-	for (int i = 0; i < hierarchy.m_gameObjects.size(); i++) {
-		m_hierarchy->AddGameObject(hierarchy.m_gameObjects[i]->Copy());
+	for (int i = 0; i < hierarchy.m_layers.size(); i++) {
+		for (size_t j = 0; j < hierarchy.m_layers[i]->m_objects.size(); j++) {
+			m_hierarchy->AddGameObject(hierarchy.m_layers[i]->m_objects[j]->Copy());
+		}
+
 	}
 
 	LOG("[~GStates~x] Entered ~1%s~x state", typeid(*this).name());

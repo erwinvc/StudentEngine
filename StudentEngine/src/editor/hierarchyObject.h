@@ -2,26 +2,26 @@
 
 class HierarchyObject {
 private:
-	vector<GameObject*> m_children;
+	ObjectLayer* m_layer;
 	char m_renameHelper[32];
 
 public:
 	String m_name;
-	HierarchyObject(const String& name) : m_name(name) {}
+	HierarchyObject(ObjectLayer* layer) : m_layer(layer) {}
 	HierarchyObject() : m_name("") {}
 
 	//virtual void Update(const TimeStep& time);
 
 	void OnImGui();
-	void RightClick(int index, bool folder);
-	void DisplayChild(int index);
+	void RightClick(GameObject* obj, bool folder);
+	void DisplayChild(GameObject* obj);
 	void GuiObjectDrag(int index);
 	void FolderExtra();
 	void OnItemSelect(GameObject* obj);
-	void OnItemDelete(int index);
+	void OnItemDelete(GameObject* obj);
 
-	void AddChild(GameObject* gameObject);
-	void RemoveChild(GameObject* gameObject);
+	//void AddChild(GameObject* gameObject);
+	//void RemoveChild(ObjectLayer* layer, GameObject* gameObject);
 	vector<GameObject*> GetChildren();
 	GameObject* GetChildAt(int index);
 	bool ContainsChild(GameObject* child);

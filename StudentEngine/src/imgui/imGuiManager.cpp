@@ -61,6 +61,7 @@ void ImGuiManager::Initialize(Window* window) {
 			io.AddInputCharacter((unsigned short)c);
 	});
 
+	ImGui::GetIO().Fonts->AddFontDefault();
 	g_smallFont = io.FontDefault;
 	g_bigFont = io.FontDefault;
 	//g_smallFont = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 10.0f, NULL, io.Fonts->GetGlyphRangesDefault());
@@ -68,12 +69,12 @@ void ImGuiManager::Initialize(Window* window) {
 	//
 	//// Get the icons from both FA regular & solid (each having their own range of different icons)
 	//// And add them to the already existing font
-	//ImFontConfig config;
-	//config.MergeMode = true;
-	//const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	//io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
-	//io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
-	//io.Fonts->Build();
+	ImFontConfig config;
+	config.MergeMode = true;
+	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
+	io.Fonts->Build();
 }
 
 void ImGuiManager::Begin() {
