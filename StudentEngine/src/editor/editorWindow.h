@@ -14,6 +14,8 @@ private:
 	bool m_dragPlacement = false;
 	bool m_draggingItem = false;
 	bool m_dragSourceExternal = false;
+
+	bool m_openedLayerManager = false;
 	EditorObjectType m_currentlyDraggedEditorObjectType;
 	vector<HierarchyObject*> m_layers;
 
@@ -22,6 +24,7 @@ private:
 	ImGuiID m_dockspaceRight;
 	ImGuiID m_dockspaceBottom;
 	ImGuiID m_dockspaceLeftBottom;
+	ImGuiID m_dockspaceUp;
 
 	ImVec2 m_mainWindowPos;
 	Vector4 m_viewport;

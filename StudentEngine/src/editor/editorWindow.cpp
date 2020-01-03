@@ -32,6 +32,8 @@ void EditorWindow::OnImGui() {
 	} else {
 		CreateTemporaryPlayMode();
 	}
+
+	ImGui::ShowStyleEditor();
 }
 
 void EditorWindow::CreateTemporaryPlayMode() {
@@ -87,6 +89,7 @@ void EditorWindow::CreateDockingSpace() {
 			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.2f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.2968725f, nullptr, &m_dockspaceCenter);
 			m_dockspaceBottom = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Down, 0.2f, nullptr, &m_dockspaceCenter);
+			m_dockspaceUp = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Up, 0.16f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
 
 			ImGui::DockBuilderFinish(m_dockspaceCenter);
@@ -100,7 +103,7 @@ void EditorWindow::CreateDockingSpace() {
 
 void EditorWindow::CreateEditorWindows() {
 	// Menu Bar
-	if (ImGui::BeginMainMenuBar()) {
+	/*if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Exit")) {
 				GetApp()->OnWindowClose();
@@ -118,7 +121,7 @@ void EditorWindow::CreateEditorWindows() {
 			GetStateManager()->SetState(States::PLAY);
 		}
 		ImGui::EndMainMenuBar();
-	}
+	}*/
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -137,6 +140,42 @@ void EditorWindow::CreateEditorWindows() {
 		CreateViewport();
 	}
 	ImGui::End();
+
+	// BUTTONS TEST
+
+	ImGui::SetNextWindowDockID(m_dockspaceUp, ImGuiCond_Always);
+	ImGui::Begin("Buttons", nullptr, window_flags2);
+
+	ImFont* bigIconFont = ImGui::GetIO().Fonts->Fonts[1];
+	ImGui::PushFont(bigIconFont);
+	if (ImGui::Button(ICON_FA_PLAY)) {
+		m_inEditorMode = false;
+		GetStateManager()->SetState(States::PLAY);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_FOLDER_OPEN)) {
+
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_SAVE)) {
+
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_LAYER_GROUP)) {
+		m_openedLayerManager = !m_openedLayerManager;
+	}
+	ImGui::PopFont();
+
+	ImGui::End();
+
+
+
+
+
+
+	// BUTTONS TEST
+
+
 
 	//Response to Dragging
 	if (ImGui::IsMouseReleased(0) && m_draggingItem) {
@@ -174,9 +213,11 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::PopStyleVar(3);
 
-	CreateSceneOverview(window_flags2);
+	if (m_openedLayerManager)
+		CreateSceneOverview(window_flags2);
 
 	// Drag 'n Drop
+	/*
 	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
 		if (ImGui::Button("Terrain", ImVec2(100, 100))) {}
@@ -194,7 +235,7 @@ void EditorWindow::CreateEditorWindows() {
 		if (ImGui::Button("Stuff", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::GAMEOBJECT);
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 
 	// Throwing the logger in there for debugging purposes (for now)
@@ -222,7 +263,7 @@ void EditorWindow::CreateItemDrag(EditorObjectType type) {
 
 void EditorWindow::CreateSceneOverview(ImGuiWindowFlags flags) {
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
-	ImGui::Begin("Hierarchy", nullptr, flags);
+	ImGui::Begin("Layer Manager", nullptr, NULL);
 
 	for (int i = 0; i < m_layers.size(); i++) {
 		m_layers[i]->OnImGui();

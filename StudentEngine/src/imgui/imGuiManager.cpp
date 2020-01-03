@@ -75,6 +75,11 @@ void ImGuiManager::Initialize(Window* window) {
 	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
 	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
 	io.Fonts->Build();
+
+	//Font for buttons
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 128.0f, NULL, icon_ranges);
+	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 128.0f, &config, icon_ranges);
+	io.Fonts->Build();
 }
 
 void ImGuiManager::Begin() {
