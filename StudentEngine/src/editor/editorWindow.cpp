@@ -167,9 +167,7 @@ void EditorWindow::CreateEditorWindows() {
 		m_openedInspector = !m_openedInspector;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_TIMES_CIRCLE)) {
-		GetApp()->OnWindowClose();
-	}
+
 	ImGui::PopFont();
 
 	ImGui::End();
@@ -196,6 +194,7 @@ void EditorWindow::CreateEditorWindows() {
 			switch (m_currentlyDraggedEditorObjectType) {
 				case EditorObjectType::TERRAIN:
 					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice")).Set9Slice();
+					GetEditorScene()->GetHierarchy().ChangeLayer(&obj, "Background");
 					break;
 				case EditorObjectType::GAMEOBJECT:
 					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));

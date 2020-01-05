@@ -7,10 +7,10 @@ void EditState::Initialize() {
 	g_squareGizmo = GetAssetManager()->Get<StreamedTexture>("SquareGizmo");
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
-	m_scene->AddGameObject(new GameObject("Object 1"))
+	/*m_scene->AddGameObject(new GameObject("Object 1"))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
-		.SetTexture(g_logo);
+		.SetTexture(g_logo);*/
 
 	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("GreyCat");
 	PlayerObject* po = new PlayerObject("Player Object", 0.5);
@@ -19,10 +19,10 @@ void EditState::Initialize() {
 		.SetTexture(playerSprite);
 	m_scene->AddGameObject(po);
 
-	m_sample = &GetScene()->AddGameObject(new GameObject("A"))
+	/*m_sample = &GetScene()->AddGameObject(new GameObject("A"))
 		.SetSize(Vector2(500, 500))
 		.SetPosition(m_scene->GetCursorWorldPosition())
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));*/
 
 	for (int i = 0; i < 6; i++) {
 		GetScene()->AddGameObject(new GameObject(Format("Animation test %d", i)))

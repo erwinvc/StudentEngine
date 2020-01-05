@@ -23,6 +23,7 @@ public:
 	String m_layer = "Objects";
 
 	GameObject(const String& name, bool dynamic = false) : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()) {}
+	//GameObject(const String& name, bool dynamic = false, const String& layer = "Objects") : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()), m_layer(layer) {}
 	GameObject() : m_name(""), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, false)), m_sprite(Sprite()) {}
 	GameObject(const GameObject& other) : m_name(other.m_name), m_onCollisionCallback(other.m_onCollisionCallback), m_transform(Transform(other.m_transform, this)), m_physicsObject(PhysicsObject(other.m_physicsObject, this)), m_sprite(other.m_sprite) {}
 

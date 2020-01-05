@@ -90,6 +90,13 @@ public:
 		return nullptr;
 	}
 
+
+	void ChangeLayer(GameObject* obj, const String& otherLayer) {
+		auto oldLayer = FindLayerByName(obj->m_layer);
+		FindLayerByName(obj->m_layer)->m_objects.erase(remove(FindLayerByName(obj->m_layer)->m_objects.begin(), FindLayerByName(obj->m_layer)->m_objects.end(), obj), FindLayerByName(obj->m_layer)->m_objects.end());
+		FindLayerByName(otherLayer)->m_objects.push_back(obj);
+	}
+
 	void SetSelected(GameObject* selected) {
 		m_selected = selected;
 	}
