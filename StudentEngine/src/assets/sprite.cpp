@@ -10,7 +10,7 @@ void Sprite::Draw(RenderingPipeline* pipeline, const Transform& transform) {
 
 		float partSize = 1.0f / 3.0f;
 		float twoPartSize = partSize * 2.0f;
-		float slSize = 64.0f; //Slice size
+		float slSize = 16.0f; //Slice size
 		float halfSlSize = slSize / 2.0f;
 		float twoSlSize = slSize * 2.0f;
 

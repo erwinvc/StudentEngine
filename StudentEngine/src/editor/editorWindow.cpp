@@ -188,18 +188,23 @@ void EditorWindow::CreateEditorWindows() {
 
 			String name = Format("Object %i", GetEditorScene()->GetHierarchy().Size() + 1);
 			GameObject& obj = GetEditorScene()->AddGameObject(new GameObject(name, false))
-				.SetSize(Vector2(128, 128))
 				.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
 
+			StreamedTexture* texture;
 			switch (m_currentlyDraggedEditorObjectType) {
 				case EditorObjectType::TERRAIN:
-					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice")).Set9Slice();
+					texture = GetAssetManager()->Get<StreamedTexture>("9slice");
+					obj.SetTexture(texture).Set9Slice();
+					obj.SetPosition(Vector2(obj.m_transform.m_position.x + 16.0f, obj.m_transform.m_position.y + 16.0f));
 					GetEditorScene()->GetHierarchy().ChangeLayer(&obj, "Background");
 					break;
 				case EditorObjectType::GAMEOBJECT:
-					obj.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
+					texture = GetAssetManager()->Get<StreamedTexture>("Logo");
+					obj.SetTexture(texture);
 					break;
 			}
+
+			obj.SetSize(Vector2(texture->GetTexture()->GetWidth(), texture->GetTexture()->GetHeight()));
 
 			//m_layers[0]->AddChild(&obj);
 			GetEditorScene()->GetHierarchy().SetSelected(&obj);
