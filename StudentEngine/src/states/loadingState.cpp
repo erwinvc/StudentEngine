@@ -23,7 +23,7 @@ void LoadingState::Initialize() {
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));
 
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("9slice", "res/assets/textures/grass.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("9slice", "res/assets/textures/tile.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Gems", "res/assets/textures/gems.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/assets/textures/buttonGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/assets/textures/buttonGizmo.png"));
@@ -33,6 +33,7 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/assets/textures/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreyCat", "res/assets/textures/cat.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("RedCat", "res/assets/textures/redcat.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BlueBall", "res/assets/textures/blueball.png"));
 
 	GameObject::SetValidTextures("Player", { "GreyCat", "RedCat" });
 

@@ -7,35 +7,46 @@ void EditState::Initialize() {
 	g_squareGizmo = GetAssetManager()->Get<StreamedTexture>("SquareGizmo");
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
-	/*m_scene->AddGameObject(new GameObject("Object 1"))
-		.SetSize(Vector2(500, 500))
-		.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
-		.SetTexture(g_logo);*/
+	GetScene()->AddGameObject(new GameObject("Tiles"))
+		.SetSize(Vector2(1024.0f, 128.0f))
+		.SetPosition(Vector2(544.0f, 224.0f))
+		.Set9Slice()
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
 
-	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("GreyCat");
-	PlayerObject* po = new PlayerObject("Player Object", 0.5);
-	po->SetSize(Vector2(64, 64))
-		.SetPosition(Vector2(512.0f, 512.0f))
-		.SetTexture(playerSprite);
-	m_scene->AddGameObject(po);
+	GetScene()->AddGameObject(new PlayerObject("Player Object", 0.5))
+		.SetSize(Vector2(64, 64))
+		.SetPosition(Vector2(192.0f, 352.0f))
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
 
-	/*m_sample = &GetScene()->AddGameObject(new GameObject("A"))
-		.SetSize(Vector2(500, 500))
-		.SetPosition(m_scene->GetCursorWorldPosition())
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));*/
 
-	for (int i = 0; i < 6; i++) {
-		GetScene()->AddGameObject(new GameObject(Format("Animation test %d", i)))
-			.SetSize(Vector2(50.0f + Math::RandomFloat(75.0f), 50.0f + Math::RandomFloat(75.0f)))
-			.SetPosition(Vector2(250.0f + i * 125.0f, 250.0f))
-			.SetAtlasValues(8, 8, 0.125f, +i * 8)
-			.SetOnCollision([i](GameObject* ths, GameObject* other)
-				{
-					LOG("a");
-					if (other->IsOfType<PlayerObject>()) ths->Destroy(); return false;
-				})
-			.SetTexture(GetAssetManager()->Get<StreamedTexture>("Gems"));
-	}
+	GetScene()->AddGameObject(new GameObject("Blue Ball"))
+		.SetSize(Vector2(32.0f, 32.0f))
+		.SetPosition(Vector2(560.0f, 304.0f))
+		.SetAtlasValues(4, 4, 0.125f)
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("BlueBall"));
+
+	//m_scene->AddGameObject(new GameObject("Object 1"))
+	//	.SetSize(Vector2(500, 500))
+	//	.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
+	//	.SetTexture(g_logo);
+
+	//m_sample = &GetScene()->AddGameObject(new GameObject("A"))
+	//	.SetSize(Vector2(500, 500))
+	//	.SetPosition(m_scene->GetCursorWorldPosition())
+	//	.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
+
+	//for (int i = 0; i < 6; i++) {
+	//	GetScene()->AddGameObject(new GameObject(Format("Animation test %d", i)))
+	//		.SetSize(Vector2(50.0f + Math::RandomFloat(75.0f), 50.0f + Math::RandomFloat(75.0f)))
+	//		.SetPosition(Vector2(250.0f + i * 125.0f, 250.0f))
+	//		.SetAtlasValues(8, 8, 0.125f, +i * 8)
+	//		.SetOnCollision([i](GameObject* ths, GameObject* other)
+	//			{
+	//				LOG("a");
+	//				if (other->IsOfType<PlayerObject>()) ths->Destroy(); return false;
+	//			})
+	//		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Gems"));
+	//}
 
 	m_window->Initialize();
 }
@@ -85,7 +96,7 @@ void EditState::Update(const TimeStep& time) {
 		GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
 			GameObject* playerObject = m_scene->FindObjectByName("Player Object");
 			playerObject->SetTexture((StreamedTexture*)asset);
-		});
+			});
 		GetAssetSelect()->Open();
 	}
 
