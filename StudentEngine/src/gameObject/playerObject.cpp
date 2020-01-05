@@ -10,10 +10,12 @@ void PlayerObject::Update(const TimeStep& time) {
 	m_physicsObject.m_velocity.x *= decay;
 	
 	if (GetKeyboard()->KeyDown('A')) {
+		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		m_physicsObject.m_velocity.x -= m_movementSpeed * time;
 	}
 
 	if (GetKeyboard()->KeyDown('D')) {
+		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		m_physicsObject.m_velocity.x += m_movementSpeed * time;
 	}
 
