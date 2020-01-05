@@ -7,7 +7,7 @@ PlayerObject::PlayerObject(const String& name, float movementSpeed) : GameObject
 void PlayerObject::Update(const TimeStep& time) {
 	m_physicsObject.m_velocity.y -= m_physicsObject.m_gravity * time;
 	float decay = 1 / (1 + (time * m_physicsObject.m_friction));
-	m_physicsObject.m_velocity *= decay;
+	m_physicsObject.m_velocity.x *= decay;
 	
 	if (GetKeyboard()->KeyDown('A')) {
 		m_physicsObject.m_velocity.x -= m_movementSpeed * time;
@@ -18,7 +18,7 @@ void PlayerObject::Update(const TimeStep& time) {
 	}
 
 	if (m_physicsObject.m_isGrounded && GetKeyboard()->KeyJustDown(VK_SPACE)) {
-		m_physicsObject.m_velocity.y += 100;
+		m_physicsObject.m_velocity.y += 45;
 		m_physicsObject.m_isGrounded = false;
 	}
 	

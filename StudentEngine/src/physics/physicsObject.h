@@ -8,7 +8,7 @@ private:
 public:
 	GameObject* m_gameObject;
 	Vector2 m_velocity;
-	float m_gravity = 0.8f;
+	float m_gravity = 0.2f;
 	float m_friction = 0.1f;
 	bool m_dynamic;
 	bool m_isGrounded = false;
