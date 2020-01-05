@@ -31,11 +31,15 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/assets/textures/squareGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/assets/textures/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/assets/textures/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreyCat", "res/assets/textures/cat.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreyCat", "res/assets/textures/greycat.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BrownCat", "res/assets/textures/browncat.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("RedCat", "res/assets/textures/redcat.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BlueBall", "res/assets/textures/blueball.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PurpleCat", "res/assets/textures/purplecat.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Pickups", "res/assets/textures/pickups.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("LevelEnd", "res/assets/textures/finish.png"));
 
-	GameObject::SetValidTextures("Player", { "GreyCat", "RedCat" });
+	GameObject::SetValidTextures("Player", { "GreyCat", "BrownCat" });
+	GameObject::SetValidTextures("Enemy", { "RedCat", "PurpleCat" });
 
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/assets/audio/bloop.wav"));
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("SampleSound", "res/assets/audio/sample.wav"));

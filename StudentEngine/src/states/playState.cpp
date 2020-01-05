@@ -9,6 +9,12 @@ PlayState::~PlayState() {
 }
 
 void PlayState::Update(const TimeStep& time) {
+	if (m_restarting) {
+		m_scene->Clear();
+		m_scene->GetHierarchy().Initialize();
+		m_scene->Copy(States::EDIT->GetScene());
+		m_restarting = false;
+	}
 	m_scene->Update(time);
 }
 
@@ -37,8 +43,6 @@ void PlayState::EnterState() {
 	LOG("[~GStates~x] Entered ~1%s~x state", typeid(*this).name());
 }
 
-
-
 void PlayState::ExitState() {
 	Camera& cameraObject = *GetApp()->GetPipeline()->GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_editorCamera);
@@ -48,4 +52,8 @@ void PlayState::ExitState() {
 
 void PlayState::OnImGui() {
 	GetEditorWindow()->OnImGui();
+}
+
+void PlayState::Restart() {
+	m_restarting = true;
 }

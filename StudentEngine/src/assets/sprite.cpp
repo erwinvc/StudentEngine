@@ -52,7 +52,7 @@ void Sprite::Draw(RenderingPipeline* pipeline, const Transform& transform) {
 				textureIndex += m_frameOffset;
 			}
 			else {
-				textureIndex = 0;
+				textureIndex = m_frameOffset;
 			}
 			float row = m_numberOfRows - (textureIndex / m_numberOfRows) - 1;
 			float column = textureIndex % m_numberOfRows;

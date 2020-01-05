@@ -6,6 +6,7 @@ private:
 	vector<GameObject> editorGameObjects;
 	Camera* m_editorCamera;
 	Camera* m_playCamera;
+	bool m_restarting;
 public:
 	PlayState() : BaseState("Play") {}
 	~PlayState();
@@ -17,4 +18,5 @@ public:
 	void EnterState() override;
 	void ExitState() override;
 	void OnImGui() override;
+	void Restart();
 };

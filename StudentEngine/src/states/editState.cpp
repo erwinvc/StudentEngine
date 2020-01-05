@@ -8,8 +8,8 @@ void EditState::Initialize() {
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
 	GetScene()->AddGameObject(new GameObject("Tiles"))
-		.SetSize(Vector2(1024.0f, 128.0f))
-		.SetPosition(Vector2(544.0f, 224.0f))
+		.SetSize(Vector2(2048.0f, 128.0f))
+		.SetPosition(Vector2(960.0f, 224.0f))
 		.Set9Slice()
 		.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
 
@@ -21,9 +21,42 @@ void EditState::Initialize() {
 
 	GetScene()->AddGameObject(new GameObject("Blue Ball"))
 		.SetSize(Vector2(32.0f, 32.0f))
-		.SetPosition(Vector2(560.0f, 304.0f))
+		.SetPosition(Vector2(352.0f, 320.0f))
 		.SetAtlasValues(4, 4, 0.125f)
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("BlueBall"));
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Pickups"))
+		.SetOnCollision([](GameObject* self, GameObject* other) {
+		if (other->IsOfType<PlayerObject>()) {
+			self->Destroy();
+		}
+		return true;
+			}
+	);
+
+	GetScene()->AddGameObject(new GameObject("Green Triangle"))
+		.SetSize(Vector2(32.0f, 32.0f))
+		.SetPosition(Vector2(704.0f, 320.0f))
+		.SetAtlasValues(4, 4, 0.125f, 1 * 4)
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Pickups"))
+		.SetOnCollision([](GameObject* self, GameObject* other) {
+		if (other->IsOfType<PlayerObject>()) {
+			self->Destroy();
+		}
+		return true;
+			}
+	);
+
+	GetScene()->AddGameObject(new GameObject("Level End"))
+		.SetSize(Vector2(64.0f, 64.0f))
+		.SetPosition(Vector2(1536.0f, 320.0f))
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("LevelEnd"))
+		.SetOnCollision([](GameObject* self, GameObject* other) {
+		if (other->IsOfType<PlayerObject>()) {
+			PlayState* state = (PlayState*)GetStateManager()->GetState();
+			state->Restart();
+		}
+		return true;
+			}
+	);
 
 	//m_scene->AddGameObject(new GameObject("Object 1"))
 	//	.SetSize(Vector2(500, 500))
