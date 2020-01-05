@@ -17,6 +17,7 @@ public:
 	}
 	
 	void AddGameObject(GameObject* obj, String layer);
+	GameObject* FindObjectByName(const String& name);
 	void Update(const TimeStep& time);
 	void Draw(RenderingPipeline* pipeline, GameObject* selected);
 	void Clear();

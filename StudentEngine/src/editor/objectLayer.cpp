@@ -23,6 +23,17 @@ void ObjectLayer::Draw(RenderingPipeline* pipeline, GameObject* selected) {
 	}
 }
 
+GameObject* ObjectLayer::FindObjectByName(const String& name) {
+	for (int i = 0; i < m_objects.size(); i++) {
+		if (m_objects[i]->m_name == name) {
+			return m_objects[i];
+		}
+	}
+
+	return nullptr;
+}
+
+
 void ObjectLayer::Clear() {
 	for (auto& obj : m_objects) {
 		delete obj;

@@ -79,7 +79,13 @@ public:
 
 	GameObject* FindObjectByName(const String& name) {
 		for each (auto layer in m_layers) {
-			auto it = find_if(layer->m_objects.begin(), layer->m_objects.end(), [name](GameObject* s) { return s->m_name == name; });
+			auto obj = layer->FindObjectByName(name);
+
+			if (obj != nullptr) {
+				return obj;
+			}
+
+			//auto it = find_if(layer->m_objects.begin(), layer->m_objects.end(), [name](GameObject* s) { return s->m_name == name; });
 		}
 		
 		//if (it != m_gameObjects.end()) return *it;
