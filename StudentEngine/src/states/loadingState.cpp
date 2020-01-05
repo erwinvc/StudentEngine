@@ -7,10 +7,10 @@ void LoadingState::Initialize() {
 	m_basicShader = GetShaderManager()->Create("Basic", "res/shaders/basic");
 	m_basicShader->Set("_Texture", 0);
 
-	m_loadingTexture[0] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading1", "res/Logo1.png"));
-	m_loadingTexture[1] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading2", "res/Logo2.png"));
-	m_loadingTexture[2] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading3", "res/Logo3.png"));
-	m_loadingTexture[3] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading4", "res/Logo4.png"));
+	m_loadingTexture[0] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading1", "res/assets/textures/Logo1.png"));
+	m_loadingTexture[1] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading2", "res/assets/textures/Logo2.png"));
+	m_loadingTexture[2] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading3", "res/assets/textures/Logo3.png"));
+	m_loadingTexture[3] = GetAssetManager()->ForceLoadAsset<StreamedTexture>(new TextureLoadJob("Loading4", "res/assets/textures/Logo4.png"));
 
 	GetAssetManager()->ForceLoadAsset<int>(new CustomLoadJob("Thread Pool", [] {GetThreadPool()->Initialize(5); }));
 
@@ -23,21 +23,21 @@ void LoadingState::Initialize() {
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));
 
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("9slice", "res/grass.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Gems", "res/gems.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/buttonGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/arrowGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/squareGizmo.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/test.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreyCat", "res/Assets/cat.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("RedCat", "res/Assets/redcat.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("9slice", "res/assets/textures/grass.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Gems", "res/assets/textures/gems.png", TextureParameters(RGBA, RGBA, NEAREST, REPEAT)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/assets/textures/buttonGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ButtonGizmo", "res/assets/textures/buttonGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("ArrowGizmo", "res/assets/textures/arrowGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/assets/textures/squareGizmo.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/assets/textures/test.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/assets/textures/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreyCat", "res/assets/textures/cat.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("RedCat", "res/assets/textures/redcat.png"));
 
 	GameObject::SetValidTextures("Player", { "GreyCat", "RedCat" });
 
-	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/Assets/Audio/Bloop.wav"));
-	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("SampleSound", "res/Assets/Audio/wav_sample.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/assets/audio/bloop.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("SampleSound", "res/assets/audio/sample.wav"));
 
 	//for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
 	//	if (file.path().extension().string().compare(".png") == 0) {
