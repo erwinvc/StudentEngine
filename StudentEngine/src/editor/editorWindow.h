@@ -16,6 +16,7 @@ private:
 	bool m_dragSourceExternal = false;
 
 	bool m_openedLayerManager = false;
+	bool m_openedInspector = false;
 	EditorObjectType m_currentlyDraggedEditorObjectType;
 	vector<HierarchyObject*> m_layers;
 

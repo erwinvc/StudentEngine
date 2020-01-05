@@ -32,8 +32,6 @@ void EditorWindow::OnImGui() {
 	} else {
 		CreateTemporaryPlayMode();
 	}
-
-	ImGui::ShowStyleEditor();
 }
 
 void EditorWindow::CreateTemporaryPlayMode() {
@@ -87,7 +85,7 @@ void EditorWindow::CreateDockingSpace() {
 
 			m_dockspaceCenter = dockspace_id;
 			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.2f, nullptr, &m_dockspaceCenter);
-			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.2968725f, nullptr, &m_dockspaceCenter);
+			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.15f, nullptr, &m_dockspaceCenter);
 			m_dockspaceBottom = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Down, 0.2f, nullptr, &m_dockspaceCenter);
 			m_dockspaceUp = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Up, 0.16f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
@@ -164,18 +162,19 @@ void EditorWindow::CreateEditorWindows() {
 	if (ImGui::Button(ICON_FA_LAYER_GROUP)) {
 		m_openedLayerManager = !m_openedLayerManager;
 	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_SEARCH)) {
+		m_openedInspector = !m_openedInspector;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_TIMES_CIRCLE)) {
+		GetApp()->OnWindowClose();
+	}
 	ImGui::PopFont();
 
 	ImGui::End();
 
-
-
-
-
-
 	// BUTTONS TEST
-
-
 
 	//Response to Dragging
 	if (ImGui::IsMouseReleased(0) && m_draggingItem) {
@@ -217,33 +216,27 @@ void EditorWindow::CreateEditorWindows() {
 		CreateSceneOverview(window_flags2);
 
 	// Drag 'n Drop
-	/*
-	ImGui::SetNextWindowDockID(m_dockspaceLeftBottom, ImGuiCond_Always);
+	
+	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
+
+		//TODO: Possibly loop through the Enum?
+		/*for (EditorObjectType type = EditorObjectType::GAMEOBJECT; type != EditorObjectType::TERRAIN; type = EditorObjectType(type+1)) {
+		
+		}*/
+		
 		if (ImGui::Button("Terrain", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::TERRAIN);
 		ImGui::SameLine();
 		if (ImGui::Button("Sprite", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::GAMEOBJECT);
-		ImGui::SameLine();
-		if (ImGui::Button("GameObject", ImVec2(100, 100))) {}
-		CreateItemDrag(EditorObjectType::GAMEOBJECT);
-		ImGui::SameLine();
-		if (ImGui::Button("Scripts...", ImVec2(100, 100))) {}
-		CreateItemDrag(EditorObjectType::GAMEOBJECT);
-		//ImGui::SameLine();
-		if (ImGui::Button("Stuff", ImVec2(100, 100))) {}
-		CreateItemDrag(EditorObjectType::GAMEOBJECT);
 	}
-	ImGui::End();*/
+	ImGui::End();
 
-
-	// Throwing the logger in there for debugging purposes (for now)
-	//ImGui::SetNextWindowDockID(m_dockspaceBottom, ImGuiCond_Always);
-	//GetEditorAssetManager()->OnImGui();
-
-	ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
-	GetInspector()->OnImGui();
+	if (m_openedInspector) {
+		ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
+		GetInspector()->OnImGui();
+	}
 
 	GetAssetSelect()->OnImGui();
 }
@@ -310,29 +303,6 @@ void EditorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
 
 	m_settingNewFolder = !m_settingNewFolder;
 }
-
-/*void EditorWindow::AddItem(Vector2 pos = NULL) {
-	if (pos == NULL) {
-		pos = Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2);
-	}
-	//objs.push_back(new GameObject("New GameObject"));
-
-	// TODO: Copied from editorManager, nice to show off during Monday but that's it!
-	StreamedTexture* logo;
-	logo = GetAssetManager()->Get<StreamedTexture>("Logo");
-	String name = Format("Object %i", GetEditorScene()->GetHierarchy().m_layers.size() + 1);
-	GetScene()->AddGameObject(new GameObject(name))
-		.SetSize(Vector2(500, 500))
-		.SetPosition(pos)
-		.SetTexture(logo);
-
-
-	//TODO: UHDGIUHDGH
-	//m_layers[0]->AddChild(GetScene()->GetHierarchy().m_layers[GetScene()->GetHierarchy().m_layers.size() - 1]);
-
-
-	//m_folders = GetEditorManager()->GetHierarchy().m_gameObjects;
-}*/
 	
 void EditorWindow::AddFolder() {
 
