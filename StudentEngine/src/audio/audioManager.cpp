@@ -10,7 +10,5 @@ void AudioManager::Cleanup() {
 
 void AudioManager::Play(Audio* audio) {
 	audioCore.play(audio->GetWav());
-	while (audioCore.getActiveVoiceCount() > 0) {
-		SoLoud::Thread::sleep(100);
-	}
+	SoLoud::Thread::sleep(audio->GetWav().getLength());
 }
