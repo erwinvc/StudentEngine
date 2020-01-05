@@ -4,6 +4,7 @@ void HierarchyObject::OnImGui() {
 	String title = Format("%s %s", ICON_FA_FOLDER, m_layer->m_layerName.c_str());
 	bool open = false;
 
+	ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 	if (ImGui::TreeNode(title.c_str())) {
 		open = true;
 		RightClick(NULL, true);
