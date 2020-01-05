@@ -129,7 +129,7 @@ void App::Draw() {
 	}
 	GetImGuiManager()->Begin();
 
-	if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
+	/*if (ImGui::Begin("Dev###Window2", &m_ImGuiOpen, ImVec2(100, 200), ImGuiWindowFlags_NoDocking)) {
 		if (ImGui::BeginTabBar("Tab###1", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 			m_pipeline->OnImGui();
 			GetFrameBufferManager()->OnImGui();
@@ -137,7 +137,7 @@ void App::Draw() {
 			ImGui::EndTabBar();
 		}
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 	GetStateManager()->OnImGui();
 	GetImGuiManager()->End();

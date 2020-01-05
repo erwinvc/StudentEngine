@@ -7,6 +7,7 @@ private:
 	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
 	function<bool(GameObject*, GameObject*)> m_onCollisionCallback;
+	static map<const char*, vector<const char*>> m_validTextures;
 
 	bool OnCollision(GameObject* other) {
 		return m_onCollisionCallback(this, other);
@@ -147,6 +148,14 @@ public:
 		ImGui::LabelText("##hideName", m_name.c_str());
 
 		m_sprite.InspectorDraw();
+	}
+
+	static void SetValidTextures(const char* key, vector<const char*> value) {
+		m_validTextures[key] = value;
+	}
+
+	static vector<const char*> GetValidTextures(const char* key) {
+		return m_validTextures[key];
 	}
 
 	#pragma endregion

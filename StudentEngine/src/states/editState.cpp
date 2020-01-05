@@ -12,7 +12,7 @@ void EditState::Initialize() {
 		.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
 		.SetTexture(g_logo);
 
-	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("PlayerCat");
+	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("GreyCat");
 	PlayerObject* po = new PlayerObject("Player Object", 0.5);
 	po->SetSize(Vector2(64, 64))
 		.SetPosition(Vector2(500.0f, 500.0f))
@@ -30,10 +30,10 @@ void EditState::Initialize() {
 			.SetPosition(Vector2(250.0f + i * 125.0f, 250.0f))
 			.SetAtlasValues(8, 8, 0.125f, +i * 8)
 			.SetOnCollision([i](GameObject* ths, GameObject* other)
-		{
-			LOG("a");
-			if (other->IsOfType<PlayerObject>()) ths->Destroy(); return false;
-		})
+				{
+					LOG("a");
+					if (other->IsOfType<PlayerObject>()) ths->Destroy(); return false;
+				})
 			.SetTexture(GetAssetManager()->Get<StreamedTexture>("Gems"));
 	}
 
@@ -64,7 +64,6 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (m_scene->m_hierarchy.UpdateSelected(time, m_scene->GetCursorWorldPosition())) return;
 
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
-		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		GameObject* obj = m_scene->GetGameObjectUnderMouse();
 		m_scene->m_hierarchy.SetSelected(obj);
 
@@ -83,7 +82,10 @@ void EditState::Update(const TimeStep& time) {
 
 	// Testing Asset Selection Window
 	if (KeyJustDown(GLFW_KEY_K)) {
-		GetAssetSelect()->Prepare<StreamedTexture>([](AssetBase* asset) {LOG("Selected %s", asset->GetFullFileName().c_str()); });
+		GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
+			GameObject* playerObject = m_scene->FindObjectByName("Player Object");
+			playerObject->SetTexture((StreamedTexture*)asset);
+		});
 		GetAssetSelect()->Open();
 	}
 

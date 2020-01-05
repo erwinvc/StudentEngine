@@ -1197,6 +1197,9 @@ struct ImGuiContext
         FramerateSecPerFrameAccum = 0.0f;
         WantCaptureMouseNextFrame = WantCaptureKeyboardNextFrame = WantTextInputNextFrame = -1;
         memset(TempBuffer, 0, sizeof(TempBuffer));
+
+        // Tabbar fix: https://github.com/ocornut/imgui/issues/2376#issuecomment-466664185
+        CurrentTabBar = NULL;
     }
 };
 
