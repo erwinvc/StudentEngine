@@ -28,7 +28,7 @@ void EditorGameObject::Draw(RenderingPipeline* pipeline, GameObject* gameObject)
 
 	pipeline->Rect(transform.m_position.x, transform.m_position.y + 40 * zoom, 16 * zoom, 80 * zoom, 0, g_selectedArrow == 0 ? Color(10.0f, 0.85f, 0.0f) : Color::Red(), GetEditor()->g_arrowGizmo);
 	pipeline->Rect(transform.m_position.x + 40 * zoom, transform.m_position.y, 16 * zoom, 80 * zoom, -Math::HALF_PI, g_selectedArrow == 1 ? Color(10.0f, 0.85f, 0.0f) : Color::Green(), GetEditor()->g_arrowGizmo);
-	pipeline->Rect(transform.m_position.x + 20 * zoom, transform.m_position.y + 20 * zoom, 32 * zoom, 32 * zoom, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), GetEditor()->g_squareGizmo);
+	pipeline->Rect(transform.m_position.x + 16 * zoom, transform.m_position.y + 16 * zoom, 32 * zoom, 32 * zoom, 0, g_selectedArrow == 2 ? Color(2.0f, 1.2f, 0.0f) : Color::White(), GetEditor()->g_squareGizmo);
 }
 
 bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vector2 mousePosition) {
