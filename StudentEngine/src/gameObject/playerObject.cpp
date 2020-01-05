@@ -18,7 +18,12 @@ void PlayerObject::Update(const TimeStep& time) {
 	}
 
 	if (m_physicsObject.m_isGrounded && GetKeyboard()->KeyJustDown(VK_SPACE)) {
-		m_physicsObject.m_velocity.y += 45;
+		m_physicsObject.m_velocity.y = 45;
+		m_physicsObject.m_isGrounded = false;
+	}
+
+	//Stops mid-air jump
+	if (m_physicsObject.m_velocity.y < 0) {
 		m_physicsObject.m_isGrounded = false;
 	}
 	
