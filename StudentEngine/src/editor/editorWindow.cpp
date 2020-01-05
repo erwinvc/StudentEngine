@@ -65,7 +65,7 @@ void EditorWindow::CreateDockingSpace() {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -9.0f));
 
 	ImGui::Begin("Dock", nullptr, window_flags);
 
@@ -87,7 +87,7 @@ void EditorWindow::CreateDockingSpace() {
 			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.2f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.15f, nullptr, &m_dockspaceCenter);
 			m_dockspaceBottom = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Down, 0.2f, nullptr, &m_dockspaceCenter);
-			m_dockspaceUp = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Up, 0.16f, nullptr, &m_dockspaceCenter);
+			m_dockspaceUp = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Up, 0.172f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
 
 			ImGui::DockBuilderFinish(m_dockspaceCenter);
@@ -139,6 +139,14 @@ void EditorWindow::CreateEditorWindows() {
 	}
 	ImGui::End();
 
+	ImGui::PopStyleVar(3);
+
+
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(2.0f, 2.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.5f, 4.5f));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(7.0f, 7.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(9.0f, 4.0f));
+
 	// BUTTONS TEST
 
 	ImGui::SetNextWindowDockID(m_dockspaceUp, ImGuiCond_Always);
@@ -169,6 +177,7 @@ void EditorWindow::CreateEditorWindows() {
 	ImGui::SameLine();
 
 	ImGui::PopFont();
+	ImGui::PopStyleVar(3);
 
 	ImGui::End();
 
@@ -209,13 +218,12 @@ void EditorWindow::CreateEditorWindows() {
 		}
 	}
 
-	ImGui::PopStyleVar(3);
+	//ImGui::PopStyleVar(3);
 
 	if (m_openedLayerManager)
 		CreateSceneOverview(window_flags2);
 
 	// Drag 'n Drop
-	
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
 
