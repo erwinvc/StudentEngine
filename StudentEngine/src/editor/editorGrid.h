@@ -6,14 +6,14 @@ private:
 	static Color g_color;
 public:
 	static float GetGridSizeFromZoomLevel(float zoom) {
-		if (zoom < 1.0f) return 50;
-		else if (zoom < 5.0f) return 100;
-		else if (zoom < 10.0f) return 200;
-		else if (zoom < 25.0f) return 400;
-		else if (zoom < 50.0f) return 800;
-		else if (zoom < 75.0f) return 1600;
-		else if (zoom < 100.0f) return 3200;
-		return 10000;
+		if (zoom < 1.0f) return 8;
+		else if (zoom < 5.0f) return 16;
+		else if (zoom < 10.0f) return 32;
+		else if (zoom < 25.0f) return 64;
+		else if (zoom < 50.0f) return 128;
+		else if (zoom < 75.0f) return 256;
+		else if (zoom < 100.0f) return 512;
+		return 1024;
 	}
 	static void Update(const TimeStep& time) {
 		g_color = Color::Mix(Color(1.0f, 1.0f, 1.0f, 0.2f), Color(0.5f, 0.5f, 0.5f, 0.2f), Math::Map(Math::Sin(time.TotalTime() / 1000), -1.0f, 1.0f, 0.0f, 1.0f));

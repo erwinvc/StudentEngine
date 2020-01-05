@@ -188,8 +188,8 @@ void EditorWindow::CreateEditorWindows() {
 
 			String name = Format("Object %i", GetEditorScene()->GetHierarchy().Size() + 1);
 			GameObject& obj = GetEditorScene()->AddGameObject(new GameObject(name, false))
-				.SetSize(Vector2(400, 400))
-				.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(50.0f, 50.0f)));
+				.SetSize(Vector2(128, 128))
+				.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
 
 			switch (m_currentlyDraggedEditorObjectType) {
 				case EditorObjectType::TERRAIN:

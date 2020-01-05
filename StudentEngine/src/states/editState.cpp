@@ -15,7 +15,7 @@ void EditState::Initialize() {
 	StreamedTexture* playerSprite = GetAssetManager()->Get<StreamedTexture>("GreyCat");
 	PlayerObject* po = new PlayerObject("Player Object", 0.5);
 	po->SetSize(Vector2(64, 64))
-		.SetPosition(Vector2(500.0f, 500.0f))
+		.SetPosition(Vector2(512.0f, 512.0f))
 		.SetTexture(playerSprite);
 	m_scene->AddGameObject(po);
 
