@@ -64,21 +64,22 @@ void ImGuiManager::Initialize(Window* window) {
 	ImGui::GetIO().Fonts->AddFontDefault();
 	g_smallFont = io.FontDefault;
 	g_bigFont = io.FontDefault;
-	//g_smallFont = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 10.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-	//g_bigFont = io.FontDefault = io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 15.0f, NULL, io.Fonts->GetGlyphRangesDefault());
-	//
-	//// Get the icons from both FA regular & solid (each having their own range of different icons)
-	//// And add them to the already existing font
+
+	
 	ImFontConfig config;
 	config.MergeMode = true;
 	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	//// Get the icons from both FA regular & solid (each having their own range of different icons)
+	//// And add them to the already existing font through the MergeMode
 	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 15.0f, &config, icon_ranges);
 	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 15.0f, &config, icon_ranges);
-	io.Fonts->Build();
 
-	//Font for buttons
+	//Font for the main buttons, using FA at a larger resolution as a different font
 	io.Fonts->AddFontFromFileTTF("res/fonts/fa-regular-400.ttf", 128.0f, NULL, icon_ranges);
 	io.Fonts->AddFontFromFileTTF("res/fonts/fa-solid-900.ttf", 128.0f, &config, icon_ranges);
+	
+	//Font for HUD
+	io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 64.0f, NULL);
 	io.Fonts->Build();
 }
 

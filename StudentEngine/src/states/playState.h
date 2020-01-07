@@ -7,6 +7,7 @@ private:
 	Camera* m_editorCamera;
 	Camera* m_playCamera;
 	bool m_restarting;
+	int m_playerScore = 0;
 public:
 	PlayState() : BaseState("Play") {}
 	~PlayState();
@@ -18,5 +19,7 @@ public:
 	void EnterState() override;
 	void ExitState() override;
 	void OnImGui() override;
+	void OnHUD();
+	void AdjustScore(int value);
 	void Restart();
 };

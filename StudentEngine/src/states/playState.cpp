@@ -14,6 +14,7 @@ void PlayState::Update(const TimeStep& time) {
 		m_scene->GetHierarchy().Initialize();
 		m_scene->Copy(States::EDIT->GetScene());
 		m_restarting = false;
+		m_playerScore = 0;
 	}
 	m_scene->Update(time);
 }
@@ -52,6 +53,24 @@ void PlayState::ExitState() {
 
 void PlayState::OnImGui() {
 	GetEditorWindow()->OnImGui();
+
+	OnHUD();
+}
+
+void PlayState::OnHUD() {
+	//Could be moved into its own class
+
+	String scoreText = Format("%s%i", "Score: ", m_playerScore);
+	ImGui::GetOverlayDrawList()->AddText(
+		ImGui::GetIO().Fonts->Fonts[2],		//Grabbing the special HUD font that's larger for better quality. Changing the Font order around will mess this up.
+		ImGui::GetFontSize()*2.0f, 
+		AnchorPoints::GetAnchor(Anchors::TOPLEFT, ImVec2(50, 75)), 
+		IM_COL32(255, 255, 255, 255), 
+		scoreText.c_str());
+}
+
+void PlayState::AdjustScore(int value) {
+	m_playerScore += value;
 }
 
 void PlayState::Restart() {

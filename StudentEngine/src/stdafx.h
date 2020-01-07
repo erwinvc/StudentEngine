@@ -183,3 +183,4 @@ using namespace std;
 #include "states/playState.h"
 #include "states/stateManager.h"
 #include "util/undo.h"
+#include "util/anchorPoints.h"

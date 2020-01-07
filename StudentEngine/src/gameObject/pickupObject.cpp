@@ -38,6 +38,7 @@ PickupObject* PickupObject::SetPickupType(PickupType type) {
 void PickupObject::OnPickup() {
 	switch (m_type) {
 	case PickupType::COIN:
+		((PlayState*)GetStateManager()->GetState())->AdjustScore(5);
 		break;
 	case PickupType::POWERUP:
 		PlayerObject* playerObject = static_cast<PlayerObject*>(GetActiveScene()->FindObjectByName("Player"));
