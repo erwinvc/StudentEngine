@@ -64,49 +64,49 @@ public:
 		return dynamic_cast<const T*>(this) != nullptr;
 	}
 
-	GameObject& SetOnCollision(function<bool(GameObject*, GameObject*)> func) {
+	GameObject* SetOnCollision(function<bool(GameObject*, GameObject*)> func) {
 #pragma region ChainFunctions
 		m_onCollisionCallback = func;
-		return *this;
+		return this;
 	}
 
-	GameObject& SetPosition(Vector2 position) {
+	GameObject* SetPosition(Vector2 position) {
 		m_transform.m_position = position;
-		return *this;
+		return this;
 	}
 
-	GameObject& SetSize(Vector2 size) {
+	GameObject* SetSize(Vector2 size) {
 		m_transform.m_size = size;
-		return *this;
+		return this;
 	}
 
-	GameObject& SetRotation(float rotation) {
+	GameObject* SetRotation(float rotation) {
 		m_transform.m_rotation = rotation;;
-		return *this;
+		return this;
 	}
 
-	GameObject& SetTexture(StreamedTexture* texture) {
+	GameObject* SetTexture(StreamedTexture* texture) {
 		m_sprite.m_texture = texture;
-		return *this;
+		return this;
 	}
 
-	GameObject& SetColor(Color color) {
+	GameObject* SetColor(Color color) {
 		m_sprite.m_color = color;
-		return *this;
+		return this;
 	}
 
-	GameObject& Set9Slice(bool value) {
+	GameObject* Set9Slice(bool value) {
 		m_sprite.m_9Slice = value;
-		return *this;
+		return this;
 	}
 
-	GameObject& SetAtlasValues(int numberOfRows, int frameCount, float frameTime, int frameOffset = 0) {
+	GameObject* SetAtlasValues(int numberOfRows, int frameCount, float frameTime, int frameOffset = 0) {
 		m_sprite.m_numberOfRows = numberOfRows;
 		m_sprite.m_frameCount = frameCount;
 		m_sprite.m_frameTime = frameTime;
 		m_sprite.m_frameOffset = frameOffset;
 		ASSERT(m_sprite.m_frameOffset + m_sprite.m_frameCount < m_sprite.m_numberOfRows * m_sprite.m_numberOfRows, "Sprite offset is bigger than the total amount of sprites");
-		return *this;
+		return this;
 	}
 
 #pragma endregion

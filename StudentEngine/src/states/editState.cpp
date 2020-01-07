@@ -8,29 +8,30 @@ void EditState::Initialize() {
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
 	ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
-		.SetSize(Vector2(2048.0f, 128.0f))
-		.SetPosition(Vector2(960.0f, 224.0f))
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
+		->SetSize(Vector2(2048.0f, 128.0f))
+		->SetPosition(Vector2(960.0f, 224.0f))
+		->SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
 
-	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
-		.SetPosition(Vector2(192.0f, 352.0f))
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
+	static_cast<PlayerObject*>(ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
+		->SetPosition(Vector2(192.0f, 352.0f))
+		->SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat")))
+		->SetMovementSpeed(0.5);
 
-	ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Blue")
-		.SetSize(Vector2(32.0f, 32.0f))
-		.SetPosition(Vector2(352.0f, 320.0f))
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"));
+	static_cast<PickupObject*>(ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Blue")
+		->SetSize(Vector2(32.0f, 32.0f))
+		->SetPosition(Vector2(352.0f, 320.0f)))
+		->SetPickupType(PickupType::COIN);
 
-	ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Green")
-		.SetSize(Vector2(32.0f, 32.0f))
-		.SetPosition(Vector2(704.0f, 320.0f))
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("GreenPickup"));
+	static_cast<PickupObject*>(ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Green")
+		->SetSize(Vector2(32.0f, 32.0f))
+		->SetPosition(Vector2(704.0f, 320.0f)))
+		->SetPickupType(PickupType::POWERUP);
 
 	GetScene()->AddGameObject(new GameObject("Goal"))
-		.SetSize(Vector2(64.0f, 64.0f))
-		.SetPosition(Vector2(1536.0f, 320.0f))
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"))
-		.SetOnCollision([](GameObject* self, GameObject* other) {
+		->SetSize(Vector2(64.0f, 64.0f))
+		->SetPosition(Vector2(1536.0f, 320.0f))
+		->SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"))
+		->SetOnCollision([](GameObject* self, GameObject* other) {
 		if (other->IsOfType<PlayerObject>()) {
 			PlayState* state = (PlayState*)GetStateManager()->GetState();
 			state->Restart();

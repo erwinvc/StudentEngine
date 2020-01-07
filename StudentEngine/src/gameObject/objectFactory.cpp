@@ -1,35 +1,36 @@
 #include "stdafx.h"
 
-GameObject& ObjectFactory::CreateObject(EditorObjectType objectType, const String& objectName) {
+GameObject* ObjectFactory::CreateObject(EditorObjectType objectType, const String& objectName) {
 	GameObject* newObject;
-	
+
 	switch (objectType) {
 	case EditorObjectType::TERRAIN:
-		newObject = &GetEditorScene()->AddGameObject(new TerrainObject(objectName))
-			.Set9Slice(true)
-			.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
+		newObject = GetEditorScene()->AddGameObject(new TerrainObject(objectName))
+			->Set9Slice(true)
+			->SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
 		GetEditorScene()->GetHierarchy().ChangeLayer(newObject, "Background");
 		break;
 	case EditorObjectType::GAMEOBJECT:
-		newObject = &GetEditorScene()->AddGameObject(new GameObject(objectName, false))
-			.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
+		newObject = GetEditorScene()->AddGameObject(new GameObject(objectName, false))
+			->SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
 		GetEditorScene()->GetHierarchy().ChangeLayer(newObject, "Objects");
 		break;
 	case EditorObjectType::PLAYER:
-		newObject = &GetEditorScene()->AddGameObject(new PlayerObject(objectName))
-			.SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
+		newObject = GetEditorScene()->AddGameObject(new PlayerObject(objectName))
+			->SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
 		GetEditorScene()->GetHierarchy().ChangeLayer(newObject, "Foreground");
 		break;
 	case EditorObjectType::PICKUP:
-		newObject = &GetEditorScene()->AddGameObject(new PickupObject(objectName))
-			.SetAtlasValues(4, 4, 0.125f)
-			.SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"))
-			.SetOnCollision([](GameObject* self, GameObject* other) {
-				if (other->IsOfType<PlayerObject>()) {
-					self->Destroy();
-				}
-				return true;
-			});
+		newObject = GetEditorScene()->AddGameObject(new PickupObject(objectName))
+			->SetAtlasValues(4, 4, 0.125f)
+			->SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"))
+			->SetOnCollision([](GameObject* self, GameObject* other) {
+			if (other->IsOfType<PlayerObject>()) {
+				static_cast<PickupObject*>(self)->OnPickup();
+				self->Destroy();
+			}
+			return true;
+				});
 		GetEditorScene()->GetHierarchy().ChangeLayer(newObject, "Pickups");
 		break;
 	}
@@ -47,5 +48,5 @@ GameObject& ObjectFactory::CreateObject(EditorObjectType objectType, const Strin
 	}
 	newObject->SetSize(Vector2(sizeX, sizeY));
 
-	return *newObject;
+	return newObject;
 }

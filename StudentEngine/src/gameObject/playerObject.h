@@ -2,7 +2,9 @@
 
 class PlayerObject : public GameObject {
 private:
-	float m_movementSpeed = 0.5;
+	float m_movementSpeed;
+	bool m_invincible;
+	Timer m_invincibilityTimer;
 public:
 	PlayerObject(const String& name);
 	EditorObjectType GetObjectType();
@@ -10,5 +12,6 @@ public:
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
 	nlohmann::json ToJson() override;
-	PlayerObject& SetMovementSpeed(int speed);
+	PlayerObject* SetMovementSpeed(float speed);
+	PlayerObject* SetInvinciblity(bool invincible);
 };

@@ -21,7 +21,7 @@ nlohmann::json PickupObject::ToJson() {
 	return resultJson;
 }
 
-GameObject& PickupObject::SetPickupType(PickupType& type) {
+PickupObject* PickupObject::SetPickupType(PickupType type) {
 	switch (type) {
 	case PickupType::COIN:
 		SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"));
@@ -32,7 +32,7 @@ GameObject& PickupObject::SetPickupType(PickupType& type) {
 	}
 
 	m_type = type;
-	return *this;
+	return this;
 }
 
 void PickupObject::OnPickup() {
@@ -40,6 +40,8 @@ void PickupObject::OnPickup() {
 	case PickupType::COIN:
 		break;
 	case PickupType::POWERUP:
+		PlayerObject* playerObject = static_cast<PlayerObject*>(GetActiveScene()->FindObjectByName("Player"));
+		playerObject->SetInvinciblity(true);
 		break;
 	}
 }

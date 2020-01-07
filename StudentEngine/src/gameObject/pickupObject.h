@@ -14,6 +14,6 @@ public:
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
 	nlohmann::json ToJson() override;
-	GameObject& SetPickupType(PickupType& type);
+	PickupObject* SetPickupType(PickupType type);
 	void OnPickup();
 };

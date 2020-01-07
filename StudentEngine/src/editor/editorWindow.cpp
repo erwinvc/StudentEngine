@@ -198,11 +198,11 @@ void EditorWindow::CreateEditorWindows() {
 			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
 			String name = Format("Object %i", GetEditorScene()->GetHierarchy().Size() + 1);
-			GameObject& obj = ObjectFactory::CreateObject(m_currentlyDraggedEditorObjectType, name);
-			obj.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
+			GameObject* obj = ObjectFactory::CreateObject(m_currentlyDraggedEditorObjectType, name)
+				->SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
 
 			//m_layers[0]->AddChild(&obj);
-			GetEditorScene()->GetHierarchy().SetSelected(&obj);
+			GetEditorScene()->GetHierarchy().SetSelected(obj);
 		}
 		else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame

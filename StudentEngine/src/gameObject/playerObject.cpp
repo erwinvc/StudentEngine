@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
-
+	m_invincible = false;
 }
 
 EditorObjectType PlayerObject::GetObjectType() {
@@ -9,10 +9,11 @@ EditorObjectType PlayerObject::GetObjectType() {
 }
 
 void PlayerObject::Update(const TimeStep& time) {
+	// Movement
 	m_physicsObject.m_velocity.y -= m_physicsObject.m_gravity * time;
 	float decay = 1 / (1 + (time * m_physicsObject.m_friction));
 	m_physicsObject.m_velocity.x *= decay;
-	
+
 	if (GetKeyboard()->KeyDown('A')) {
 		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		m_physicsObject.m_velocity.x -= m_movementSpeed * time;
@@ -32,7 +33,17 @@ void PlayerObject::Update(const TimeStep& time) {
 	if (m_physicsObject.m_velocity.y < 0) {
 		m_physicsObject.m_isGrounded = false;
 	}
-	
+
+	// Invincibility
+	if (m_invincible) {
+		int colorTime = (int)Math::Floor(m_invincibilityTimer.Get(Timer::SECONDS) * 1000) / 10 % 2;
+		SetColor(colorTime == 0 ? Color::Yellow() : Color::White());
+		if ((m_invincibilityTimer.Get(Timer::SECONDS) * 10) >= 3) {
+			SetInvinciblity(false);
+			SetColor(Color::White());
+		}
+	}
+
 	m_physicsObject.Update(time);
 }
 
@@ -50,7 +61,15 @@ nlohmann::json PlayerObject::ToJson() {
 	return resultJson;
 }
 
-PlayerObject& PlayerObject::SetMovementSpeed(int speed) {
+PlayerObject* PlayerObject::SetMovementSpeed(float speed) {
 	m_movementSpeed = speed;
-	return *this;
+	return this;
+}
+
+PlayerObject* PlayerObject::SetInvinciblity(bool invincible) {
+	m_invincible = invincible;
+	if (invincible) {
+		m_invincibilityTimer = Timer();
+	}
+	return this;
 }

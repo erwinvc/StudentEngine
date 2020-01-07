@@ -7,8 +7,8 @@ public:
 	Vector2 m_cursorWorldPosition;
 
 	template<typename T>
-	T& AddGameObject(T* gameObject) {
-		return *(T*)m_hierarchy.AddGameObject(gameObject);
+	T* AddGameObject(T* gameObject) {
+		return (T*)m_hierarchy.AddGameObject(gameObject);
 	}
 
 	inline Hierarchy& GetHierarchy() { return m_hierarchy; }
