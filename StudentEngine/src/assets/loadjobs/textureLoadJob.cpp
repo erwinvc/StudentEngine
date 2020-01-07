@@ -32,7 +32,7 @@ bool TextureLoadJob::LoadAsset(bool addToProcessQueue) {
 void TextureLoadJob::ProcessAsset(map<String, AssetBase*>& assets) {
 	if (m_data != nullptr) {
 		StreamedTexture* st = GetAssetManager()->Get<StreamedTexture>(m_id);
-		st->FinishStreaming(m_filePath, new Texture(m_width, m_height, m_data, m_params));
+		st->FinishStreaming(m_filePath, new Texture(m_id, m_width, m_height, m_data, m_params));
 		//LOG("[~yAssets~x] asset ~1%s~x of type ~1%s~x processed", m_id.c_str(), typeid(*assets[m_id]).name());
 	}
 }

@@ -2,18 +2,13 @@
 
 class PlayerObject : public GameObject {
 private:
-	float m_movementSpeed;
-	
+	float m_movementSpeed = 0.5;
 public:
-	PlayerObject(const String& name, float movementSpeed);
-
+	PlayerObject(const String& name);
+	EditorObjectType GetObjectType();
 	void Update(const TimeStep& time) override;
-
-	virtual GameObject* Copy() override {
-		return new PlayerObject(*this);
-	}
-
-	void InspectorDraw() override {
-		GameObject::InspectorDraw();
-	}
+	virtual GameObject* Copy() override;
+	void InspectorDraw() override;
+	nlohmann::json ToJson() override;
+	PlayerObject& SetMovementSpeed(int speed);
 };

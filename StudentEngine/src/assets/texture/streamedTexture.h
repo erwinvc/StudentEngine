@@ -15,8 +15,8 @@ private:
 	}
 	friend TextureLoadJob;
 public:
-	StreamedTexture();
-	StreamedTexture(Texture* texture, bool streamed = false);
+	StreamedTexture(const String& name);
+	StreamedTexture(const String& name, Texture* texture, bool streamed = false);
 	~StreamedTexture();
 
 	Texture* GetTexture() { return m_texture; }

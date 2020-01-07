@@ -18,7 +18,7 @@ private:
 public:
 	AssetManager() {
 		if (m_initialized) return;
-		m_nullTexture = new Texture(1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
+		m_nullTexture = new Texture("Null", 1, 1, Color::White().ToColor8(), TextureParameters(RGBA, RGBA, NEAREST, REPEAT));
 		m_initialized = true;
 		m_activeJobs = 0;
 		//m_assetWatcher = new AssetWatcher();
@@ -68,7 +68,7 @@ public:
 		T* asset = (T*)m_assets[name];
 		if (!asset) {
 			if (typeid(T) == typeid(StreamedTexture)) {
-				m_assets[name] = new StreamedTexture(m_nullTexture, false);
+				m_assets[name] = new StreamedTexture(name, m_nullTexture, false);
 				return (T*)m_assets[name];
 			}
 			LOG_WARN("[~yAssets~x] asset ~1%s~x of type ~1%s~x not found", name.c_str(), typeid(T).name());

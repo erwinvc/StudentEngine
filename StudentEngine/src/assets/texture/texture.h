@@ -11,8 +11,8 @@ private:
 	void Cleanup();
 
 public:
-	Texture(int32 width, int32 height, byte* data, TextureParameters params = TextureParameters(), bool keepData = false);
-	Texture(int32 width, int32 height, TextureParameters params = TextureParameters(), bool keepData = false);
+	Texture(const String& name, int32 width, int32 height, byte* data, TextureParameters params = TextureParameters(), bool keepData = false);
+	Texture(const String& name, int32 width, int32 height, TextureParameters params = TextureParameters(), bool keepData = false);
 	//Texture(const String& path, bool hasMipmaps, TextureParameters params = TextureParameters(), bool keepData = false);
 	~Texture();
 

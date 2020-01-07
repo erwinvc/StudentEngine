@@ -35,10 +35,12 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BrownCat", "res/assets/textures/browncat.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("RedCat", "res/assets/textures/redcat.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PurpleCat", "res/assets/textures/purplecat.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Pickups", "res/assets/textures/pickups.png"));
-	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("LevelEnd", "res/assets/textures/finish.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BluePickup", "res/assets/textures/bluePickup.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreenPickup", "res/assets/textures/greenPickup.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Goal", "res/assets/textures/goal.png"));
 
 	GameObject::SetValidTextures("Player", { "GreyCat", "BrownCat" });
+	GameObject::SetValidTextures("Pickup", { "BluePickup", "GreenPickup" });
 	GameObject::SetValidTextures("Enemy", { "RedCat", "PurpleCat" });
 
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/assets/audio/bloop.wav"));

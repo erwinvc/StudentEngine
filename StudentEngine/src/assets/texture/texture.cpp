@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
-Texture::Texture(int32 width, int32 height, byte* data, TextureParameters params, bool keepData) : m_params(params), m_textureID(0), m_width(width), m_height(height), m_path(""), m_data(nullptr), m_keepData(keepData) {
+Texture::Texture(const String& name, int32 width, int32 height, byte* data, TextureParameters params, bool keepData) : AssetBase(name), m_params(params), m_textureID(0), m_width(width), m_height(height), m_path(""), m_data(nullptr), m_keepData(keepData) {
 	SetData(data);
 }
 
-Texture::Texture(int32 width, int32 height, TextureParameters params, bool keepData) : m_params(params), m_textureID(0), m_width(width), m_height(height), m_path(""), m_data(nullptr), m_keepData(keepData) {
+Texture::Texture(const String& name, int32 width, int32 height, TextureParameters params, bool keepData) : AssetBase(name), m_params(params), m_textureID(0), m_width(width), m_height(height), m_path(""), m_data(nullptr), m_keepData(keepData) {
 	SetData(nullptr);
 }
 

@@ -9,5 +9,5 @@ bool AudioLoadJob::LoadAsset(bool addToProcessQueue) {
 }
 
 void AudioLoadJob::ProcessAsset(map<String, AssetBase*>& assets) {
-	assets[m_id] = new Audio(m_filePath);
+	assets[m_id] = new Audio(m_id, m_filePath);
 }

@@ -1,4 +1,3 @@
-
 class Hierarchy {
 private:
 	GameObject* m_selected;
@@ -110,6 +109,20 @@ public:
 
 	GameObject* GetSelected() {
 		return m_selected;
+	}
+
+	inline nlohmann::json ToJson() {
+		nlohmann::json resultJson;
+		for (ObjectLayer* layer : m_layers) {
+			for (GameObject* gameObject : layer->m_objects) {
+				resultJson[gameObject->m_name] = gameObject->ToJson();
+			}
+		}
+		return resultJson;
+	}
+
+	inline void FromJson(nlohmann::json& inputJson) {
+		
 	}
 
 	//vector<GameObject*>::iterator begin() { return m_gameObjects.begin(); }

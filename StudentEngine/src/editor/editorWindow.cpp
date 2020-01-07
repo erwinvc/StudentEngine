@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 void EditorWindow::Initialize() {
 	m_layers = vector<HierarchyObject*>();
 	for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
@@ -29,7 +28,8 @@ void EditorWindow::OnImGui() {
 	CreateDockingSpace();
 	if (m_inEditorMode) {
 		CreateEditorWindows();
-	} else {
+	}
+	else {
 		CreateTemporaryPlayMode();
 	}
 }
@@ -164,7 +164,9 @@ void EditorWindow::CreateEditorWindows() {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_SAVE)) {
-
+		//nlohmann::json hierarchyJson = GetEditorScene()->GetHierarchy().ToJson();
+		//FileSystem::SaveJsonToFile(hierarchyJson, "hierarchy");
+		//LOG("%s", "Saved JSON file!");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_LAYER_GROUP)) {
@@ -189,35 +191,20 @@ void EditorWindow::CreateEditorWindows() {
 
 		Vector2 pos = GetMouse()->GetPosition();
 		bool inWindow = Math::Within(pos.x, m_viewport.x, m_viewport.x + m_viewport.z) && Math::Within(pos.y, m_viewport.y, m_viewport.y + m_viewport.w);
-		
+
 		//Currently whenever the drag source (in hierachyObject) is external, that means we aren't creating an object, just moving folders
 		if (inWindow && !m_dragSourceExternal) {
 			Vector3 ray = GroundRaycast::GetMousePosition(GetCamera());
 			Vector3 rayPos = GroundRaycast::GetGroundPosition(GetCamera(), ray, 1.0f);
 
 			String name = Format("Object %i", GetEditorScene()->GetHierarchy().Size() + 1);
-			GameObject& obj = GetEditorScene()->AddGameObject(new GameObject(name, false))
-				.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
-
-			StreamedTexture* texture;
-			switch (m_currentlyDraggedEditorObjectType) {
-				case EditorObjectType::TERRAIN:
-					texture = GetAssetManager()->Get<StreamedTexture>("9slice");
-					obj.SetTexture(texture).Set9Slice();
-					obj.SetPosition(Vector2(obj.m_transform.m_position.x + 16.0f, obj.m_transform.m_position.y + 16.0f));
-					GetEditorScene()->GetHierarchy().ChangeLayer(&obj, "Background");
-					break;
-				case EditorObjectType::GAMEOBJECT:
-					texture = GetAssetManager()->Get<StreamedTexture>("Logo");
-					obj.SetTexture(texture);
-					break;
-			}
-
-			obj.SetSize(Vector2(texture->GetTexture()->GetWidth(), texture->GetTexture()->GetHeight()));
+			GameObject& obj = ObjectFactory::CreateObject(m_currentlyDraggedEditorObjectType, name);
+			obj.SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
 
 			//m_layers[0]->AddChild(&obj);
 			GetEditorScene()->GetHierarchy().SetSelected(&obj);
-		} else {
+		}
+		else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
 		}
@@ -234,14 +221,17 @@ void EditorWindow::CreateEditorWindows() {
 
 		//TODO: Possibly loop through the Enum?
 		/*for (EditorObjectType type = EditorObjectType::GAMEOBJECT; type != EditorObjectType::TERRAIN; type = EditorObjectType(type+1)) {
-		
+
 		}*/
-		
+
 		if (ImGui::Button("Terrain", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::TERRAIN);
 		ImGui::SameLine();
 		if (ImGui::Button("Sprite", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::GAMEOBJECT);
+		if (ImGui::Button("Pickup", ImVec2(100, 100))) {}
+		CreateItemDrag(EditorObjectType::PICKUP);
+
 	}
 	ImGui::End();
 
@@ -315,7 +305,7 @@ void EditorWindow::ToggleSettingNewParent(GameObject* obj = NULL) {
 
 	m_settingNewFolder = !m_settingNewFolder;
 }
-	
+
 void EditorWindow::AddFolder() {
 
 }
@@ -419,7 +409,8 @@ void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 				col.w *= alpha;
 			}
 		}
-	} else {
+	}
+	else {
 		for (int i = 0; i <= ImGuiCol_COUNT; i++) {
 			ImVec4& col = style.Colors[i];
 			if (col.w < 1.00f) {

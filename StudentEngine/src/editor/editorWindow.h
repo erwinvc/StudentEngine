@@ -1,10 +1,4 @@
 #pragma once
-
-enum class EditorObjectType {
-	TERRAIN,
-	GAMEOBJECT
-};
-
 class EditorWindow {
 private:
 	float m_time = 0;

@@ -1,7 +1,11 @@
 #include "stdafx.h"
 
-PlayerObject::PlayerObject(const String& name, float movementSpeed) : GameObject(name, true), m_movementSpeed(movementSpeed) {
+PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
 
+}
+
+EditorObjectType PlayerObject::GetObjectType() {
+	return EditorObjectType::PLAYER;
 }
 
 void PlayerObject::Update(const TimeStep& time) {
@@ -30,4 +34,23 @@ void PlayerObject::Update(const TimeStep& time) {
 	}
 	
 	m_physicsObject.Update(time);
+}
+
+GameObject* PlayerObject::Copy() {
+	return new PlayerObject(*this);
+}
+
+void PlayerObject::InspectorDraw() {
+	GameObject::InspectorDraw();
+}
+
+nlohmann::json PlayerObject::ToJson() {
+	nlohmann::json resultJson = GameObject::ToJson();
+	LOG("[~RSerialization~x] Serialized PlayerObject to JSON");
+	return resultJson;
+}
+
+PlayerObject& PlayerObject::SetMovementSpeed(int speed) {
+	m_movementSpeed = speed;
+	return *this;
 }

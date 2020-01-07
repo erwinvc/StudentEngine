@@ -157,9 +157,13 @@ using namespace std;
 #include "physics/quadTree.h"
 
 #include "application.h"
+#include "editor/editorObjectType.h"
 #include "gameObject/gameObject.h"
 #include "gameObject/editorGameObject.h"
 #include "gameObject/playerObject.h"
+#include "gameObject/terrainObject.h"
+#include "gameObject/pickupObject.h"
+#include "gameObject/objectFactory.h"
 #include "editor/assetSelectWindow.h"
 #include "editor/objectLayer.h"
 #include "editor/hierarchyObject.h"

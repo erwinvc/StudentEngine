@@ -2,22 +2,27 @@
 
 class AssetBase {
 protected:
+	String m_name;
 	Path m_filePath;
 public:
-	AssetBase() {};
-	AssetBase(const Path& filePath) : m_filePath(filePath) {};
+	AssetBase(const String& name) : m_name(name) {};
+	AssetBase(const String& name, const Path& filePath) : m_name(name), m_filePath(filePath) {};
 	virtual ~AssetBase() {}
 
 	Path& GetFilePath() {
 		return m_filePath;
 	}
 
-	String GetFullFileName() {
+	String& GetFullFileName() {
 		return m_filePath.GetFileName() + "." + m_filePath.GetExtention();
 	}
 
 	virtual AssetBase* GetTexture() {
 		return NULL;
+	}
+
+	String& GetName() {
+		return m_name;
 	}
 
 	//String m_fullName;

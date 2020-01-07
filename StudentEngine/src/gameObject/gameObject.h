@@ -1,7 +1,6 @@
 #pragma once
 
 static bool nullfunc(GameObject* ths, GameObject* gameObject) { return true; }
-
 class GameObject : public InspectorDrawable {
 private:
 	GameObject* m_parent = NULL;
@@ -34,6 +33,10 @@ public:
 	~GameObject() {
 	}
 
+	virtual EditorObjectType GetObjectType() {
+		return EditorObjectType::GAMEOBJECT;
+	}
+
 	void AddChild(GameObject* gameObject) {
 		gameObject->SetParent(this);
 		m_children.push_back(gameObject);
@@ -61,8 +64,8 @@ public:
 		return dynamic_cast<const T*>(this) != nullptr;
 	}
 
-	#pragma region ChainFunctions
 	GameObject& SetOnCollision(function<bool(GameObject*, GameObject*)> func) {
+#pragma region ChainFunctions
 		m_onCollisionCallback = func;
 		return *this;
 	}
@@ -92,8 +95,8 @@ public:
 		return *this;
 	}
 
-	GameObject& Set9Slice() {
-		m_sprite.m_9Slice = true;
+	GameObject& Set9Slice(bool value) {
+		m_sprite.m_9Slice = value;
 		return *this;
 	}
 
@@ -105,6 +108,8 @@ public:
 		ASSERT(m_sprite.m_frameOffset + m_sprite.m_frameCount < m_sprite.m_numberOfRows * m_sprite.m_numberOfRows, "Sprite offset is bigger than the total amount of sprites");
 		return *this;
 	}
+
+#pragma endregion
 
 	void SetChildren(vector<GameObject*> children) {
 		m_children = children;
@@ -159,5 +164,30 @@ public:
 		return m_validTextures[key];
 	}
 
-	#pragma endregion
+	virtual nlohmann::json ToJson() {
+		nlohmann::json resultJson;
+		resultJson["type"] = GetObjectType();
+		resultJson["texture"] = m_sprite.m_texture->GetTexture()->GetName();
+		if (m_parent) {
+			resultJson["parent"] = m_parent->m_name;
+		}
+
+		nlohmann::json transformJson;
+		transformJson["position"] = nlohmann::json({ { "x", m_transform.m_position.x }, { "y", m_transform.m_position.y } });
+		transformJson["size"] = nlohmann::json({ { "x", m_transform.m_size.x }, { "y", m_transform.m_size.y } });
+		resultJson["transform"] = transformJson;
+
+		nlohmann::json animationJson;
+		animationJson["numberOfRows"] = m_sprite.m_numberOfRows;
+		animationJson["frameCount"] = m_sprite.m_frameCount;
+		animationJson["frameTime"] = m_sprite.m_frameTime;
+		animationJson["frameOffset"] = m_sprite.m_frameOffset;
+		resultJson["animation"] = animationJson;
+
+		return resultJson;
+	}
+
+	//virtual void from_json(const nlohmann::json& json, GameObject& gameObject) {
+	//	json.at("name").get_to(gameObject.m_name);
+	//}
 };

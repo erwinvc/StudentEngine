@@ -7,48 +7,29 @@ void EditState::Initialize() {
 	g_squareGizmo = GetAssetManager()->Get<StreamedTexture>("SquareGizmo");
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
-	GetScene()->AddGameObject(new GameObject("Tiles"))
+	ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
 		.SetSize(Vector2(2048.0f, 128.0f))
 		.SetPosition(Vector2(960.0f, 224.0f))
-		.Set9Slice()
 		.SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
 
-	GetScene()->AddGameObject(new PlayerObject("Player Object", 0.5))
-		.SetSize(Vector2(64, 64))
+	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
 		.SetPosition(Vector2(192.0f, 352.0f))
 		.SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
 
-
-	GetScene()->AddGameObject(new GameObject("Blue Ball"))
+	ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Blue")
 		.SetSize(Vector2(32.0f, 32.0f))
 		.SetPosition(Vector2(352.0f, 320.0f))
-		.SetAtlasValues(4, 4, 0.125f)
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Pickups"))
-		.SetOnCollision([](GameObject* self, GameObject* other) {
-		if (other->IsOfType<PlayerObject>()) {
-			self->Destroy();
-		}
-		return true;
-			}
-	);
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"));
 
-	GetScene()->AddGameObject(new GameObject("Green Triangle"))
+	ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Green")
 		.SetSize(Vector2(32.0f, 32.0f))
 		.SetPosition(Vector2(704.0f, 320.0f))
-		.SetAtlasValues(4, 4, 0.125f, 1 * 4)
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Pickups"))
-		.SetOnCollision([](GameObject* self, GameObject* other) {
-		if (other->IsOfType<PlayerObject>()) {
-			self->Destroy();
-		}
-		return true;
-			}
-	);
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("GreenPickup"));
 
-	GetScene()->AddGameObject(new GameObject("Level End"))
+	GetScene()->AddGameObject(new GameObject("Goal"))
 		.SetSize(Vector2(64.0f, 64.0f))
 		.SetPosition(Vector2(1536.0f, 320.0f))
-		.SetTexture(GetAssetManager()->Get<StreamedTexture>("LevelEnd"))
+		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"))
 		.SetOnCollision([](GameObject* self, GameObject* other) {
 		if (other->IsOfType<PlayerObject>()) {
 			PlayState* state = (PlayState*)GetStateManager()->GetState();
@@ -126,11 +107,13 @@ void EditState::Update(const TimeStep& time) {
 
 	// Testing Asset Selection Window
 	if (KeyJustDown(GLFW_KEY_K)) {
-		GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
-			GameObject* playerObject = m_scene->FindObjectByName("Player Object");
-			playerObject->SetTexture((StreamedTexture*)asset);
-			});
-		GetAssetSelect()->Open();
+		//GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
+		//	GameObject* playerObject = m_scene->FindObjectByName("Player Object");
+		//	playerObject->SetTexture((StreamedTexture*)asset);
+		//	});
+		//GetAssetSelect()->Open();
+		nlohmann::json testJson = GetScene()->GetHierarchy().ToJson();
+		LOG("%s", testJson.dump().c_str());
 	}
 
 	//if (KeyJustDown(VK_SPACE)) {
