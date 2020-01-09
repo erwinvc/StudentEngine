@@ -4,7 +4,7 @@ PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
 	m_invincible = false;
 }
 
-EditorObjectType PlayerObject::GetObjectType() {
+EditorObjectType PlayerObject::GetObjectType() const {
 	return EditorObjectType::PLAYER;
 }
 

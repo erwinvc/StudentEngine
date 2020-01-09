@@ -113,7 +113,7 @@ void EditState::Update(const TimeStep& time) {
 		//	playerObject->SetTexture((StreamedTexture*)asset);
 		//	});
 		//GetAssetSelect()->Open();
-		nlohmann::json testJson = GetScene()->GetHierarchy().ToJson();
+		nlohmann::json testJson = GetScene()->GetHierarchy();
 		LOG("%s", testJson.dump().c_str());
 	}
 

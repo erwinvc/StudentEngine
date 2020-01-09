@@ -4,7 +4,7 @@ PickupObject::PickupObject(const String& name) : GameObject(name, true) {
 
 }
 
-EditorObjectType PickupObject::GetObjectType() {
+EditorObjectType PickupObject::GetObjectType() const {
 	return EditorObjectType::PICKUP;
 }
 

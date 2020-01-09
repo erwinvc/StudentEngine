@@ -4,7 +4,7 @@ TerrainObject::TerrainObject(const String& name) : GameObject(name, false) {
 	Set9Slice(true);
 }
 
-EditorObjectType TerrainObject::GetObjectType() {
+EditorObjectType TerrainObject::GetObjectType() const {
 	return EditorObjectType::TERRAIN;
 }
 

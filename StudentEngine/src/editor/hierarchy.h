@@ -111,18 +111,16 @@ public:
 		return m_selected;
 	}
 
-	inline nlohmann::json ToJson() {
-		nlohmann::json resultJson;
-		for (ObjectLayer* layer : m_layers) {
+	friend void to_json(nlohmann::json& jsonObject, const Hierarchy& hierarchy) {
+		for (ObjectLayer* layer : hierarchy.m_layers) {
 			for (GameObject* gameObject : layer->m_objects) {
-				resultJson[gameObject->m_name] = gameObject->ToJson();
+				jsonObject[gameObject->m_name] = *gameObject;
 			}
 		}
-		return resultJson;
 	}
 
-	inline void FromJson(nlohmann::json& inputJson) {
-		
+	friend void from_json(const nlohmann::json& json, Hierarchy& hierarchy) {
+
 	}
 
 	//vector<GameObject*>::iterator begin() { return m_gameObjects.begin(); }

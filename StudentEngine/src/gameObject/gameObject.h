@@ -33,7 +33,7 @@ public:
 	~GameObject() {
 	}
 
-	virtual EditorObjectType GetObjectType() {
+	virtual EditorObjectType GetObjectType() const {
 		return EditorObjectType::GAMEOBJECT;
 	}
 
@@ -185,6 +185,22 @@ public:
 		resultJson["animation"] = animationJson;
 
 		return resultJson;
+	}
+
+	friend void to_json(nlohmann::json& jsonObject, const GameObject& gameObject) {
+		jsonObject = nlohmann::json{
+			{ "type", gameObject.GetObjectType() },
+			{ "texture", gameObject.m_sprite.m_texture->GetTexture()->GetName() },
+			{ "transform", gameObject.m_transform }
+		};
+
+		if (gameObject.m_parent) {
+			jsonObject["parent"] = gameObject.m_parent->m_name;
+		}
+	}
+
+	friend void from_json(const nlohmann::json& json, GameObject& gameObject) {
+
 	}
 
 	//virtual void from_json(const nlohmann::json& json, GameObject& gameObject) {

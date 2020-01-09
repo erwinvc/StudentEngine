@@ -10,7 +10,7 @@ private:
 	PickupType m_type;
 public:
 	PickupObject(const String& name);
-	EditorObjectType GetObjectType();
+	EditorObjectType GetObjectType() const override;
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
 	nlohmann::json ToJson() override;

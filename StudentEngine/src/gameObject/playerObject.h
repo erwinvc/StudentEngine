@@ -7,7 +7,7 @@ private:
 	Timer m_invincibilityTimer;
 public:
 	PlayerObject(const String& name);
-	EditorObjectType GetObjectType();
+	EditorObjectType GetObjectType() const override;
 	void Update(const TimeStep& time) override;
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
