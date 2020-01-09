@@ -13,7 +13,6 @@ public:
 	EditorObjectType GetObjectType() const override;
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
-	nlohmann::json ToJson() override;
 	PickupObject* SetPickupType(PickupType type);
 	void OnPickup();
 };

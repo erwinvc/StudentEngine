@@ -160,13 +160,14 @@ void EditorWindow::CreateEditorWindows() {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_FOLDER_OPEN)) {
-
+		nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile("hierarchy");
+		hierarchyJson.get<Hierarchy>();
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_SAVE)) {
-		//nlohmann::json hierarchyJson = GetEditorScene()->GetHierarchy().ToJson();
-		//FileSystem::SaveJsonToFile(hierarchyJson, "hierarchy");
-		//LOG("%s", "Saved JSON file!");
+		nlohmann::json hierarchyJson = GetActiveScene()->GetHierarchy();
+		FileSystem::SaveJsonToFile(hierarchyJson, "hierarchy");
+		LOG("%s", "Saved JSON file!");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_LAYER_GROUP)) {

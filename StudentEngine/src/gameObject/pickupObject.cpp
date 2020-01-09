@@ -16,11 +16,6 @@ void PickupObject::InspectorDraw() {
 	GameObject::InspectorDraw();
 }
 
-nlohmann::json PickupObject::ToJson() {
-	nlohmann::json resultJson = GameObject::ToJson();
-	return resultJson;
-}
-
 PickupObject* PickupObject::SetPickupType(PickupType type) {
 	switch (type) {
 	case PickupType::COIN:

@@ -164,46 +164,7 @@ public:
 		return m_validTextures[key];
 	}
 
-	virtual nlohmann::json ToJson() {
-		nlohmann::json resultJson;
-		resultJson["type"] = GetObjectType();
-		resultJson["texture"] = m_sprite.m_texture->GetTexture()->GetName();
-		if (m_parent) {
-			resultJson["parent"] = m_parent->m_name;
-		}
+	friend void to_json(nlohmann::json& jsonObject, const GameObject& gameObject);
 
-		nlohmann::json transformJson;
-		transformJson["position"] = nlohmann::json({ { "x", m_transform.m_position.x }, { "y", m_transform.m_position.y } });
-		transformJson["size"] = nlohmann::json({ { "x", m_transform.m_size.x }, { "y", m_transform.m_size.y } });
-		resultJson["transform"] = transformJson;
-
-		nlohmann::json animationJson;
-		animationJson["numberOfRows"] = m_sprite.m_numberOfRows;
-		animationJson["frameCount"] = m_sprite.m_frameCount;
-		animationJson["frameTime"] = m_sprite.m_frameTime;
-		animationJson["frameOffset"] = m_sprite.m_frameOffset;
-		resultJson["animation"] = animationJson;
-
-		return resultJson;
-	}
-
-	friend void to_json(nlohmann::json& jsonObject, const GameObject& gameObject) {
-		jsonObject = nlohmann::json{
-			{ "type", gameObject.GetObjectType() },
-			{ "texture", gameObject.m_sprite.m_texture->GetTexture()->GetName() },
-			{ "transform", gameObject.m_transform }
-		};
-
-		if (gameObject.m_parent) {
-			jsonObject["parent"] = gameObject.m_parent->m_name;
-		}
-	}
-
-	friend void from_json(const nlohmann::json& json, GameObject& gameObject) {
-
-	}
-
-	//virtual void from_json(const nlohmann::json& json, GameObject& gameObject) {
-	//	json.at("name").get_to(gameObject.m_name);
-	//}
+	friend void from_json(const nlohmann::json& jsonObject, GameObject& gameObject);
 };

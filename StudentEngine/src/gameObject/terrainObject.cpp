@@ -15,9 +15,3 @@ GameObject* TerrainObject::Copy() {
 void TerrainObject::InspectorDraw() {
 	GameObject::InspectorDraw();
 }
-
-nlohmann::json TerrainObject::ToJson() {
-	nlohmann::json resultJson = GameObject::ToJson();
-	LOG("[~RSerialization~x] Serialized TerrainObject to JSON");
-	return resultJson;
-}

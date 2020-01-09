@@ -55,12 +55,6 @@ void PlayerObject::InspectorDraw() {
 	GameObject::InspectorDraw();
 }
 
-nlohmann::json PlayerObject::ToJson() {
-	nlohmann::json resultJson = GameObject::ToJson();
-	LOG("[~RSerialization~x] Serialized PlayerObject to JSON");
-	return resultJson;
-}
-
 PlayerObject* PlayerObject::SetMovementSpeed(float speed) {
 	m_movementSpeed = speed;
 	return this;

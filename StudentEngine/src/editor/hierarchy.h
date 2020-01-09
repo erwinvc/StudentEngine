@@ -66,6 +66,15 @@ public:
 		m_layers.clear();
 	}
 
+	void Copy(Hierarchy* hierarchy) {
+		for (int l = 0; l < m_layers.size(); l++) {
+			auto objects = m_layers[l]->m_objects;
+			for (int i = 0; i < objects.size(); i++) {
+				AddGameObject(objects[i]->Copy());
+			}
+		}
+	}
+
 	void DeleteGameObject(GameObject* obj) {
 		GetInspector()->ResetSelected();
 		m_selected = nullptr;
@@ -111,17 +120,9 @@ public:
 		return m_selected;
 	}
 
-	friend void to_json(nlohmann::json& jsonObject, const Hierarchy& hierarchy) {
-		for (ObjectLayer* layer : hierarchy.m_layers) {
-			for (GameObject* gameObject : layer->m_objects) {
-				jsonObject[gameObject->m_name] = *gameObject;
-			}
-		}
-	}
+	friend void to_json(nlohmann::json& jsonObject, const Hierarchy& hierarchy);
 
-	friend void from_json(const nlohmann::json& json, Hierarchy& hierarchy) {
-
-	}
+	friend void from_json(const nlohmann::json& jsonObject, Hierarchy& hierarchy);
 
 	//vector<GameObject*>::iterator begin() { return m_gameObjects.begin(); }
 	//vector<GameObject*>::iterator end() { return m_gameObjects.end(); }

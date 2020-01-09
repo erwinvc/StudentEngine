@@ -39,14 +39,7 @@ public:
 		return m_gameObject;
 	}
 
-	friend void to_json(nlohmann::json& jsonObject, const Transform& transform) {
-		jsonObject = nlohmann::json{
-			{ "position", { {"x", transform.m_position.x }, {"y", transform.m_position.y} } },
-			{ "size", { {"x", transform.m_size.x }, {"y", transform.m_size.y} } }
-		};
-	}
+	friend void to_json(nlohmann::json& jsonObject, const Transform& transform);
 
-	friend void from_json(const nlohmann::json& jsonObject, Transform& transform) {
-
-	}
+	friend void from_json(const nlohmann::json& jsonObject, Transform& transform);
 };

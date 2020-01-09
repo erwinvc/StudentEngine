@@ -11,7 +11,6 @@ public:
 	void Update(const TimeStep& time) override;
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
-	nlohmann::json ToJson() override;
 	PlayerObject* SetMovementSpeed(float speed);
 	PlayerObject* SetInvinciblity(bool invincible);
 };
