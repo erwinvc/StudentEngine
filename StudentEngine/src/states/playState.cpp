@@ -37,6 +37,7 @@ void PlayState::EnterState() {
 	m_scene->Clear();
 	m_scene->GetHierarchy().Initialize();
 	m_scene->Copy(States::EDIT->GetScene());
+	m_playerScore = 0;
 
 	m_editorCamera = GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_playCamera);

@@ -9,7 +9,8 @@ enum Anchors {
 	MIDDLERIGHT,
 	BOTTOMLEFT,
 	BOTTOMCENTER,
-	BOTTOMRIGHT
+	BOTTOMRIGHT,
+	MOUSECURSOR
 };
 
 class AnchorPoints {
@@ -45,6 +46,9 @@ public:
 			break;
 		case BOTTOMRIGHT:
 			pos = ImVec2(ImGui::GetMainViewport()->Size.x, ImGui::GetMainViewport()->Size.y);
+			break;
+		case MOUSECURSOR:
+			pos = ImGui::GetMousePos();
 			break;
 		}
 

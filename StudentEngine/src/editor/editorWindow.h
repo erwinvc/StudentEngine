@@ -43,6 +43,7 @@ public:
 
 	void Initialize();
 	void OnImGui();
+	void OnItemTooltip(String text);
 	void Draw();
 	void Update(const TimeStep& time);
 

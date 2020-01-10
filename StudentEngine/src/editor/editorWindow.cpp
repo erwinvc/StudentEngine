@@ -34,6 +34,20 @@ void EditorWindow::OnImGui() {
 	}
 }
 
+void EditorWindow::OnItemTooltip(String text) {
+	ImVec2 hoverPos = ImGui::FindWindowByName("Editor Window###EditorWindow")->Pos + ImVec2(10, 25);
+	
+	if (ImGui::GetHoveredID() == ImGui::GetItemID()) {
+		ImGui::GetOverlayDrawList()->AddText(
+			ImGui::GetIO().Fonts->Fonts[2],
+			24,
+			hoverPos,
+			/*AnchorPoints::GetAnchor(Anchors::MIDDLECENTER, ImVec2(-660, -280)),*/
+			IM_COL32(225, 225, 225, 255),
+			text.c_str());
+	}
+}
+
 void EditorWindow::CreateTemporaryPlayMode() {
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	ImGuiWindowFlags playwindowFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
@@ -158,25 +172,34 @@ void EditorWindow::CreateEditorWindows() {
 		m_inEditorMode = false;
 		GetStateManager()->SetState(States::PLAY);
 	}
+	OnItemTooltip("Enter play mode and test your game!");
+
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_FOLDER_OPEN)) {
 		nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile("hierarchy");
 		hierarchyJson.get<Hierarchy>();
 	}
+	OnItemTooltip("Open a different project...");
+
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_SAVE)) {
 		nlohmann::json hierarchyJson = GetActiveScene()->GetHierarchy();
 		FileSystem::SaveJsonToFile(hierarchyJson, "hierarchy");
 		LOG("%s", "Saved JSON file!");
 	}
+	OnItemTooltip("Save the project");
+
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_LAYER_GROUP)) {
 		m_openedLayerManager = !m_openedLayerManager;
 	}
+	OnItemTooltip("Open Layer Manager");
+
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_SEARCH)) {
 		m_openedInspector = !m_openedInspector;
 	}
+	OnItemTooltip("Open Inspector");
 	ImGui::SameLine();
 
 	ImGui::PopFont();
