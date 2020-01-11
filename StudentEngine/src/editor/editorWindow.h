@@ -11,6 +11,9 @@ private:
 
 	bool m_openedLayerManager = false;
 	bool m_openedInspector = false;
+
+	bool m_openedRightClickMenu = false;
+	ImVec2 m_rightClickPosition = ImVec2(0, 0);
 	EditorObjectType m_currentlyDraggedEditorObjectType;
 	vector<HierarchyObject*> m_layers;
 
@@ -44,6 +47,7 @@ public:
 	void Initialize();
 	void OnImGui();
 	void OnItemTooltip(String text);
+	void OnRightClickSelected();
 	void Draw();
 	void Update(const TimeStep& time);
 

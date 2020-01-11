@@ -32,6 +32,8 @@ void EditorWindow::OnImGui() {
 	else {
 		CreateTemporaryPlayMode();
 	}
+
+	OnRightClickSelected();
 }
 
 void EditorWindow::OnItemTooltip(String text) {
@@ -45,6 +47,47 @@ void EditorWindow::OnItemTooltip(String text) {
 			/*AnchorPoints::GetAnchor(Anchors::MIDDLECENTER, ImVec2(-660, -280)),*/
 			IM_COL32(225, 225, 225, 255),
 			text.c_str());
+	}
+}
+
+void EditorWindow::OnRightClickSelected() {
+	if (ImGui::IsMouseClicked(1, false)) {
+		if (GetEditorScene()->m_hierarchy.GetSelected() != nullptr && GetEditorScene()->GetGameObjectUnderMouse() == GetEditorScene()->m_hierarchy.GetSelected()) {
+			m_openedRightClickMenu = true;
+			m_rightClickPosition = AnchorPoints::GetAnchor(Anchors::MOUSECURSOR, ImVec2(5, 5));
+		}
+	}
+
+	if (m_openedRightClickMenu) {
+		ImGui::SetNextWindowPos(m_rightClickPosition);
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar;
+		if (ImGui::Begin("Options", nullptr, flags)) {
+			if (ImGui::Button("Properties")) {
+				m_openedRightClickMenu = false;
+				//TODO: Replace with a decoupled inspector
+				m_openedInspector = true;
+			}
+			if (ImGui::Button("Delete")) {
+				m_openedRightClickMenu = false;
+				GetEditorScene()->GetHierarchy().DeleteGameObject(GetEditorScene()->m_hierarchy.GetSelected());
+			}
+			ImGui::End();
+		}
+	}
+
+	if (!ImGui::IsMouseHoveringRect(m_rightClickPosition + ImVec2(-10, -10), m_rightClickPosition + ImVec2(150, 100), false)) {
+		m_openedRightClickMenu = false;
+	}
+
+	if (m_openedInspector) {
+		//ImVec2 combined = ImGui::FindWindowByName("Inspector")->Pos + ImGui::FindWindowByName("Inspector")->Size;
+		
+		/*ImGuiWindow* inspector = ImGui::FindWindowByName("Inspector");
+		if (inspector != NULL &&
+			!ImGui::IsMouseHoveringRect(inspector->Pos + ImVec2(-10, -10), inspector->Pos+inspector->Size)) {
+			//YOOOOOOOOOOOOOOOOOOOOO FIX THIS PLEASE
+			m_openedInspector = false;
+		}*/
 	}
 }
 
@@ -261,6 +304,8 @@ void EditorWindow::CreateEditorWindows() {
 
 	if (m_openedInspector) {
 		ImGui::SetNextWindowDockID(m_dockspaceRight, ImGuiCond_Always);
+		//ImGui::SetNextWindowPos(m_rightClickPosition);
+		//ImGui::SetNextWindowSize(ImVec2(200, 500));
 		GetInspector()->OnImGui();
 	}
 

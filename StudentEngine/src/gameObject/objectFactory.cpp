@@ -23,7 +23,6 @@ GameObject* ObjectFactory::CreateObject(EditorObjectType objectType, const Strin
 	case EditorObjectType::PICKUP:
 		newObject = GetEditorScene()->AddGameObject(new PickupObject(objectName))
 			->SetAtlasValues(4, 4, 0.125f)
-			->SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"))
 			->SetOnCollision([](GameObject* self, GameObject* other) {
 			if (other->IsOfType<PlayerObject>()) {
 				static_cast<PickupObject*>(self)->OnPickup();
@@ -31,6 +30,8 @@ GameObject* ObjectFactory::CreateObject(EditorObjectType objectType, const Strin
 			}
 			return true;
 				});
+		PickupObject* pickup = (PickupObject*)newObject;
+		pickup->SetPickupType(PickupType::COIN);
 		GetEditorScene()->GetHierarchy().ChangeLayer(newObject, "Pickups");
 		break;
 	}
