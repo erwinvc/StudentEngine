@@ -51,6 +51,8 @@ public:
 	void Draw();
 	void Update(const TimeStep& time);
 
+	bool IsVIPObject(GameObject* obj);
+
 	void MoveToFolder(HierarchyObject* folder, GameObject* movingChild);
 	HierarchyObject* FindFolderOfObject(GameObject* obj);
 	void ToggleSettingNewParent(GameObject* obj);

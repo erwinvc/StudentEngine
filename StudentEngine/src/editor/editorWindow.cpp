@@ -18,6 +18,19 @@ EditorWindow::~EditorWindow() {
 
 void EditorWindow::Update(const TimeStep& time) {
 	if (m_mouseInViewport)GetCamera()->UpdateZoom(time);
+
+	/*if (GetKeyboard()->KeyJustDown(0x2E)) {
+		LOG("yes");
+	}
+
+	if (m_inEditorMode && GetKeyboard()->KeyJustDown(VK_DELETE) && GetEditorScene()->GetHierarchy().GetSelected() != nullptr) {
+		GetEditorScene()->GetHierarchy().DeleteSelected();
+	}*/
+}
+
+// Expandable with multiple checks through ||
+bool EditorWindow::IsVIPObject(GameObject* obj) {
+	return obj->IsOfType<PlayerObject>() || obj->m_name == "Goal";
 }
 
 void EditorWindow::Draw() {
@@ -61,16 +74,20 @@ void EditorWindow::OnRightClickSelected() {
 	if (m_openedRightClickMenu) {
 		ImGui::SetNextWindowPos(m_rightClickPosition);
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar;
-		if (ImGui::Begin("Options", nullptr, flags)) {
+		bool isVIP = IsVIPObject(GetEditorScene()->GetHierarchy().GetSelected());
+
+		//Give the name as window ID so ImGui treats it as a new menu (which it should, as some objects have less/more options and end up changing the size)
+		if (ImGui::Begin(GetEditorScene()->GetHierarchy().GetSelected()->m_name.c_str(), nullptr, flags)) {
 			if (ImGui::Button("Properties")) {
 				m_openedRightClickMenu = false;
 				//TODO: Replace with a decoupled inspector
 				m_openedInspector = true;
 			}
-			if (ImGui::Button("Delete")) {
+			if (!isVIP && ImGui::Button("Delete")) {
 				m_openedRightClickMenu = false;
 				GetEditorScene()->GetHierarchy().DeleteGameObject(GetEditorScene()->m_hierarchy.GetSelected());
 			}
+			
 			ImGui::End();
 		}
 	}
@@ -270,6 +287,7 @@ void EditorWindow::CreateEditorWindows() {
 
 			//m_layers[0]->AddChild(&obj);
 			GetEditorScene()->GetHierarchy().SetSelected(obj);
+			GetInspector()->SetSelected(obj);
 		}
 		else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame

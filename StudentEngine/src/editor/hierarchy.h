@@ -57,6 +57,12 @@ public:
 	bool UpdateSelected(const TimeStep& time, Vector2 mousePosition) {
 		return m_selected ? EditorGameObject::Update(m_selected, time, mousePosition) : false;
 	}
+	
+	void DeleteSelected() {
+		if (m_selected != nullptr) {
+			DeleteGameObject(m_selected);
+		}
+	}
 
 	void Clear() {
 		for (auto& layer : m_layers) {
