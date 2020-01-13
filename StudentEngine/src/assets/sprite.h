@@ -12,7 +12,7 @@ public:
 	int m_frameCount = 0;
 	int m_frameOffset = 0;
 	float m_frameTime = 0;
-	
+
 	void InspectorDraw() {
 		if (InspectorDrawer::Header("Sprite")) {
 			InspectorDrawer::Texture("Texture", m_texture);
@@ -22,4 +22,7 @@ public:
 	}
 
 	virtual void Draw(RenderingPipeline* pipeline, const Transform& transform);
+
+	friend void to_json(nlohmann::json& j, const Sprite& obj);
+	friend void from_json(const nlohmann::json& j, Sprite& obj);
 };

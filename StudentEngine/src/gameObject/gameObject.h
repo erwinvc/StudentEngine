@@ -20,6 +20,7 @@ public:
 	PhysicsObject m_physicsObject;
 	Sprite m_sprite;
 	String m_layer = "Objects";
+	String m_parentNameFromJson = "";
 
 	GameObject(const String& name, bool dynamic = false) : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()) {}
 	//GameObject(const String& name, bool dynamic = false, const String& layer = "Objects") : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()), m_layer(layer) {}
@@ -65,7 +66,7 @@ public:
 	}
 
 	GameObject* SetOnCollision(function<bool(GameObject*, GameObject*, CollisionType)> func) {
-#pragma region ChainFunctions
+		#pragma region ChainFunctions
 		m_onCollisionCallback = func;
 		return this;
 	}
@@ -109,7 +110,7 @@ public:
 		return this;
 	}
 
-#pragma endregion
+	#pragma endregion
 
 	void SetChildren(vector<GameObject*> children) {
 		m_children = children;
@@ -164,7 +165,9 @@ public:
 		return m_validTextures[key];
 	}
 
-	friend void to_json(nlohmann::json& jsonObject, const GameObject& gameObject);
+	friend void to_json(nlohmann::json& j, const GameObject& obj);
+	friend void from_json(const nlohmann::json& j, GameObject& obj);
 
-	friend void from_json(const nlohmann::json& jsonObject, GameObject& gameObject);
+	virtual void ToJson(nlohmann::json& j) const;
+	virtual void FromJson(const nlohmann::json& j);
 };

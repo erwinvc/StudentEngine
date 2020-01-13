@@ -10,17 +10,12 @@ bool Transform::CollidesWith(GameObject* other, float xOffset, float yOffset) {
 	return false;
 }
 
-void to_json(nlohmann::json& jsonObject, const Transform& transform) {
-	jsonObject = nlohmann::json{
-		{ "position", { {"x", transform.m_position.x }, {"y", transform.m_position.y} } },
-		{ "size", { {"x", transform.m_size.x }, {"y", transform.m_size.y} } }
-	};
+void to_json(nlohmann::json& j, const Transform& obj) {
+	j = nlohmann::json{{"position", obj.m_position}, {"size", obj.m_size}, {"rotation", obj.m_rotation}};
 }
 
-void from_json(const nlohmann::json& jsonObject, Transform& transform) {
-	nlohmann::json position = jsonObject.at("position").get<nlohmann::json>();
-	nlohmann::json size = jsonObject.at("size").get<nlohmann::json>();
-
-	transform.m_position = Vector2(position.at("x").get<float>(), position.at("y").get<float>());
-	transform.m_size = Vector2(size.at("x").get<float>(), size.at("y").get<float>());
+void from_json(const nlohmann::json& j, Transform& obj) {
+	j.at("position").get_to(obj.m_position);
+	j.at("size").get_to(obj.m_size);
+	j.at("rotation").get_to(obj.m_rotation);
 }

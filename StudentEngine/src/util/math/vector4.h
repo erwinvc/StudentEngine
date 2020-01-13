@@ -3,8 +3,7 @@
 struct Matrix4;
 
 struct Vector4 {
-	union
-	{
+	union {
 		struct { float x, y, z, w; };
 		struct { float x, y, width, height; };
 		float values[4];
@@ -37,4 +36,15 @@ struct Vector4 {
 	Vector4& operator/=(const Vector4& other);
 
 	float Dot(const Vector4& other);
+
+	friend void to_json(nlohmann::json& j, const Vector4& obj) {
+		j = nlohmann::json{ {"x", obj.x}, {"y", obj.y}, {"z", obj.z}, {"w", obj.w} };
+	}
+
+	friend void from_json(const nlohmann::json& j, Vector4& obj) {
+		j.at("x").get_to(obj.x);
+		j.at("y").get_to(obj.y);
+		j.at("z").get_to(obj.z);
+		j.at("w").get_to(obj.w);
+	}
 };

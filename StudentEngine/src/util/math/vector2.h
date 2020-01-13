@@ -67,4 +67,13 @@ struct Vector2 {
 
 	//Checks if point is within rect
 	bool Within(Rectangle& other) const;
+
+	friend void to_json(nlohmann::json& j, const Vector2& obj) {
+		j = nlohmann::json{ {"x", obj.x}, {"y", obj.y} };
+	}
+
+	friend void from_json(const nlohmann::json& j, Vector2& obj) {
+		j.at("x").get_to(obj.x);
+		j.at("y").get_to(obj.y);
+	}
 };

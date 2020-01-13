@@ -9,11 +9,11 @@ public:
 	AssetBase(const String& name, const Path& filePath) : m_name(name), m_filePath(filePath) {};
 	virtual ~AssetBase() {}
 
-	Path& GetFilePath() {
+	Path GetFilePath() {
 		return m_filePath;
 	}
 
-	String& GetFullFileName() {
+	String GetFullFileName() {
 		return m_filePath.GetFileName() + "." + m_filePath.GetExtention();
 	}
 

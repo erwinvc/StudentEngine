@@ -62,3 +62,20 @@ void Sprite::Draw(RenderingPipeline* pipeline, const Transform& transform) {
 		if (m_singleFrameTexture) m_singleFrameTexture = nullptr;
 	}
 }
+
+void to_json(nlohmann::json& j, const Sprite& obj) {
+	j = nlohmann::json{ {"texture", obj.m_texture->GetName()}, {"color", obj.m_color}, {"atlas values", obj.m_atlasValues}, {"9slice", obj.m_9Slice}, {"number of rows", obj.m_numberOfRows}, {"frame count", obj.m_frameCount}, {"frame offset", obj.m_frameOffset}, {"frame time", obj.m_frameTime} };
+}
+
+void from_json(const nlohmann::json& j, Sprite& obj) {
+
+	obj.m_texture = GetAssetManager()->Get<StreamedTexture>(j.at("texture").get<string>());
+
+	j.at("color").get_to(obj.m_color);
+	j.at("atlas values").get_to(obj.m_atlasValues);
+	j.at("9slice").get_to(obj.m_9Slice);
+	j.at("number of rows").get_to(obj.m_numberOfRows);
+	j.at("frame count").get_to(obj.m_frameCount);
+	j.at("frame offset").get_to(obj.m_frameOffset);
+	j.at("frame time").get_to(obj.m_frameTime);
+}

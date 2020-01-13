@@ -2,34 +2,37 @@
 
 map<const char*, vector<const char*>> GameObject::m_validTextures = {};
 
-void to_json(nlohmann::json& jsonObject, const GameObject& gameObject) {
-	jsonObject = nlohmann::json{
-		{ "name", gameObject.m_name },
-		{ "type", gameObject.GetObjectType() },
-		{ "texture", gameObject.m_sprite.m_texture->GetTexture()->GetName() },
-		{ "transform", gameObject.m_transform }
+void to_json(nlohmann::json& j, const GameObject& obj) {
+	obj.ToJson(j);
+}
+
+void from_json(const nlohmann::json& j, GameObject& obj) {
+	obj.FromJson(j);
+}
+
+void GameObject::ToJson(nlohmann::json& j) const {
+	j = nlohmann::json{
+		{ "name", m_name },
+		{ "type", GetObjectType() },
+		{ "sprite", m_sprite },
+		{ "transform", m_transform }
 	};
 
-	if (gameObject.m_parent) {
-		jsonObject["parent"] = gameObject.m_parent->m_name;
+	if (m_parent) {
+		j["parent"] = m_parent->m_name;
 	}
 }
 
-void from_json(const nlohmann::json& jsonObject, GameObject& gameObject) {
-	string objectName = jsonObject.at("name").get<string>();
-	int objectType = jsonObject.at("type").get<int>();
-	string objectTexture = jsonObject.at("texture").get<string>();
+void GameObject::FromJson(const nlohmann::json& j) {
+	string objectName = j.at("name").get<string>();
+	int objectType = j.at("type").get<int>();
 
 	GameObject* newObject = ObjectFactory::CreateObject((EditorObjectType)objectType, objectName);
 
-	newObject->SetTexture(GetAssetManager()->Get<StreamedTexture>(objectTexture));
+	j.at("sprite").get_to(newObject->m_sprite);
+	j.at("transform").get_to(newObject->m_transform);
 
-	Transform newTransform = jsonObject.at("transform").get<Transform>();
-	newObject->SetPosition(Vector2(newTransform.m_position.x, newTransform.m_position.y));
-	newObject->SetSize(Vector2(newTransform.m_size.x, newTransform.m_size.y));
-
-	if (jsonObject.find("parent") != jsonObject.end()) {
-		string objectParent = jsonObject.at("parent").get<string>();
-		newObject->SetParent(GetEditorScene()->FindObjectByName(objectParent));
+	if (j.find("parent") != j.end()) {
+		j.at("parent").get_to(m_parentNameFromJson);
 	}
 }
