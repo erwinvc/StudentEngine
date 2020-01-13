@@ -1,15 +1,15 @@
 #pragma once
 
-static bool nullfunc(GameObject* ths, GameObject* gameObject) { return true; }
+static bool nullfunc(GameObject* ths, GameObject* gameObject, CollisionType type) { return true; }
 class GameObject : public InspectorDrawable {
 private:
 	GameObject* m_parent = NULL;
 	vector<GameObject*> m_children;
-	function<bool(GameObject*, GameObject*)> m_onCollisionCallback;
+	function<bool(GameObject*, GameObject*, CollisionType)> m_onCollisionCallback;
 	static map<const char*, vector<const char*>> m_validTextures;
 
-	bool OnCollision(GameObject* other) {
-		return m_onCollisionCallback(this, other);
+	bool OnCollision(GameObject* other, CollisionType type) {
+		return m_onCollisionCallback(this, other, type);
 	}
 
 	friend PhysicsObject;
@@ -64,7 +64,7 @@ public:
 		return dynamic_cast<const T*>(this) != nullptr;
 	}
 
-	GameObject* SetOnCollision(function<bool(GameObject*, GameObject*)> func) {
+	GameObject* SetOnCollision(function<bool(GameObject*, GameObject*, CollisionType)> func) {
 #pragma region ChainFunctions
 		m_onCollisionCallback = func;
 		return this;

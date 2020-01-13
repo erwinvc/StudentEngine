@@ -2,8 +2,12 @@
 
 bool Transform::CollidesWith(GameObject* other, float xOffset, float yOffset) {
 	if (other == m_gameObject) return false;
-	return (Math::Within(XMin() + xOffset, XMax() + xOffset, other->m_transform.XMin(), other->m_transform.XMax()) &&
-		Math::Within(YMin() + yOffset, YMax() + yOffset, other->m_transform.YMin(), other->m_transform.YMax()));
+	
+	bool withinX = Math::Within(XMin() + xOffset, XMax() + xOffset, other->m_transform.XMin(), other->m_transform.XMax());
+	bool withinY = Math::Within(YMin() + yOffset, YMax() + yOffset, other->m_transform.YMin(), other->m_transform.YMax());
+
+	if (withinX && withinY) return true;
+	return false;
 }
 
 void to_json(nlohmann::json& jsonObject, const Transform& transform) {

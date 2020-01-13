@@ -9,7 +9,8 @@ bool PhysicsObject::CheckCollision(float xa, float ya) {
 	for each (auto layer in GetActiveScene()->GetHierarchy().m_layers) {
 		for each (auto other in layer->m_objects) {
 			if (m_gameObject->m_transform.CollidesWith(other, xa, ya)) {
-				if (other->OnCollision(m_gameObject)) return true;
+				CollisionType type = GetCollisionType(xa, ya);
+				if (other->OnCollision(m_gameObject, type)) return true;
 			}
 		}
 	}
