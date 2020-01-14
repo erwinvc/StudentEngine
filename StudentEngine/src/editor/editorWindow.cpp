@@ -315,6 +315,10 @@ void EditorWindow::CreateEditorWindows() {
 		CreateItemDrag(EditorObjectType::PICKUP);
 		OnItemTooltip("Create a coin pickup that gives the player points");
 
+		if (ImGui::Button("Enemy", ImVec2(100, 100))) {}
+		CreateItemDrag(EditorObjectType::ENEMY);
+		OnItemTooltip("Create an enemy the player is able to jump on to defeat");
+
 	}
 	ImGui::End();
 

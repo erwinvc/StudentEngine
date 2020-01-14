@@ -9,12 +9,10 @@ void EditState::Initialize() {
 
 	ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
 		->SetSize(Vector2(2048.0f, 128.0f))
-		->SetPosition(Vector2(960.0f, 224.0f))
-		->SetTexture(GetAssetManager()->Get<StreamedTexture>("9slice"));
+		->SetPosition(Vector2(960.0f, 224.0f));
 
 	static_cast<PlayerObject*>(ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
-		->SetPosition(Vector2(192.0f, 352.0f))
-		->SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat")))
+		->SetPosition(Vector2(192.0f, 352.0f)))
 		->SetMovementSpeed(0.5);
 
 	static_cast<PickupObject*>(ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Blue")
@@ -24,7 +22,8 @@ void EditState::Initialize() {
 
 	static_cast<PickupObject*>(ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Green")
 		->SetSize(Vector2(32.0f, 32.0f))
-		->SetPosition(Vector2(704.0f, 320.0f)))
+		->SetPosition(Vector2(704.0f, 320.0f))
+		->SetTexture(GetAssetManager()->Get<StreamedTexture>("GreenPickup")))
 		->SetPickupType(PickupType::POWERUP);
 
 	GetScene()->AddGameObject(new GameObject("Goal"))
@@ -33,8 +32,7 @@ void EditState::Initialize() {
 		->SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"))
 		->SetOnCollision([](GameObject* self, GameObject* other, CollisionType type) {
 		if (other->IsOfType<PlayerObject>()) {
-			PlayState* state = (PlayState*)GetStateManager()->GetState();
-			state->Restart();
+			static_cast<PlayState*>(GetStateManager()->GetState())->Restart();
 		}
 		return true;
 	}

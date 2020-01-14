@@ -4,6 +4,10 @@ PickupObject::PickupObject(const String& name) : GameObject(name, true) {
 
 }
 
+map<const char*, PickupType> PickupObject::typeMap = {
+	{ "BluePickup", PickupType::COIN }, { "GreenPickup", PickupType::POWERUP }
+};
+
 EditorObjectType PickupObject::GetObjectType() const {
 	return EditorObjectType::PICKUP;
 }
@@ -17,17 +21,12 @@ void PickupObject::InspectorDraw() {
 }
 
 PickupObject* PickupObject::SetPickupType(PickupType type) {
-	switch (type) {
-	case PickupType::COIN:
-		SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"));
-		break;
-	case PickupType::POWERUP:
-		SetTexture(GetAssetManager()->Get<StreamedTexture>("GreenPickup"));
-		break;
-	}
-
 	m_type = type;
 	return this;
+}
+
+PickupType PickupObject::GetTypeFromTexture(const char* textureName) {
+	return typeMap[textureName];
 }
 
 void PickupObject::OnPickup() {

@@ -163,6 +163,7 @@ using namespace std;
 #include "gameObject/playerObject.h"
 #include "gameObject/terrainObject.h"
 #include "gameObject/pickupObject.h"
+#include "gameObject/enemyObject.h"
 #include "gameObject/objectFactory.h"
 #include "editor/assetSelectWindow.h"
 #include "editor/objectLayer.h"
