@@ -23,7 +23,7 @@ GameObject* ObjectFactory::CreateObject(EditorObjectType objectType, const Strin
 	case EditorObjectType::PICKUP:
 		newObject = GetEditorScene()->AddGameObject(new PickupObject(objectName))
 			->SetAtlasValues(4, 4, 0.125f)
-			->SetOnCollision([](GameObject* self, GameObject* other) {
+			->SetOnCollision([](GameObject* self, GameObject* other, CollisionType type) {
 			if (other->IsOfType<PlayerObject>()) {
 				static_cast<PickupObject*>(self)->OnPickup();
 				self->Destroy();

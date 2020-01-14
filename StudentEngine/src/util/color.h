@@ -137,4 +137,15 @@ public:
 	static Color Mix(const Color& col1, const Color& col2, float val) {
 		return col1 * (1 - val) + col2 * val;
 	}
+
+	friend void to_json(nlohmann::json& j, const Color& obj) {
+		j = nlohmann::json{ {"r", obj.R}, {"g", obj.G}, {"b", obj.B}, {"a", obj.A} };
+	}
+
+	friend void from_json(const nlohmann::json& j, Color& obj) {
+		j.at("r").get_to(obj.R);
+		j.at("g").get_to(obj.G);
+		j.at("b").get_to(obj.B);
+		j.at("a").get_to(obj.A);
+	}
 };

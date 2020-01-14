@@ -13,4 +13,15 @@ public:
 	void InspectorDraw() override;
 	PlayerObject* SetMovementSpeed(float speed);
 	PlayerObject* SetInvinciblity(bool invincible);
+
+	void ToJson(nlohmann::json& j) const override {
+		GameObject::ToJson(j);
+		j["movement speed"] = m_movementSpeed;
+		j["invincible"] = m_invincible;
+	}
+	void FromJson(const nlohmann::json& j) override {
+		GameObject::FromJson(j);
+		j.at("movement speed").get_to(m_movementSpeed);
+		j.at("invincible").get_to(m_invincible);
+	}
 };

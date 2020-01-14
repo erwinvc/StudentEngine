@@ -41,8 +41,7 @@ void EditorWindow::OnImGui() {
 	CreateDockingSpace();
 	if (m_inEditorMode) {
 		CreateEditorWindows();
-	}
-	else {
+	} else {
 		CreateTemporaryPlayMode();
 	}
 
@@ -51,7 +50,7 @@ void EditorWindow::OnImGui() {
 
 void EditorWindow::OnItemTooltip(String text) {
 	ImVec2 hoverPos = ImGui::FindWindowByName("Editor Window###EditorWindow")->Pos + ImVec2(10, 25);
-	
+
 	if (ImGui::GetHoveredID() == ImGui::GetItemID()) {
 		ImGui::GetOverlayDrawList()->AddText(
 			ImGui::GetIO().Fonts->Fonts[2],
@@ -87,7 +86,7 @@ void EditorWindow::OnRightClickSelected() {
 				m_openedRightClickMenu = false;
 				GetEditorScene()->GetHierarchy().DeleteGameObject(GetEditorScene()->m_hierarchy.GetSelected());
 			}
-			
+
 			ImGui::End();
 		}
 	}
@@ -98,7 +97,7 @@ void EditorWindow::OnRightClickSelected() {
 
 	if (m_openedInspector) {
 		//ImVec2 combined = ImGui::FindWindowByName("Inspector")->Pos + ImGui::FindWindowByName("Inspector")->Size;
-		
+
 		/*ImGuiWindow* inspector = ImGui::FindWindowByName("Inspector");
 		if (inspector != NULL &&
 			!ImGui::IsMouseHoveringRect(inspector->Pos + ImVec2(-10, -10), inspector->Pos+inspector->Size)) {
@@ -213,7 +212,16 @@ void EditorWindow::CreateEditorWindows() {
 	if (CreateMenuButton(ICON_FA_FOLDER_OPEN, true)) {
 		nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile("hierarchy");
 		hierarchyJson.get<Hierarchy>();
+
+		for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
+			for (auto& obj : layer->m_objects) {
+				if (obj->m_parentNameFromJson != "") {
+					obj->SetParent(GetEditorScene()->FindObjectByName(obj->m_parentNameFromJson));
+				}
+			}
+		}
 	}
+	
 	OnItemTooltip("Open a different project...");
 
 	ImGui::SameLine();
@@ -280,8 +288,7 @@ void EditorWindow::CreateEditorWindows() {
 			//m_layers[0]->AddChild(&obj);
 			GetEditorScene()->GetHierarchy().SetSelected(obj);
 			GetInspector()->SetSelected(obj);
-		}
-		else {
+		} else {
 			//Setting a bool that gets picked up on the ImGui on folders later in the same loop/frame
 			m_dragPlacement = true;
 		}
@@ -502,8 +509,7 @@ void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 				col.w *= alpha;
 			}
 		}
-	}
-	else {
+	} else {
 		for (int i = 0; i <= ImGuiCol_COUNT; i++) {
 			ImVec4& col = style.Colors[i];
 			if (col.w < 1.00f) {

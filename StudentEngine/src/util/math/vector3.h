@@ -82,4 +82,14 @@ struct Vector3 {
 	float Distance(const Vector3& other) const;
 
 	void Lerp(const Vector3& to, float amount);
+
+	friend void to_json(nlohmann::json& j, const Vector3& obj) {
+		j = nlohmann::json{ {"x", obj.x}, {"y", obj.y}, {"z", obj.z}};
+	}
+
+	friend void from_json(const nlohmann::json& j, Vector3& obj) {
+		j.at("x").get_to(obj.x);
+		j.at("y").get_to(obj.y);
+		j.at("z").get_to(obj.z);
+	}
 };

@@ -14,3 +14,11 @@ typedef unsigned int uint;
 typedef unsigned char byte;
 typedef std::string String;
 typedef const char* String_t;
+
+enum CollisionType {
+	NONE,
+	LEFT,
+	RIGHT,
+	TOP,
+	BOTTOM
+};

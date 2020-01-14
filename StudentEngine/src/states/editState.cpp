@@ -31,13 +31,13 @@ void EditState::Initialize() {
 		->SetSize(Vector2(64.0f, 64.0f))
 		->SetPosition(Vector2(1536.0f, 320.0f))
 		->SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"))
-		->SetOnCollision([](GameObject* self, GameObject* other) {
+		->SetOnCollision([](GameObject* self, GameObject* other, CollisionType type) {
 		if (other->IsOfType<PlayerObject>()) {
 			PlayState* state = (PlayState*)GetStateManager()->GetState();
 			state->Restart();
 		}
 		return true;
-			}
+	}
 	);
 
 	//m_scene->AddGameObject(new GameObject("Object 1"))

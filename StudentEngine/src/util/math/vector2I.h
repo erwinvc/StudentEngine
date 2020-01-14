@@ -46,4 +46,13 @@ struct Vector2I {
     bool operator>=(const Vector2I& other) const;
 
 	float Distance(const Vector2I& other) const;
+
+    friend void to_json(nlohmann::json& j, const Vector2I& obj) {
+		j = nlohmann::json{ {"x", obj.x}, {"y", obj.y} };
+	}
+
+    friend void from_json(const nlohmann::json& j, Vector2I& obj) {
+		j.at("x").get_to(obj.x);
+		j.at("y").get_to(obj.y);
+	}
 };

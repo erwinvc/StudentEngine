@@ -37,6 +37,13 @@ public:
 		}
 	}
 
+	CollisionType GetCollisionType(float xa, float ya) {
+		if (xa < 0) return LEFT;
+		if (xa > 0) return RIGHT;
+		if (ya < 0) return TOP;
+		if (ya > 0) return BOTTOM;
+	}
+
 	bool MoveDirection(float& value, float delta, const Vector3& axis) {
 		bool contact = false;
 		while (delta != 0) {
