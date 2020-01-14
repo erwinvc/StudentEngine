@@ -4,6 +4,14 @@ void ObjectLayer::AddGameObject(GameObject* obj, String layer) {
 
 }
 
+void ObjectLayer::RemoveObject(GameObject * obj) {
+	if (FindObjectByName(obj->m_name)) {
+		m_objects.erase(remove(m_objects.begin(), m_objects.end(), obj), m_objects.end());
+	} else {
+		LOG("_ERROR Couldn't find given objec to delete in this layer!");
+	}
+}
+
 
 void ObjectLayer::Update(const TimeStep& time) {
 	for (auto gObj : m_objects) {

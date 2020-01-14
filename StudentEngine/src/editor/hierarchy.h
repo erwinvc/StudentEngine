@@ -1,3 +1,4 @@
+
 class Hierarchy {
 private:
 	GameObject* m_selected;
@@ -64,6 +65,10 @@ public:
 		}
 	}
 
+	bool HasSelected() {
+		return m_selected != nullptr;
+	}
+
 	void Clear() {
 		for (auto& layer : m_layers) {
 			layer->Clear();
@@ -87,11 +92,18 @@ public:
 
 		//vector<GameObject*> objects = FindLayerByName(obj->m_layer)->m_objects;
 		//direct ref with objects didnt work??? :thonk:
-		FindLayerByName(obj->m_layer)->m_objects.erase(remove(FindLayerByName(obj->m_layer)->m_objects.begin(), FindLayerByName(obj->m_layer)->m_objects.end(), obj), FindLayerByName(obj->m_layer)->m_objects.end());
+		//FindLayerByName(obj->m_layer)->m_objects.erase(remove(FindLayerByName(obj->m_layer)->m_objects.begin(), FindLayerByName(obj->m_layer)->m_objects.end(), obj), FindLayerByName(obj->m_layer)->m_objects.end());
+		ObjectLayer* layer = FindLayerByName(obj->m_layer);
+
+		//Undo::Record(obj);
+		layer->RemoveObject(obj);
+		//Undo::FinishRecording();
+
+		// Trying to keep it in memory for Undo/Redos
 		delete obj;
 	}
 
-	GameObject* FindObjectByName(const String& name) {
+	GameObject* FindObjectByName(const String& name, bool giveError) {
 		for each (auto layer in m_layers) {
 			GameObject* obj = layer->FindObjectByName(name);
 
@@ -99,8 +111,11 @@ public:
 				return obj;
 			}
 		}
+
+		if (giveError) {
+			LOG("_ERROR Couldn't find object!");
+		}
 		
-		LOG("_ERROR Couldn't find object!");
 		return nullptr;
 	}
 
@@ -109,6 +124,7 @@ public:
 		auto oldLayer = FindLayerByName(obj->m_layer);
 		FindLayerByName(obj->m_layer)->m_objects.erase(remove(FindLayerByName(obj->m_layer)->m_objects.begin(), FindLayerByName(obj->m_layer)->m_objects.end(), obj), FindLayerByName(obj->m_layer)->m_objects.end());
 		FindLayerByName(otherLayer)->m_objects.push_back(obj);
+		obj->m_layer = otherLayer;
 	}
 
 	void SetSelected(GameObject* selected) {

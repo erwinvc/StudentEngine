@@ -174,33 +174,11 @@ void EditorWindow::CreateDockingSpace() {
 }
 
 void EditorWindow::CreateEditorWindows() {
-	// Menu Bar
-	/*if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Exit")) {
-				GetApp()->OnWindowClose();
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Edit")) {
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Windows")) {
-			ImGui::EndMenu();
-		}
-		if (ImGui::Button("Enter Play Mode")) {
-			m_inEditorMode = false;
-			GetStateManager()->SetState(States::PLAY);
-		}
-		ImGui::EndMainMenuBar();
-	}*/
-
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	//ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, 10);
+	ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
-	static ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 	// Main viewport
 	ImGui::SetNextWindowDockID(m_dockspaceCenter, ImGuiCond_Always);
 	if (ImGui::Begin("Editor Window###EditorWindow", nullptr, window_flags2)) {
@@ -212,51 +190,66 @@ void EditorWindow::CreateEditorWindows() {
 		CreateViewport();
 	}
 	ImGui::End();
-
 	ImGui::PopStyleVar(3);
 
-
-	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(2.0f, 2.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.5f, 4.5f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(7.0f, 7.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(9.0f, 4.0f));
 
-	// BUTTONS TEST
+	// BUTTONS 
 
 	ImGui::SetNextWindowDockID(m_dockspaceUp, ImGuiCond_Always);
-	ImGui::Begin("Buttons", nullptr, window_flags2);
+	ImGui::Begin("Buttons", nullptr, ImGuiWindowFlags_NoTitleBar);
 
 	ImFont* bigIconFont = ImGui::GetIO().Fonts->Fonts[1];
 	ImGui::PushFont(bigIconFont);
-	if (ImGui::Button(ICON_FA_PLAY)) {
+	if (CreateMenuButton(ICON_FA_PLAY, true)) {
 		m_inEditorMode = false;
 		GetStateManager()->SetState(States::PLAY);
 	}
 	OnItemTooltip("Enter play mode and test your game!");
 
 	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_FOLDER_OPEN)) {
+	if (CreateMenuButton(ICON_FA_FOLDER_OPEN, true)) {
 		nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile("hierarchy");
 		hierarchyJson.get<Hierarchy>();
 	}
 	OnItemTooltip("Open a different project...");
 
 	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_SAVE)) {
+	if (CreateMenuButton(ICON_FA_SAVE, true)) {
 		nlohmann::json hierarchyJson = GetActiveScene()->GetHierarchy();
 		FileSystem::SaveJsonToFile(hierarchyJson, "hierarchy");
 		LOG("%s", "Saved JSON file!");
 	}
 	OnItemTooltip("Save the project");
 
+	ImGui::SameLine(0, -25);
+	if (CreateMenuButton(ICON_FA_TRASH, GetEditorScene()->GetHierarchy().HasSelected() && !IsVIPObject(GetEditorScene()->GetHierarchy().GetSelected()))) {
+		GetEditorScene()->GetHierarchy().DeleteSelected();
+	}
+	OnItemTooltip("Delete the currently selected item");
+
 	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_LAYER_GROUP)) {
+	if (CreateMenuButton(ICON_FA_UNDO, Undo::CanUndo())) {
+		Undo::UndoOne();
+	}
+	OnItemTooltip("Undo previous action");
+
+	ImGui::SameLine();
+	if (CreateMenuButton(ICON_FA_REDO, Undo::CanRedo())) {
+		Undo::RedoOne();
+	}
+	OnItemTooltip("Redo previous action");
+
+	ImGui::SameLine(0, -25);
+	if (CreateMenuButton(ICON_FA_LAYER_GROUP, true)) {
 		m_openedLayerManager = !m_openedLayerManager;
 	}
 	OnItemTooltip("Open Layer Manager");
 
 	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_SEARCH)) {
+	if (CreateMenuButton(ICON_FA_SEARCH, true)) {
 		m_openedInspector = !m_openedInspector;
 	}
 	OnItemTooltip("Open Inspector");
@@ -264,10 +257,9 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::PopFont();
 	ImGui::PopStyleVar(3);
-
 	ImGui::End();
 
-	// BUTTONS TEST
+	// BUTTONS
 
 	//Response to Dragging
 	if (ImGui::IsMouseReleased(0) && m_draggingItem) {
@@ -303,19 +295,18 @@ void EditorWindow::CreateEditorWindows() {
 	// Drag 'n Drop
 	ImGui::SetNextWindowDockID(m_dockspaceLeft, ImGuiCond_Always);
 	if (ImGui::Begin("Items", nullptr, window_flags2)) {
-
-		//TODO: Possibly loop through the Enum?
-		/*for (EditorObjectType type = EditorObjectType::GAMEOBJECT; type != EditorObjectType::TERRAIN; type = EditorObjectType(type+1)) {
-
-		}*/
-
 		if (ImGui::Button("Terrain", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::TERRAIN);
+		OnItemTooltip("Create walkable terrain for characters to walk on");
+
 		ImGui::SameLine();
 		if (ImGui::Button("Sprite", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::GAMEOBJECT);
+		OnItemTooltip("Create a simple sprite with no special attributes");
+
 		if (ImGui::Button("Pickup", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::PICKUP);
+		OnItemTooltip("Create a coin pickup that gives the player points");
 
 	}
 	ImGui::End();
@@ -328,6 +319,21 @@ void EditorWindow::CreateEditorWindows() {
 	}
 
 	GetAssetSelect()->OnImGui();
+}
+
+// Creates a ImGui button with an optional boolean that allows for turning it 'on and off'
+bool EditorWindow::CreateMenuButton(const char* icon, bool activateCondition) {
+	ImVec4 buttonColor = activateCondition ? ImVec4(0.26f, 0.98f, 0.59f, 0.40f) : ImVec4(0.26f, 0.26f, 0.26f, 0.40f);
+	ImGui::PushStyleColor(ImGuiCol_Button, buttonColor);
+	if (activateCondition) buttonColor = ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, buttonColor);
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor);
+
+	bool activated = ImGui::Button(icon);
+
+	ImGui::PopStyleColor(3);
+
+	return (activated && activateCondition);
 }
 
 void EditorWindow::CreateItemDrag(EditorObjectType type) {
@@ -447,9 +453,9 @@ void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
 	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.88f, 0.52f, 1.00f);
 	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_Button] = ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
-	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
+	style.Colors[ImGuiCol_Button]			= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_ButtonHovered]	= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ButtonActive]		= ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
 	style.Colors[ImGuiCol_Header] = ImVec4(0.26f, 0.98f, 0.59f, 0.31f);
 	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.98f, 0.59f, 0.80f);
 	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);

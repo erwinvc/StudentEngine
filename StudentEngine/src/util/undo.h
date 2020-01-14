@@ -7,6 +7,7 @@ namespace UndoTypes {
 		virtual UndoType* CheckChanged(GameObject* gameObject) = 0;
 		virtual void Undo(GameObject* gameObject) = 0;
 		virtual void Redo(GameObject* gameObject) = 0;
+		virtual void OnDelete() = 0;
 	};
 
 	class UndoPosition : public UndoType {
@@ -33,6 +34,8 @@ namespace UndoTypes {
 		void Redo(GameObject* gameObject) override {
 			gameObject->m_transform.m_position = m_redoPosition;
 		}
+
+		void OnDelete() {}
 	};
 
 	class UndoSize : public UndoType {
@@ -58,6 +61,7 @@ namespace UndoTypes {
 		void Redo(GameObject* gameObject) override {
 			gameObject->m_transform.m_size = m_redoSize;
 		}
+		void OnDelete() {}
 	};
 
 	class UndoTexture : public UndoType {
@@ -84,6 +88,7 @@ namespace UndoTypes {
 		void Redo(GameObject* gameObject) override {
 			gameObject->m_sprite.m_texture = m_redoTexture;
 		}
+		void OnDelete() {}
 	};
 
 	class UndoColor : public UndoType {
@@ -109,9 +114,10 @@ namespace UndoTypes {
 		void Redo(GameObject* gameObject) override {
 			gameObject->m_sprite.m_color = m_redoColor;
 		}
+		void OnDelete() {}
 	};
 
-	/*class UndoObjectCreation : public UndoType {
+	class UndoObjectDelete : public UndoType {
 	private:
 		GameObject* m_object;
 	public:
@@ -119,24 +125,23 @@ namespace UndoTypes {
 			m_object = gameObject;
 		}
 		UndoType* CheckChanged(GameObject* gameObject) override {
-			UndoObjectCreation* toReturn = nullptr;
-			if (GetEditor()->GetHierarchy().Contains(gameObject)) {
-
-			}
-			if (gameObject->m_sprite.m_color != m_color) {
-				toReturn = new UndoColor();
-				toReturn->m_color = m_color;
+			UndoObjectDelete* toReturn = nullptr;
+			if (GetEditorScene()->GetHierarchy().FindObjectByName(gameObject->m_name, false) == nullptr) {
+				toReturn = new UndoObjectDelete();
+				toReturn->m_object = gameObject;
 			}
 			return toReturn;
 		}
 		void Undo(GameObject* gameObject) override {
-			m_redoColor = gameObject->m_sprite.m_color;
-			gameObject->m_sprite.m_color = m_color;
+			GetEditorScene()->AddGameObject(gameObject);
 		}
 		void Redo(GameObject* gameObject) override {
-			gameObject->m_sprite.m_color = m_redoColor;
+			GetEditorScene()->DeleteGameObject(gameObject);
 		}
-	};*/
+		void OnDelete() {
+			delete m_object;
+		}
+	};
 
 	class UndoFolderSwitch : public UndoType {
 	private:
@@ -163,6 +168,7 @@ namespace UndoTypes {
 		void Redo(GameObject* gameObject) override {
 			GetEditorWindow()->MoveToFolder(m_redoFolder, gameObject);
 		}
+		void OnDelete() {}
 	};
 
 
@@ -195,13 +201,17 @@ public:
 		m_types.push_back(new UndoSize());
 		m_types.push_back(new UndoTexture());
 		m_types.push_back(new UndoColor());
-		m_types.push_back(new UndoFolderSwitch());
+		//m_types.push_back(new UndoObjectDelete());
+		//m_types.push_back(new UndoFolderSwitch());
 		//m_types.push_back(new UndoParent());
 		//m_types.push_back(new UndoChild());
 		LOG("[~cUndo~x] Initialized Undo");
 	}
 	static void Cleanup() {
-		for (auto& type : m_types) delete type;
+		for (auto& type : m_types) {
+			type->OnDelete();
+			delete type;
+		}
 		m_types.clear();
 	}
 
@@ -280,6 +290,16 @@ public:
 			}
 			g_currentListIndex++;
 		}
+	}
+
+	static bool CanUndo() {
+		//if (m_list is nullptr) return false;
+		return g_newListIndex > 0;
+	}
+
+	static bool CanRedo() {
+		//if (m_list == nullptr) return false;
+		return g_newListIndex < m_list.Size();
 	}
 
 	static void OnImGui() {

@@ -30,6 +30,7 @@ private:
 
 	void CreateDockingSpace();
 	void CreateEditorWindows();
+	bool CreateMenuButton(const char* icon, bool activateCondition);
 	void CreateTemporaryPlayMode();
 	void CreateViewport();
 	void CreateSceneOverview(ImGuiWindowFlags flags);
