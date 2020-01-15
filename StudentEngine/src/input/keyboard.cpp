@@ -32,6 +32,7 @@ void Keyboard::Update() {
 	while (m_queue.Size() > 0) {
 		KeyboardMessage message;
 		if (m_queue.TryToGet(message)) {
+			if (message.m_key < 0 && message.m_key > KEYSIZE) continue;
 			m_keyStates[message.m_key].m_isUpNow = message.m_isUpNow;
 			if (message.m_isUpNow) m_lastKey = message.m_key;
 		}

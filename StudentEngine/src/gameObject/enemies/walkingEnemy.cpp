@@ -21,11 +21,11 @@ void WalkingEnemy::Update(const TimeStep& time) {
 	float yOffset = m_transform.m_position.y - m_sprite.m_texture->GetTexture()->GetHeight() - 1;
 	//vector<GameObject*> backgroundObjects = GetActiveScene()->GetHierarchy().FindLayerByName("Background")->m_objects;
 	//LOG("%d", backgroundObjects.size());
-	for (GameObject* other : GetActiveScene()->GetHierarchy().FindLayerByName("Background")->m_objects) {
-		if (!m_transform.CollidesWith(other, xOffset, yOffset)) {
-			m_walkingDirection *= -1;
-		}
-	}
+	//for (GameObject* other : GetActiveScene()->GetHierarchy().FindLayerByName("Background")->m_objects) {
+	//	if (!m_transform.CollidesWith(other, xOffset, yOffset)) {
+	//		m_walkingDirection *= -1;
+	//	}
+	//}
 	m_physicsObject.m_velocity.x -= xVelocity;
 	m_physicsObject.Update(time);
 }
