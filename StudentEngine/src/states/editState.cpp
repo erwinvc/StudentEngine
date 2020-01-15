@@ -9,65 +9,28 @@ void EditState::Initialize() {
 
 	ResetScene();
 
-	//m_scene->AddGameObject(new GameObject("Object 1"))
-	//	.SetSize(Vector2(500, 500))
-	//	.SetPosition(Vector2(300.0f, GetCamera()->GetRelativeViewport().w / 2))
-	//	.SetTexture(g_logo);
-
-	//m_sample = &GetScene()->AddGameObject(new GameObject("A"))
-	//	.SetSize(Vector2(500, 500))
-	//	.SetPosition(m_scene->GetCursorWorldPosition())
-	//	.SetTexture(GetAssetManager()->Get<StreamedTexture>("Logo"));
-
-	//for (int i = 0; i < 6; i++) {
-	//	GetScene()->AddGameObject(new GameObject(Format("Animation test %d", i)))
-	//		.SetSize(Vector2(50.0f + Math::RandomFloat(75.0f), 50.0f + Math::RandomFloat(75.0f)))
-	//		.SetPosition(Vector2(250.0f + i * 125.0f, 250.0f))
-	//		.SetAtlasValues(8, 8, 0.125f, +i * 8)
-	//		.SetOnCollision([i](GameObject* ths, GameObject* other)
-	//			{
-	//				LOG("a");
-	//				if (other->IsOfType<PlayerObject>()) ths->Destroy(); return false;
-	//			})
-	//		.SetTexture(GetAssetManager()->Get<StreamedTexture>("Gems"));
-	//}
-
 	m_window->Initialize();
 }
 
 void EditState::ResetScene() {
 	m_scene->GetHierarchy().Clear();
 	m_scene->GetHierarchy().Initialize();
+
 	ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
 		->SetSize(Vector2(2048.0f, 128.0f))
 		->SetPosition(Vector2(960.0f, 224.0f));
 
-	static_cast<PlayerObject*>(ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
-		->SetPosition(Vector2(192.0f, 352.0f)))
-		->SetMovementSpeed(0.5);
+	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
+		->SetPosition(Vector2(192.0f, 352.0f));
 
-	static_cast<PickupObject*>(ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Blue")
-		->SetSize(Vector2(32.0f, 32.0f))
-		->SetPosition(Vector2(352.0f, 320.0f)))
-		->SetPickupType(PickupType::COIN);
+	ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
+		->SetPosition(Vector2(352.0f, 320.0f));
 
-	static_cast<PickupObject*>(ObjectFactory::CreateObject(EditorObjectType::PICKUP, "Pickup Green")
-		->SetSize(Vector2(32.0f, 32.0f))
-		->SetPosition(Vector2(704.0f, 320.0f))
-		->SetTexture(GetAssetManager()->Get<StreamedTexture>("GreenPickup")))
-		->SetPickupType(PickupType::POWERUP);
+	ObjectFactory::CreateObject(EditorObjectType::PICKUP_POWERUP, "Pickup Green")
+		->SetPosition(Vector2(704.0f, 320.0f));
 
-	GetScene()->AddGameObject(new GameObject("Goal"))
-		->SetSize(Vector2(64.0f, 64.0f))
-		->SetPosition(Vector2(1536.0f, 320.0f))
-		->SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"))
-		->SetOnCollision([](GameObject* self, GameObject* other, CollisionType type) {
-		if (other->IsOfType<PlayerObject>()) {
-			static_cast<PlayState*>(GetStateManager()->GetState())->Restart();
-		}
-		return false;
-	}
-	);
+	ObjectFactory::CreateObject(EditorObjectType::GOAL, "Goal")
+		->SetPosition(Vector2(1536.0f, 320.0f));
 }
 
 EditState::EditState() : BaseState("Edit") {

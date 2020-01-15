@@ -1,6 +1,11 @@
 #include "stdafx.h"
+
 bool m_isJumping = false;
+
 PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
+	SetSize(Vector2(64, 64));
+	SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
+	m_layer = "Foreground";
 	m_invincible = false;
 }
 
@@ -15,12 +20,12 @@ void PlayerObject::Update(const TimeStep& time) {
 	m_physicsObject.m_velocity.x *= decay;
 
 	if (GetKeyboard()->KeyDown('A')) {
-		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
+		//GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		m_physicsObject.m_velocity.x -= m_movementSpeed * time;
 	}
 
 	if (GetKeyboard()->KeyDown('D')) {
-		GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
+		//GetAudioManager()->Play(GetAssetManager()->Get<Audio>("BloopSound"));
 		m_physicsObject.m_velocity.x += m_movementSpeed * time;
 	}
 

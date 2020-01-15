@@ -22,3 +22,14 @@ enum CollisionType {
 	TOP,
 	BOTTOM
 };
+
+enum class EditorObjectType {
+	GAMEOBJECT,
+	TERRAIN,
+	PLAYER,
+	GOAL,
+	PICKUP_COIN,
+	PICKUP_POWERUP,
+	ENEMY_STATIC,
+	ENEMY_WALKING
+};

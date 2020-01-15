@@ -151,20 +151,23 @@ using namespace std;
 
 #include "assets/assetManager.h"
 
-
 #include "physics/physicsObject.h"
 #include "physics/dynamicObject.h"
 #include "physics/staticObject.h"
 #include "physics/quadTree.h"
 
 #include "application.h"
-#include "editor/editorObjectType.h"
 #include "gameObject/gameObject.h"
 #include "gameObject/editorGameObject.h"
 #include "gameObject/playerObject.h"
+#include "gameObject/goalObject.h"
 #include "gameObject/terrainObject.h"
-#include "gameObject/pickupObject.h"
-#include "gameObject/enemyObject.h"
+#include "gameObject/pickups/pickupObject.h"
+#include "gameObject/pickups/coinPickup.h"
+#include "gameObject/pickups/powerupPickup.h"
+#include "gameObject/enemies/enemyObject.h"
+#include "gameObject/enemies/staticEnemy.h"
+#include "gameObject/enemies/walkingEnemy.h"
 #include "gameObject/objectFactory.h"
 #include "editor/assetSelectWindow.h"
 #include "editor/objectLayer.h"
