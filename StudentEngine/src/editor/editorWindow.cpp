@@ -207,11 +207,18 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImFont* bigIconFont = ImGui::GetIO().Fonts->Fonts[1];
 	ImGui::PushFont(bigIconFont);
+
 	if (CreateMenuButton(ICON_FA_PLAY, true)) {
 		m_inEditorMode = false;
 		GetStateManager()->SetState(States::PLAY);
 	}
 	OnItemTooltip("Enter play mode and test your game!");
+
+	ImGui::SameLine();
+	if (CreateMenuButton(ICON_FA_STICKY_NOTE, true)) {
+		ImGui::OpenPopup("New project");
+	}
+	OnItemTooltip("Reset the project");
 
 	ImGui::SameLine();
 	if (CreateMenuButton(ICON_FA_FOLDER_OPEN, true)) {
@@ -283,6 +290,20 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::PopFont();
 	ImGui::PopStyleVar(3);
+
+	if (ImGui::BeginPopupModal("New project", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Are you sure you want to discard your changes?");
+		ImGui::Separator();
+		if (ImGui::Button("Yes")) {
+			GetEditor()->ResetScene();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("No")) {
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
 	ImGui::End();
 
 	// BUTTONS
