@@ -65,7 +65,7 @@ void LoadingState::Initialize() {
 
 void LoadingState::Update(const TimeStep& time) {
 	m_animationFrame = 3 - (int)(time.TotalTime() / 100) % 4;
-	if (GetAssetManager()->GetActiveJobs() == 0 && !m_fade && KeyJustDown(VK_SPACE)) {
+	if (GetAssetManager()->GetActiveJobs() == 0 && !m_fade/* && KeyJustDown(VK_SPACE)*/) {
 		Tween::To(m_transparency, 0.0f, 1500.0f)->SetEase(Ease::INEXPO)->SetOnComplete([] {GetStateManager()->SetState(States::EDIT); });
 		m_fade = true;
 	}
