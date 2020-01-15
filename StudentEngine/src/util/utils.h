@@ -58,7 +58,6 @@ namespace Utils {
 	String FlipStringHorizontal(const String& toRotate, int x, int y);
 	String FlipStringVertical(const String& toRotate, int x, int y);
 
-
 	static String ReplaceString(String subject, const String& search,
 		const string& replace) {
 		size_t pos = 0;

@@ -15,6 +15,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
+#include <shlobj.h>
 #include <algorithm>
 #include <thread>
 #include <math.h>

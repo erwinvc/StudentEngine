@@ -215,27 +215,37 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::SameLine();
 	if (CreateMenuButton(ICON_FA_FOLDER_OPEN, true)) {
-		nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile("hierarchy");
-		hierarchyJson.get<Hierarchy>();
 
-		for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
-			for (auto& obj : layer->m_objects) {
-				if (obj->m_parentNameFromJson != "") {
-					obj->SetParent(GetEditorScene()->FindObjectByName(obj->m_parentNameFromJson));
+		auto result = FileSystem::OpenFileDialog();
+		if (result.m_success) {
+			if (FileSystem::DoesFileExist(result.m_file)) {
+				nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile(result.m_file);
+				hierarchyJson.get<Hierarchy>();
+
+				for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
+					for (auto& obj : layer->m_objects) {
+						if (obj->m_parentNameFromJson != "") {
+							obj->SetParent(GetEditorScene()->FindObjectByName(obj->m_parentNameFromJson));
+						}
+					}
 				}
 			}
 		}
 
+
 		// Reapply the internal m_layers managed here
 		ApplyLayers();
 	}
-	
+
 	OnItemTooltip("Open a different project...");
 
 	ImGui::SameLine();
 	if (CreateMenuButton(ICON_FA_SAVE, true)) {
-		nlohmann::json hierarchyJson = GetActiveScene()->GetHierarchy();
-		FileSystem::SaveJsonToFile(hierarchyJson, "hierarchy");
+		auto result = FileSystem::SaveFileDialog();
+		if (result.m_success) {
+			nlohmann::json hierarchyJson = GetActiveScene()->GetHierarchy();
+			FileSystem::SaveJsonToFile(hierarchyJson, result.m_file);
+		}
 		LOG("%s", "Saved JSON file!");
 	}
 	OnItemTooltip("Save the project");
@@ -475,9 +485,9 @@ void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {
 	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
 	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.88f, 0.52f, 1.00f);
 	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_Button]			= ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
-	style.Colors[ImGuiCol_ButtonHovered]	= ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
-	style.Colors[ImGuiCol_ButtonActive]		= ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.26f, 0.98f, 0.59f, 0.40f);
+	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
+	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
 	style.Colors[ImGuiCol_Header] = ImVec4(0.26f, 0.98f, 0.59f, 0.31f);
 	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.98f, 0.59f, 0.80f);
 	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
