@@ -12,6 +12,7 @@ public:
 	EditorObjectType GetObjectType() const override;
 	GameObject* Copy() override;
 	void Update(const TimeStep& time) override;
+	void OnCollision(GameObject* self, GameObject* other, CollisionType type) override;
 
 	void ToJson(nlohmann::json& j) const override {
 		EnemyObject::ToJson(j);
