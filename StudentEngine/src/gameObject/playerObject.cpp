@@ -60,6 +60,22 @@ GameObject* PlayerObject::Copy() {
 
 void PlayerObject::InspectorDraw() {
 	GameObject::InspectorDraw();
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Player Texture");
+	float width = ImGui::GetContentRegionAvail().x;
+	const char* buttonText = "Select";
+	ImGui::SameLine(width - 8.0 - ImGui::CalcTextSize(m_sprite.m_texture->GetName().c_str(), NULL, true).x - ImGui::CalcTextSize(buttonText, NULL, true).x);
+	ImGui::LabelText("##playerTexture", m_sprite.m_texture->GetName().c_str());
+	ImGui::SameLine(width - ImGui::CalcTextSize(buttonText, NULL, true).x);
+	if (ImGui::Button("Select")) {
+		GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
+			GameObject* selectedObject = GetEditorScene()->GetHierarchy().GetSelected();
+			if (selectedObject->IsOfType<PlayerObject>()) {
+				static_cast<PlayerObject*>(selectedObject->SetTexture((StreamedTexture*)asset));
+			}
+			});
+		GetAssetSelect()->Open();
+	}
 }
 
 PlayerObject* PlayerObject::SetMovementSpeed(float speed) {

@@ -19,11 +19,11 @@ GameObject* PickupObject::Copy() {
 void PickupObject::InspectorDraw() {
 	GameObject::InspectorDraw();
 	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Enemy Type");
+	ImGui::Text("Pickup Type");
 	float width = ImGui::GetContentRegionAvail().x;
 	const char* buttonText = "Select";
 	ImGui::SameLine(width - 8.0 - ImGui::CalcTextSize(m_sprite.m_texture->GetName().c_str(), NULL, true).x - ImGui::CalcTextSize(buttonText, NULL, true).x);
-	ImGui::LabelText("##enemyType", m_sprite.m_texture->GetName().c_str());
+	ImGui::LabelText("##pickupType", m_sprite.m_texture->GetName().c_str());
 	ImGui::SameLine(width - ImGui::CalcTextSize(buttonText, NULL, true).x);
 	if (ImGui::Button("Select")) {
 		GetAssetSelect()->PrepareValidTextures("Pickup", [&](AssetBase* asset) {
