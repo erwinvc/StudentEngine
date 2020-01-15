@@ -5,6 +5,7 @@ bool m_isJumping = false;
 PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
 	SetSize(Vector2(64, 64));
 	SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
+	SetMovementSpeed(0.5);
 	m_layer = "Foreground";
 	m_invincible = false;
 }
