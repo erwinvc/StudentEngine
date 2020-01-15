@@ -46,6 +46,7 @@ public:
 	GameObject* m_movingChild;
 
 	void Initialize();
+	void ApplyLayers();
 	void OnImGui();
 	void OnItemTooltip(String text);
 	void OnRightClickSelected();
