@@ -51,6 +51,8 @@ void PlayerObject::Update(const TimeStep& time) {
 		}
 	}
 
+	if (m_transform.m_position.y < -2500) static_cast<PlayState*>(GetStateManager()->GetState())->Restart();
+
 	m_physicsObject.Update(time);
 }
 

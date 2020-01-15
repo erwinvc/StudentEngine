@@ -34,7 +34,7 @@ void EditState::Initialize() {
 		if (other->IsOfType<PlayerObject>()) {
 			static_cast<PlayState*>(GetStateManager()->GetState())->Restart();
 		}
-		return true;
+		return false;
 	}
 	);
 

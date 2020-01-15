@@ -23,6 +23,7 @@ public:
 			float oldZoom = m_zoom;
 			if (KeyJustDown('F')) {
 				m_zoom = 1.0f;
+				m_position = Vector2(0, 0);
 			}
 			float zoom = GetMouse()->GetScroll().y / 10;
 			m_zoom = Math::Clamp(m_zoom - zoom, 0.1f, 10.0f);
