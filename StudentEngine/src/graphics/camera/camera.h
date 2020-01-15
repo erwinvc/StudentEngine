@@ -1,5 +1,6 @@
 #pragma once
 
+class GameObject;
 class Camera {
 protected:
 	Matrix4 m_projectionMatrix;
@@ -7,6 +8,8 @@ protected:
 	Vector4 m_viewPort = Vector4(0, 0, 0, 0);
 	float m_zoom = 1.0f;
 	bool zoomEnabled = false;
+
+	GameObject* m_target = nullptr;
 
 public:
 	void UpdateViewMatrix() {
@@ -36,8 +39,8 @@ public:
 		}
 	}
 
-	void Update(const TimeStep time) {
-	}
+	// Moved to .cpp to apply forward declaration to GameObject;
+	void Update(const TimeStep time);
 
 	void UpdateProjectionMatrix() {
 		m_projectionMatrix = Matrix4::Orthographic(0, m_viewPort.z * m_zoom, 0, m_viewPort.w * m_zoom, -1.0f, 1.0f);
@@ -62,6 +65,10 @@ public:
 
 	float GetZoom() { return m_zoom; }
 	void SetZoom(float zoom) { m_zoom = zoom; }
+
+	void SetTarget(GameObject* target) {
+		m_target = target;
+	}
 
 	inline Matrix4 GetProjectionMatrix() const { return m_projectionMatrix; }
 	inline Matrix4 GetViewMatrix() const { return m_viewMatrix; }

@@ -15,6 +15,7 @@ void PlayState::Update(const TimeStep& time) {
 		m_scene->Copy(States::EDIT->GetScene());
 		m_restarting = false;
 		m_playerScore = 0;
+		m_playCamera->SetTarget(m_scene->GetHierarchy().FindObjectByName("Player", true));
 	}
 	m_scene->Update(time);
 }
@@ -41,6 +42,7 @@ void PlayState::EnterState() {
 
 	m_editorCamera = GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_playCamera);
+	m_playCamera->SetTarget(m_scene->GetHierarchy().FindObjectByName("Player", true));
 
 	LOG("[~GStates~x] Entered ~1%s~x state", typeid(*this).name());
 }
