@@ -16,7 +16,7 @@ public:
 		return 1024;
 	}
 	static void Update(const TimeStep& time) {
-		g_color = Color::Mix(Color(1.0f, 1.0f, 1.0f, 0.2f), Color(0.5f, 0.5f, 0.5f, 0.2f), Math::Map(Math::Sin(time.TotalTime() / 1000), -1.0f, 1.0f, 0.0f, 1.0f));
+		g_color = Color::Mix(Color(1.0f, 1.0f, 1.0f, 0.15f), Color(0.5f, 0.5f, 0.5f, 0.15f), Math::Map(Math::Sin(time.TotalTime() / 1000), -1.0f, 1.0f, 0.0f, 1.0f));
 	}
 	static void Draw(RenderingPipeline* pipeline) {
 		float gridSize = GetGridSizeFromZoomLevel(GetCamera()->GetZoom()) * 2;

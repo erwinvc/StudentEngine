@@ -76,6 +76,7 @@ void EditorWindow::OnRightClickSelected() {
 
 	if (m_openedRightClickMenu) {
 		ImGui::SetNextWindowPos(m_rightClickPosition);
+		ImGui::SetNextWindowBgAlpha(2.0f);
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar;
 		bool isVIP = IsVIPObject(GetEditorScene()->GetHierarchy().GetSelected());
 

@@ -10,6 +10,7 @@ AssetSelectWindow::AssetSelectWindow() {
 void AssetSelectWindow::OnImGui() {
 	if (m_windowState) {
 		ImGui::SetNextWindowSize(ImVec2(450, 450), ImGuiCond_Once);
+		ImGui::SetNextWindowBgAlpha(2.0f);
 		ImGui::Begin("Select Asset", &m_windowState, ImGuiWindowFlags_NoDocking);
 
 		// Search Bar
