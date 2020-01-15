@@ -8,15 +8,18 @@ class EnemyObject : public GameObject
 {
 private:
 	EnemyType m_type;
-	static map<const char*, EnemyType> typeMap;
+	static map<string, EnemyType> typeMap;
+	int m_walkingDirection = 1;
+	float m_movementSpeed = 0.1;
 
 public:
 	EnemyObject(const String& name);
 	EditorObjectType GetObjectType() const override;
 	virtual GameObject* Copy() override;
+	void Update(const TimeStep& time) override;
 	void InspectorDraw() override;
 	EnemyObject* SetEnemyType(EnemyType type);
-	static EnemyType GetTypeFromTexture(const char* textureName);
+	static EnemyType GetTypeFromTexture(string& textureName);
 
 	void ToJson(nlohmann::json& j) const override {
 		GameObject::ToJson(j);

@@ -4,7 +4,7 @@ PickupObject::PickupObject(const String& name) : GameObject(name, true) {
 
 }
 
-map<const char*, PickupType> PickupObject::typeMap = {
+map<string, PickupType> PickupObject::typeMap = {
 	{ "BluePickup", PickupType::COIN }, { "GreenPickup", PickupType::POWERUP }
 };
 
@@ -18,6 +18,23 @@ GameObject* PickupObject::Copy() {
 
 void PickupObject::InspectorDraw() {
 	GameObject::InspectorDraw();
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Enemy Type");
+	float width = ImGui::GetContentRegionAvail().x;
+	const char* buttonText = "Select";
+	ImGui::SameLine(width - 8.0 - ImGui::CalcTextSize(m_sprite.m_texture->GetName().c_str(), NULL, true).x - ImGui::CalcTextSize(buttonText, NULL, true).x);
+	ImGui::LabelText("##enemyType", m_sprite.m_texture->GetName().c_str());
+	ImGui::SameLine(width - ImGui::CalcTextSize(buttonText, NULL, true).x);
+	if (ImGui::Button("Select")) {
+		GetAssetSelect()->PrepareValidTextures("Pickup", [&](AssetBase* asset) {
+			GameObject* selectedObject = GetEditorScene()->GetHierarchy().GetSelected();
+			if (selectedObject->IsOfType<PickupObject>()) {
+				static_cast<PickupObject*>(selectedObject->SetTexture((StreamedTexture*)asset))
+					->SetPickupType(GetTypeFromTexture(asset->GetName()));
+			}
+			});
+		GetAssetSelect()->Open();
+	}
 }
 
 PickupObject* PickupObject::SetPickupType(PickupType type) {
@@ -25,7 +42,7 @@ PickupObject* PickupObject::SetPickupType(PickupType type) {
 	return this;
 }
 
-PickupType PickupObject::GetTypeFromTexture(const char* textureName) {
+PickupType PickupObject::GetTypeFromTexture(string& textureName) {
 	return typeMap[textureName];
 }
 

@@ -7,14 +7,14 @@ enum class PickupType {
 class PickupObject : public GameObject {
 private:
 	PickupType m_type;
-	static map<const char*, PickupType> typeMap;
+	static map<string, PickupType> typeMap;
 public:
 	PickupObject(const String& name);
 	EditorObjectType GetObjectType() const override;
 	virtual GameObject* Copy() override;
 	void InspectorDraw() override;
 	PickupObject* SetPickupType(PickupType type);
-	static PickupType GetTypeFromTexture(const char* textureName);
+	static PickupType GetTypeFromTexture(string& textureName);
 	void OnPickup();
 
 	void ToJson(nlohmann::json& j) const override {

@@ -104,17 +104,6 @@ void EditState::Update(const TimeStep& time) {
 		if (KeyJustDown('Y')) Undo::RedoOne();
 	}
 
-	// Testing Asset Selection Window
-	if (KeyJustDown(GLFW_KEY_K)) {
-		//GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
-		//	GameObject* playerObject = m_scene->FindObjectByName("Player Object");
-		//	playerObject->SetTexture((StreamedTexture*)asset);
-		//	});
-		//GetAssetSelect()->Open();
-		nlohmann::json testJson = GetScene()->GetHierarchy();
-		LOG("%s", testJson.dump().c_str());
-	}
-
 	//if (KeyJustDown(VK_SPACE)) {
 		//m_scene->m_quadtree.Insert(&GetScene()->AddGameObject(new GameObject("A"))
 		//	.SetSize(Vector2(500, 500))
