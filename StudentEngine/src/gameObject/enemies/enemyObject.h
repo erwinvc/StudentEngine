@@ -7,7 +7,7 @@ public:
 	virtual GameObject* Copy() override;
 	virtual void Update(const TimeStep& time) = 0;
 	void InspectorDraw() override;
-
+	virtual void OnCollision(GameObject* self, GameObject* other, CollisionType type);
 	void ToJson(nlohmann::json& j) const override {
 		GameObject::ToJson(j);
 	}

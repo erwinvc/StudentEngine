@@ -29,3 +29,19 @@ void WalkingEnemy::Update(const TimeStep& time) {
 	m_physicsObject.m_velocity.x -= xVelocity;
 	m_physicsObject.Update(time);
 }
+
+void WalkingEnemy::OnCollision(GameObject* self, GameObject* other, CollisionType type) {
+	EnemyObject::OnCollision(self, other, type);
+	if (other->IsOfType<TerrainObject>()) {
+		if (self->m_physicsObject.m_velocity.x > 0) {
+			if (self->m_transform.XMax() > other->m_transform.XMax()) {
+				((WalkingEnemy*)self)->m_walkingDirection *= -1;
+			}
+		}
+		if (self->m_physicsObject.m_velocity.x < 0) {
+			if (self->m_transform.XMin() < other->m_transform.XMin()) {
+				((WalkingEnemy*)self)->m_walkingDirection *= -1;
+			}
+		}
+	}
+}
