@@ -1,12 +1,16 @@
 #include "stdafx.h"
 
 void EditorWindow::Initialize() {
+	ApplyLayers();
+
+	SetupEditorStyle(true, 0.5f);
+}
+
+void EditorWindow::ApplyLayers() {
 	m_layers = vector<HierarchyObject*>();
 	for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
 		m_layers.push_back(new HierarchyObject(layer));
 	}
-
-	SetupEditorStyle(true, 0.5f);
 }
 
 EditorWindow::~EditorWindow() {
@@ -220,6 +224,9 @@ void EditorWindow::CreateEditorWindows() {
 				}
 			}
 		}
+
+		// Reapply the internal m_layers managed here
+		ApplyLayers();
 	}
 	
 	OnItemTooltip("Open a different project...");
@@ -336,8 +343,10 @@ void EditorWindow::CreateEditorWindows() {
 bool EditorWindow::CreateMenuButton(const char* icon, bool activateCondition) {
 	ImVec4 buttonColor = activateCondition ? ImVec4(0.26f, 0.98f, 0.59f, 0.40f) : ImVec4(0.26f, 0.26f, 0.26f, 0.40f);
 	ImGui::PushStyleColor(ImGuiCol_Button, buttonColor);
-	if (activateCondition) buttonColor = ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
+	// Copied from the style method below this file
+	if (activateCondition) buttonColor = ImVec4(0.26f, 0.98f, 0.59f, 1.00f);
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, buttonColor);
+	if (activateCondition) buttonColor = ImVec4(0.06f, 0.87f, 0.53f, 1.00f);
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor);
 
 	bool activated = ImGui::Button(icon);
