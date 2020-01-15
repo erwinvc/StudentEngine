@@ -35,7 +35,7 @@ GameObject* ObjectFactory::CreateObject(EditorObjectType objectType, const Strin
 				static_cast<PickupObject*>(self)->OnPickup();
 				self->Destroy();
 			}
-			return true;
+			return false;
 				});
 		PickupObject* pickup = static_cast<PickupObject*>(newObject);
 		pickup->SetTexture(GetAssetManager()->Get<StreamedTexture>("BluePickup"));

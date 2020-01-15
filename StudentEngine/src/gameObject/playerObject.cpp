@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+bool m_isJumping = false;
 PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
 	m_invincible = false;
 }
@@ -24,9 +24,16 @@ void PlayerObject::Update(const TimeStep& time) {
 		m_physicsObject.m_velocity.x += m_movementSpeed * time;
 	}
 
-	if (m_physicsObject.m_isGrounded && GetKeyboard()->KeyJustDown(VK_SPACE)) {
-		m_physicsObject.m_velocity.y = 45;
+	if (m_physicsObject.m_isGrounded && KeyJustDown(VK_SPACE)) {
+		m_physicsObject.m_velocity.y = 20;
 		m_physicsObject.m_isGrounded = false;
+		m_isJumping = true;
+	}
+
+	if (!KeyDown(VK_SPACE)) m_isJumping = false;
+
+	if (!m_physicsObject.m_isGrounded && KeyDown(VK_SPACE) && m_isJumping) {
+		if (m_physicsObject.m_velocity.y > 0) m_physicsObject.m_velocity.y += (0.075f * m_physicsObject.m_velocity.y) + 0.05f;
 	}
 
 	//Stops mid-air jump
