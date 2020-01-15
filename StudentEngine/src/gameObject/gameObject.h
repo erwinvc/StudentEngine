@@ -147,13 +147,6 @@ public:
 
 	void InspectorDraw() override {
 		InspectorDrawer::EditText("Name", m_name);
-		m_transform.InspectorDraw();
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Name");
-		float width = ImGui::GetContentRegionAvail().x;
-		ImGui::SameLine(width - ImGui::CalcTextSize(m_name.c_str(), NULL, true).x);
-		ImGui::LabelText("##hideName", m_name.c_str());
-
 		m_sprite.InspectorDraw();
 	}
 

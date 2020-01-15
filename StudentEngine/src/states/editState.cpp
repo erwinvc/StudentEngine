@@ -7,27 +7,28 @@ void EditState::Initialize() {
 	g_squareGizmo = GetAssetManager()->Get<StreamedTexture>("SquareGizmo");
 	g_logo = GetAssetManager()->Get<StreamedTexture>("Logo");
 
-	ResetScene();
+	ResetScene(false);
 
 	m_window->Initialize();
 }
 
-void EditState::ResetScene() {
+void EditState::ResetScene(bool fullReset) {
 	m_scene->GetHierarchy().Clear();
 	m_scene->GetHierarchy().Initialize();
 
-	ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
-		->SetSize(Vector2(2048.0f, 128.0f))
-		->SetPosition(Vector2(960.0f, 224.0f));
+	if (!fullReset) {
+		ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
+			->SetSize(Vector2(2048.0f, 128.0f))
+			->SetPosition(Vector2(960.0f, 224.0f));
+		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
+			->SetPosition(Vector2(352.0f, 320.0f));
+
+		ObjectFactory::CreateObject(EditorObjectType::PICKUP_POWERUP, "Pickup Green")
+			->SetPosition(Vector2(704.0f, 320.0f));
+	}
 
 	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
 		->SetPosition(Vector2(192.0f, 352.0f));
-
-	ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
-		->SetPosition(Vector2(352.0f, 320.0f));
-
-	ObjectFactory::CreateObject(EditorObjectType::PICKUP_POWERUP, "Pickup Green")
-		->SetPosition(Vector2(704.0f, 320.0f));
 
 	ObjectFactory::CreateObject(EditorObjectType::GOAL, "Goal")
 		->SetPosition(Vector2(1536.0f, 320.0f));

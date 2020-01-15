@@ -68,6 +68,7 @@ GameObject* PlayerObject::Copy() {
 
 void PlayerObject::InspectorDraw() {
 	GameObject::InspectorDraw();
+	InspectorDrawer::Float("Movement speed", m_movementSpeed);
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text("Player Texture");
 	float width = ImGui::GetContentRegionAvail().x;

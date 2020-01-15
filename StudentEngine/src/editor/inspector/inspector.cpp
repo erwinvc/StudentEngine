@@ -25,6 +25,13 @@ bool InspectorDrawer::Vec2(String_t name, Vector2& vec) {
 	return ImGui::InputFloat2(Format_t("##%s", name), (float*)&vec);
 }
 
+bool InspectorDrawer::Float(String_t name, float& flt) {
+	float width = PrepareLine(name);
+	ImGui::SameLine(width / 2);
+	ImGui::PushItemWidth(width / 2);
+	return ImGui::InputFloat(Format_t("##%s", name), (float*)&flt);
+}
+
 bool InspectorDrawer::Vec3(String_t name, Vector3& vec) {
 	float width = PrepareLine(name);
 	ImGui::SameLine(width / 2);

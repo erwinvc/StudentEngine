@@ -14,6 +14,7 @@ public:
 	static bool Header(String_t name) { return ImGui::CollapsingHeader(name); }
 	static void Text(String_t name, String_t text);
 	static bool EditText(String_t name, String& text);
+	static bool Float(String_t name, float& vec);
 	static bool Vec2(String_t name, Vector2& vec);
 	static bool Vec3(String_t name, Vector3& vec);
 	static void Color(String_t name, ::Color& color);

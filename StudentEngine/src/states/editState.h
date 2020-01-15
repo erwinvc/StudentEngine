@@ -23,7 +23,7 @@ public:
 	void EnterState() override;
 	void ExitState() override;
 	void OnImGui() override;
-	void ResetScene();
+	void ResetScene(bool fullReset = true);
 
 	void EditorControls(const TimeStep& time);
 	GameObject* AddEditorObject(Vector2 pos, EditorObjectType type);
