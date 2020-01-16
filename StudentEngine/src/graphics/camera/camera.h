@@ -10,6 +10,8 @@ protected:
 	bool zoomEnabled = false;
 
 	GameObject* m_target = nullptr;
+	Vector2 m_startDiff;
+	Vector2 m_deadzone = Vector2(250, 100);
 
 public:
 	void UpdateViewMatrix() {
@@ -66,9 +68,7 @@ public:
 	float GetZoom() { return m_zoom; }
 	void SetZoom(float zoom) { m_zoom = zoom; }
 
-	void SetTarget(GameObject* target) {
-		m_target = target;
-	}
+	void SetTarget(GameObject* target);
 
 	inline Matrix4 GetProjectionMatrix() const { return m_projectionMatrix; }
 	inline Matrix4 GetViewMatrix() const { return m_viewMatrix; }
