@@ -24,7 +24,7 @@ void EnemyObject::OnCollision(GameObject* self, GameObject* other, CollisionType
 		}
 		else {
 			// Show game over
-			static_cast<PlayState*>(GetStateManager()->GetState())->Restart();
+			static_cast<PlayState*>(GetStateManager()->GetState())->GameOver();
 		}
 	}
 }

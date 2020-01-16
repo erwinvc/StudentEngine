@@ -14,10 +14,14 @@ void PlayState::Update(const TimeStep& time) {
 		m_scene->GetHierarchy().Initialize();
 		m_scene->Copy(States::EDIT->GetScene());
 		m_restarting = false;
+		m_gameover = false;
+		m_paused = false;
 		m_playerScore = 0;
 		m_playCamera->SetTarget(m_scene->GetHierarchy().FindObjectByName("Player", true));
 	}
-	m_scene->Update(time);
+
+	if (!m_paused)
+		m_scene->Update(time);
 }
 
 void PlayState::Draw(RenderingPipeline* pipeline) {
@@ -39,6 +43,8 @@ void PlayState::EnterState() {
 	m_scene->GetHierarchy().Initialize();
 	m_scene->Copy(States::EDIT->GetScene());
 	m_playerScore = 0;
+	m_paused = false;
+	m_gameover = false;
 
 	m_editorCamera = GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_playCamera);
@@ -57,6 +63,29 @@ void PlayState::ExitState() {
 
 void PlayState::OnImGui() {
 	GetEditorWindow()->OnImGui();
+
+	if (m_gameover) {
+		ImGui::OpenPopup("Game Over!");
+		m_gameover = false;
+	}
+
+	if (ImGui::BeginPopupModal("Game Over!", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Oh no, you died!");
+		ImGui::Separator();
+		if (ImGui::Button("Replay")) {
+			m_restarting = true;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Back to Edit Mode")) {
+			m_paused = false;
+			GetEditorWindow()->ToggleEditMode();
+			GetStateManager()->SetState(States::EDIT);
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
+	//ImGui::End();
 
 	OnHUD();
 }
@@ -79,4 +108,9 @@ void PlayState::AdjustScore(int value) {
 
 void PlayState::Restart() {
 	m_restarting = true;
+}
+
+void PlayState::GameOver() {
+	m_paused = true;
+	m_gameover = true;
 }

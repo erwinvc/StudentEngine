@@ -7,6 +7,8 @@ private:
 	Camera* m_editorCamera;
 	Camera* m_playCamera;
 	bool m_restarting;
+	bool m_gameover;
+	bool m_paused;
 	int m_playerScore = 0;
 public:
 	PlayState() : BaseState("Play") {}
@@ -22,4 +24,5 @@ public:
 	void OnHUD();
 	void AdjustScore(int value);
 	void Restart();
+	void GameOver();
 };
