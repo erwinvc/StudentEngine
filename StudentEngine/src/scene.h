@@ -23,11 +23,11 @@ public:
 	void DeleteGameObject(GameObject* obj) {
 		m_hierarchy.DeleteGameObject(obj);
 	}
-	
+
 	GameObject* FindObjectByName(const String& name) {
 		return m_hierarchy.FindObjectByName(name, true);
 	}
-	
+
 	GameObject* FindObjectByID(int id) {
 		return m_hierarchy.FindObjectByID(id);
 	}
@@ -46,7 +46,10 @@ public:
 		for (int l = 0; l < scene->GetHierarchy().m_layers.size(); l++) {
 			auto objects = scene->GetHierarchy().m_layers[l]->m_objects;
 			for (int i = 0; i < objects.size(); i++) {
-				AddGameObject(objects[i]->Copy());
+				GameObject* obj = AddGameObject(objects[i]->Copy());
+				if (obj->IsOfType<PlayerObject>() || obj->IsOfType<WalkingEnemy>()) {
+					obj->m_transform.m_position.y += 10.0f;
+				}
 			}
 		}
 	}

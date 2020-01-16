@@ -49,7 +49,8 @@ void PlayState::EnterState() {
 
 	m_editorCamera = GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_playCamera);
-	m_playCamera->SetTarget(m_scene->GetHierarchy().FindObjectByName("Player", true));
+	GameObject* player = m_scene->GetHierarchy().FindObjectByName("Player", true);
+	m_playCamera->SetTarget(player);
 
 	LOG("[~GStates~x] Entered ~1%s~x state", typeid(*this).name());
 }
