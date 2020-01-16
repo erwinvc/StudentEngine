@@ -55,6 +55,7 @@ public:
 
 	bool IsVIPObject(GameObject* obj);
 
+	void OpenInspector() { m_openedInspector = true; }
 	void MoveToFolder(HierarchyObject* folder, GameObject* movingChild);
 	HierarchyObject* FindFolderOfObject(GameObject* obj);
 	void ToggleSettingNewParent(GameObject* obj);
@@ -62,8 +63,6 @@ public:
 	void InstantiateDragging(bool externalSource);
 	bool IsInDragPlacement() { return m_dragPlacement; }
 	void SetDragPlacement(bool value) { m_dragPlacement = value; }
-	
-	
 	
 	//bool CurrentlyDragging() { return m_draggingItem; }
 	//void SetCurrentlyDragging(bool value) { m_draggingItem = value; }

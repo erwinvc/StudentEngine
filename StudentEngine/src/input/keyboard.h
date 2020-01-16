@@ -7,8 +7,8 @@
 #define LALT 342
 #define RETURN 257
 
-#define VK_NOTHING	0x00				/*NULL*/
-#define VK_DELETE	0x2E				//Delete button
+//#define VK_NOTHING	0x00				/*NULL*/
+#define VK_DELETE	0x105				//Delete button
 #define VK_KEY_0	0x30                //('0')	0
 #define VK_KEY_1	0x31                //('1')	1
 #define VK_KEY_2	0x32                //('2')	2
@@ -20,7 +20,7 @@
 #define VK_KEY_8	0x38                //('8')	8
 #define VK_KEY_9	0x39                //('9')	9
 #define VK_KEY_A	0x41                //('A')	A
-#define VK_KEY_B	0x42                //('B')	B
+#define VK_KEY_B	0x42                //('B')	Bh
 #define VK_KEY_C	0x43                //('C')	C
 #define VK_KEY_D	0x44                //('D')	D
 #define VK_KEY_E	0x45                //('E')	E

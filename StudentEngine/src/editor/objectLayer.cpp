@@ -23,6 +23,7 @@ void ObjectLayer::Draw(RenderingPipeline* pipeline, GameObject* selected) {
 	for (auto gObj : m_objects) {
 		if (gObj->m_destroyNextFrame) {
 			m_objects.erase(remove(m_objects.begin(), m_objects.end(), gObj), m_objects.end());
+			delete gObj;
 			continue;
 		}
 

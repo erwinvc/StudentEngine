@@ -18,7 +18,10 @@ void Mouse::OnMouseButton(int button, int action, int mods) {
         m_buttonStates[button].m_glIsUpNow = true;
     } else if (action == GLFW_PRESS) {
         GetMouse()->m_lastButton = button;
-        m_buttonStates[button].m_glIsUpNow = false;
+       // if (m_buttonStates[button].m_doubleClickTimer + 1000 < glfwGetTime()) m_buttonStates[button].m_doubleClicked = true;
+        m_buttonStates[button].m_glDoubleClicked = (m_buttonStates[button].m_glIsUpNow && glfwGetTime() - m_buttonStates[button].m_time < 0.25f);
+		m_buttonStates[button].m_glIsUpNow = false;
+        m_buttonStates[button].m_time = glfwGetTime();
     }
 }
 

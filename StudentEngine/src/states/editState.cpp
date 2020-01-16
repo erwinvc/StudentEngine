@@ -57,6 +57,20 @@ void EditState::EditorControls(const TimeStep& time) {
 
 	if (m_scene->m_hierarchy.UpdateSelected(time, m_scene->GetCursorWorldPosition())) return;
 
+	GameObject* selected = m_scene->m_hierarchy.GetSelected();
+	if (selected) {
+		if (KeyJustDown(VK_DELETE) && !GetEditorWindow()->IsVIPObject(selected)) {
+			m_scene->m_hierarchy.GetSelected()->Destroy();
+			m_scene->m_hierarchy.SetSelected(nullptr);
+		}
+	}
+
+	if (ButtonDoubleClicked(VK_MOUSE_LEFT)) {
+		GameObject* dcObj = m_scene->GetGameObjectUnderMouse();
+		if (dcObj) GetEditorWindow()->OpenInspector();
+
+	}
+
 	if (ButtonJustDown(VK_MOUSE_LEFT)) {
 		GameObject* obj = m_scene->GetGameObjectUnderMouse();
 		m_scene->m_hierarchy.SetSelected(obj);

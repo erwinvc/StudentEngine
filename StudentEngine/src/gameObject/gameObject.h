@@ -66,10 +66,10 @@ public:
 	}
 
 	GameObject* SetOnCollision(function<bool(GameObject*, GameObject*, CollisionType)> func) {
-		#pragma region ChainFunctions
 		m_onCollisionCallback = func;
 		return this;
 	}
+	#pragma region ChainFunctions
 
 	GameObject* SetPosition(Vector2 position) {
 		m_transform.m_position = position;
