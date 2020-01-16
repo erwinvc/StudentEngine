@@ -5,6 +5,15 @@ private:
 	float m_movementSpeed;
 	bool m_invincible;
 	Timer m_invincibilityTimer;
+
+	bool m_usingMultiSheet;
+	StreamedTexture* m_idle;
+	StreamedTexture* m_runLeft;
+	StreamedTexture* m_runRight;
+	StreamedTexture* m_jumpLeft;
+	StreamedTexture* m_jumpRight;
+	StreamedTexture* m_fallLeft;
+	StreamedTexture* m_fallRight;
 public:
 	PlayerObject(const String& name);
 	EditorObjectType GetObjectType() const override;

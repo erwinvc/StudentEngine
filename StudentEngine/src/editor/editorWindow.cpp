@@ -49,6 +49,11 @@ void EditorWindow::OnImGui() {
 		CreateTemporaryPlayMode();
 	}
 
+	if (ImGui::IsMouseDoubleClicked(0) && GetEditorScene()->GetGameObjectUnderMouse() != nullptr) {
+		GetEditorScene()->GetHierarchy().SetSelected(GetEditorScene()->GetGameObjectUnderMouse());
+		m_openedInspector = true;
+	}
+
 	OnRightClickSelected();
 }
 
