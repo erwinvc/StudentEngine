@@ -295,11 +295,13 @@ void EditorWindow::CreateEditorWindows() {
 		ImGui::Separator();
 		if (ImGui::Button("Yes, create an empty project")) {
 			GetEditor()->ResetScene();
+			ApplyLayers();
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Yes, open the example scene")) {
 			GetEditor()->ResetScene(true);
+			ApplyLayers();
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
