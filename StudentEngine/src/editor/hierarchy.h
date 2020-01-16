@@ -119,6 +119,17 @@ public:
 		return nullptr;
 	}
 
+	GameObject* FindObjectByID(int id) {
+		for each (auto layer in m_layers) {
+			GameObject* obj = layer->FindObjectByID(id);
+
+			if (obj != nullptr) {
+				return obj;
+			}
+		}
+
+		return nullptr;
+	}
 
 	void ChangeLayer(GameObject* obj, const String& otherLayer) {
 		auto oldLayer = FindLayerByName(obj->m_layer);
@@ -133,7 +144,7 @@ public:
 
 	int Size() {
 		int totalSize = 0;
-		for each (auto layer in m_layers) totalSize += layer->m_objects.size();
+		for each (auto layer in m_layers) totalSize += (int)layer->m_objects.size();
 
 		return totalSize;
 	}

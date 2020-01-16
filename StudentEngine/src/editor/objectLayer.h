@@ -19,6 +19,7 @@ public:
 	void AddGameObject(GameObject* obj, String layer);
 	void RemoveObject(GameObject* obj);
 	GameObject* FindObjectByName(const String& name);
+	GameObject* FindObjectByID(int id);
 	void Update(const TimeStep& time);
 	void Draw(RenderingPipeline* pipeline, GameObject* selected);
 	void Clear();

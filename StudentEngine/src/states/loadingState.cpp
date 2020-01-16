@@ -18,7 +18,7 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Mouse", [] {GetMouse()->Initialize(GetApp()->GetWindow()); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Audio", [] {GetAudioManager()->Initialize(); }));
 	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Asset Manager", [] {GetAssetManager()->Initialize(); }));
-	GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Undo", [] {Undo::Initialize(); }));
+	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Undo", [] {Undo::Initialize(); }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Asset Manager", [] {GetEditorAssetManager()->Initialize(); }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("ImGui Manager", [] {}, [] {  }));
 	//GetAssetManager()->AddToLoadQueue(new CustomLoadJob("Editor Window", [] {  }));

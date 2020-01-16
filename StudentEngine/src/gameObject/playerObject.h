@@ -34,4 +34,8 @@ public:
 		j.at("movement speed").get_to(m_movementSpeed);
 		j.at("invincible").get_to(m_invincible);
 	}
+
+	bool Compare(const GameObject* other) override {
+		return GameObject::Compare(other) && m_movementSpeed == ((PlayerObject*)other)->m_movementSpeed;
+	}
 };

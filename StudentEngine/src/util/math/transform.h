@@ -21,6 +21,10 @@ public:
 	float YMin() { return m_position.y - m_size.y / 2; }
 	float YMax() { return m_position.y + m_size.y / 2; }
 
+	bool Compare(const Transform& other) {
+		return m_position == other.m_position && m_size == other.m_size && m_rotation == other.m_rotation;
+	}
+
 	Rectangle AsRectangle() {
 		return { m_position, m_size };
 	}
@@ -32,8 +36,8 @@ public:
 	bool CollidesWith(GameObject* other, float xOffset, float yOffset);
 
 	void InspectorDraw() {
-		InspectorDrawer::Vec2("Position", m_position);
-		InspectorDrawer::Vec2("Size", m_size);
+		InspectorDrawer::Vec2(m_gameObject, "Position", m_position);
+		InspectorDrawer::Vec2(m_gameObject, "Size", m_size);
 	}
 	GameObject* GetGameObject() {
 		return m_gameObject;

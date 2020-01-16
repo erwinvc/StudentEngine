@@ -65,7 +65,6 @@ void ImGuiManager::Initialize(Window* window) {
 	g_smallFont = io.FontDefault;
 	g_bigFont = io.FontDefault;
 
-	
 	ImFontConfig config;
 	config.MergeMode = true;
 	const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
@@ -81,6 +80,7 @@ void ImGuiManager::Initialize(Window* window) {
 	//Font for HUD
 	io.Fonts->AddFontFromFileTTF("res/fonts/Consolas.ttf", 64.0f, NULL);
 	io.Fonts->Build();
+
 }
 
 void ImGuiManager::Begin() {

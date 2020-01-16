@@ -3,8 +3,8 @@
 static bool nullfunc(GameObject* ths, GameObject* gameObject, CollisionType type) { return true; }
 class GameObject : public InspectorDrawable {
 private:
-	GameObject* m_parent = NULL;
-	vector<GameObject*> m_children;
+	//GameObject* m_parent = NULL;
+	//vector<GameObject*> m_children;
 	function<bool(GameObject*, GameObject*, CollisionType)> m_onCollisionCallback;
 	static map<const char*, vector<const char*>> m_validTextures;
 
@@ -14,18 +14,19 @@ private:
 
 	friend PhysicsObject;
 public:
+	int m_id = 0;
 	bool m_destroyNextFrame = false;
 	String m_name;
 	Transform m_transform;
 	PhysicsObject m_physicsObject;
 	Sprite m_sprite;
 	String m_layer = "Objects";
-	String m_parentNameFromJson = "";
+	//String m_parentNameFromJson = "";
 
 	GameObject(const String& name, bool dynamic = false) : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()) {}
 	//GameObject(const String& name, bool dynamic = false, const String& layer = "Objects") : m_name(name), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, dynamic)), m_sprite(Sprite()), m_layer(layer) {}
 	GameObject() : m_name(""), m_onCollisionCallback(nullfunc), m_transform(Transform(this)), m_physicsObject(PhysicsObject(this, false)), m_sprite(Sprite()) {}
-	GameObject(const GameObject& other) : m_name(other.m_name), m_onCollisionCallback(other.m_onCollisionCallback), m_transform(Transform(other.m_transform, this)), m_physicsObject(PhysicsObject(other.m_physicsObject, this)), m_sprite(other.m_sprite) {}
+	GameObject(const GameObject& other) : m_id(other.m_id), m_name(other.m_name), m_onCollisionCallback(other.m_onCollisionCallback), m_transform(Transform(other.m_transform, this)), m_physicsObject(PhysicsObject(other.m_physicsObject, this)), m_sprite(other.m_sprite), m_layer(other.m_layer) {}
 
 	virtual GameObject* Copy() {
 		return new GameObject(*this);
@@ -38,14 +39,14 @@ public:
 		return EditorObjectType::GAMEOBJECT;
 	}
 
-	void AddChild(GameObject* gameObject) {
-		gameObject->SetParent(this);
-		m_children.push_back(gameObject);
-	}
-
-	void SetParent(GameObject* gameObject) {
-		m_parent = gameObject;
-	}
+	//void AddChild(GameObject* gameObject) {
+	//	gameObject->SetParent(this);
+	//	m_children.push_back(gameObject);
+	//}
+	//
+	//void SetParent(GameObject* gameObject) {
+	//	m_parent = gameObject;
+	//}
 
 	virtual void Update(const TimeStep& time) {
 		m_physicsObject.Update(time);
@@ -58,6 +59,10 @@ public:
 	void Destroy() {
 		m_destroyNextFrame = true;
 		//GetActiveScene()->DeleteGameObject(this);
+	}
+
+	virtual bool Compare(const GameObject* other) {
+		return m_name == other->m_name && m_transform.Compare(other->m_transform) && m_physicsObject.Compare(other->m_physicsObject) && m_sprite.Compare(other->m_sprite);
 	}
 
 	template<typename T>
@@ -112,42 +117,42 @@ public:
 
 	#pragma endregion
 
-	void SetChildren(vector<GameObject*> children) {
-		m_children = children;
-	}
+	//void SetChildren(vector<GameObject*> children) {
+	//	m_children = children;
+	//}
+	//
+	//GameObject* GetChildAt(int index) {
+	//	return m_children[index];
+	//}
+	//
+	//vector<GameObject*> GetChildren() {
+	//	return m_children;
+	//}
 
-	GameObject* GetChildAt(int index) {
-		return m_children[index];
-	}
+	//bool HasParent() {
+	//	return m_parent != NULL;
+	//}
+	//
+	//GameObject* GetParent() {
+	//	return m_parent;
+	//}
 
-	vector<GameObject*> GetChildren() {
-		return m_children;
-	}
+	//bool ContainsChild(GameObject* child) {
+	//	bool foundChild = false;
+	//	for (size_t i = 0; i < m_children.size(); i++) {
+	//		foundChild = m_children[i] == child;
+	//	}
+	//
+	//	return foundChild;
+	//}
 
-	bool HasParent() {
-		return m_parent != NULL;
-	}
-
-	GameObject* GetParent() {
-		return m_parent;
-	}
-
-	bool ContainsChild(GameObject* child) {
-		bool foundChild = false;
-		for (size_t i = 0; i < m_children.size(); i++) {
-			foundChild = m_children[i] == child;
-		}
-
-		return foundChild;
-	}
-
-	void RemoveChild(GameObject* child) {
-		m_children.erase(remove(m_children.begin(), m_children.end(), child), m_children.end());
-	}
+	//void RemoveChild(GameObject* child) {
+	//	m_children.erase(remove(m_children.begin(), m_children.end(), child), m_children.end());
+	//}
 
 	void InspectorDraw() override {
-		InspectorDrawer::EditText("Name", m_name);
-		m_sprite.InspectorDraw();
+		InspectorDrawer::EditText(this, "Name", m_name);
+		m_sprite.InspectorDraw(this);
 	}
 
 	static void SetValidTextures(const char* key, vector<const char*> value) {

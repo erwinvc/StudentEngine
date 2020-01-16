@@ -237,13 +237,13 @@ void EditorWindow::CreateEditorWindows() {
 				nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile(result.m_file);
 				hierarchyJson.get<Hierarchy>();
 
-				for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
-					for (auto& obj : layer->m_objects) {
-						if (obj->m_parentNameFromJson != "") {
-							obj->SetParent(GetEditorScene()->FindObjectByName(obj->m_parentNameFromJson));
-						}
-					}
-				}
+				//for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
+				//	for (auto& obj : layer->m_objects) {
+				//		if (obj->m_parentNameFromJson != "") {
+				//			obj->SetParent(GetEditorScene()->FindObjectByName(obj->m_parentNameFromJson));
+				//		}
+				//	}
+				//}
 			}
 		}
 
@@ -338,6 +338,7 @@ void EditorWindow::CreateEditorWindows() {
 			GameObject* obj = ObjectFactory::CreateObject(m_currentlyDraggedEditorObjectType, name)
 				->SetPosition(Math::RoundToNumber(Vector2(rayPos), Vector2(32.0f, 32.0f)));
 
+			Undo::CreateObject(obj);
 			//m_layers[0]->AddChild(&obj);
 			GetEditorScene()->GetHierarchy().SetSelected(obj);
 			GetInspector()->SetSelected(obj);

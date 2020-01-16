@@ -19,39 +19,38 @@ void Sprite::Draw(RenderingPipeline* pipeline, const Transform& transform) {
 		float yDifference = size.y / slSize - yCount;
 		float xDifference = size.x / slSize - xCount;
 		for (int i = 1; i < yCount - 1; i++) {
-			pipeline->Rect(pos.x - halfSize.x + halfSlSize, ((i + 0.5f) * slSize) - (size.y / 2) + pos.y, slSize, slSize, 0.0f, partSize, partSize, 1.0f - partSize, 0.0f, Color::White(), tex); // Left
-			pipeline->Rect(pos.x + halfSize.x - halfSlSize, ((i + 0.5f) * slSize) - (size.y / 2) + pos.y, slSize, slSize, 1.0f - partSize, 1.0f, partSize, 1.0f - partSize, 0.0f, Color::White(), tex); // Right
+			pipeline->Rect(pos.x - halfSize.x + halfSlSize, ((i + 0.5f) * slSize) - (size.y / 2) + pos.y, slSize, slSize, 0.0f, partSize, partSize, 1.0f - partSize, 0.0f, m_color, tex); // Left
+			pipeline->Rect(pos.x + halfSize.x - halfSlSize, ((i + 0.5f) * slSize) - (size.y / 2) + pos.y, slSize, slSize, 1.0f - partSize, 1.0f, partSize, 1.0f - partSize, 0.0f, m_color, tex); // Right
 		}
 		if (yDifference > 0) {
-			pipeline->Rect(pos.x - halfSize.x + halfSlSize, ((yCount - 1.0f) * slSize) - (size.y / 2) + pos.y + (slSize * yDifference) / 2, slSize, slSize * yDifference, 0.0f, partSize, partSize, partSize + ((1.0f - twoPartSize) * yDifference), 0.0f, Color::White(), tex); // Left
-			pipeline->Rect(pos.x + halfSize.x - halfSlSize, ((yCount - 1.0f) * slSize) - (size.y / 2) + pos.y + (slSize * yDifference) / 2, slSize, slSize * yDifference, 1.0f - partSize, 1.0f, partSize, partSize + ((1.0f - twoPartSize) * yDifference), 0.0f, Color::White(), tex); // Right
+			pipeline->Rect(pos.x - halfSize.x + halfSlSize, ((yCount - 1.0f) * slSize) - (size.y / 2) + pos.y + (slSize * yDifference) / 2, slSize, slSize * yDifference, 0.0f, partSize, partSize, partSize + ((1.0f - twoPartSize) * yDifference), 0.0f, m_color, tex); // Left
+			pipeline->Rect(pos.x + halfSize.x - halfSlSize, ((yCount - 1.0f) * slSize) - (size.y / 2) + pos.y + (slSize * yDifference) / 2, slSize, slSize * yDifference, 1.0f - partSize, 1.0f, partSize, partSize + ((1.0f - twoPartSize) * yDifference), 0.0f, m_color, tex); // Right
 		}
 
 		for (int i = 1; i < xCount - 1; i++) {
-			pipeline->Rect(((i + 0.5f) * slSize) - (size.x / 2) + pos.x, pos.y - halfSize.y + halfSlSize, slSize, slSize, partSize, 1.0f - partSize, 0.0f, partSize, 0.0f, Color::White(), tex); //Bottom
-			pipeline->Rect(((i + 0.5f) * slSize) - (size.x / 2) + pos.x, pos.y + halfSize.y - halfSlSize, slSize, slSize, partSize, 1.0f - partSize, 1.0f - partSize, 1.0f, 0.0f, Color::White(), tex); //Top
+			pipeline->Rect(((i + 0.5f) * slSize) - (size.x / 2) + pos.x, pos.y - halfSize.y + halfSlSize, slSize, slSize, partSize, 1.0f - partSize, 0.0f, partSize, 0.0f, m_color, tex); //Bottom
+			pipeline->Rect(((i + 0.5f) * slSize) - (size.x / 2) + pos.x, pos.y + halfSize.y - halfSlSize, slSize, slSize, partSize, 1.0f - partSize, 1.0f - partSize, 1.0f, 0.0f, m_color, tex); //Top
 		}
 
 		if (xDifference > 0) {
-			pipeline->Rect(((xCount - 1.0f) * slSize) - (size.x / 2) + pos.x + (slSize * xDifference) / 2, pos.y - halfSize.y + halfSlSize, slSize * xDifference, slSize, partSize, partSize + (1.0f - twoPartSize) * xDifference, 0.0f, partSize, 0.0f, Color::White(), tex); //Bottom
-			pipeline->Rect(((xCount - 1.0f) * slSize) - (size.x / 2) + pos.x + (slSize * xDifference) / 2, pos.y + halfSize.y - halfSlSize, slSize * xDifference, slSize, partSize, partSize + (1.0f - twoPartSize) * xDifference, 1.0f - partSize, 1.0f, 0.0f, Color::White(), tex); //Top
+			pipeline->Rect(((xCount - 1.0f) * slSize) - (size.x / 2) + pos.x + (slSize * xDifference) / 2, pos.y - halfSize.y + halfSlSize, slSize * xDifference, slSize, partSize, partSize + (1.0f - twoPartSize) * xDifference, 0.0f, partSize, 0.0f, m_color, tex); //Bottom
+			pipeline->Rect(((xCount - 1.0f) * slSize) - (size.x / 2) + pos.x + (slSize * xDifference) / 2, pos.y + halfSize.y - halfSlSize, slSize * xDifference, slSize, partSize, partSize + (1.0f - twoPartSize) * xDifference, 1.0f - partSize, 1.0f, 0.0f, m_color, tex); //Top
 		}
 
-		pipeline->Rect(pos.x - halfSize.x + halfSlSize, pos.y + halfSize.y - halfSlSize, slSize, slSize, 0.0f, partSize, 1.0f - partSize, 1.0f, 0.0f, Color::White(), tex); // TopLeft
-		pipeline->Rect(pos.x - halfSize.x + halfSlSize, pos.y - halfSize.y + halfSlSize, slSize, slSize, 0.0f, partSize, 0.0f, partSize, 0.0f, Color::White(), tex); // BottomLeft
+		pipeline->Rect(pos.x - halfSize.x + halfSlSize, pos.y + halfSize.y - halfSlSize, slSize, slSize, 0.0f, partSize, 1.0f - partSize, 1.0f, 0.0f, m_color, tex); // TopLeft
+		pipeline->Rect(pos.x - halfSize.x + halfSlSize, pos.y - halfSize.y + halfSlSize, slSize, slSize, 0.0f, partSize, 0.0f, partSize, 0.0f, m_color, tex); // BottomLeft
 
-		pipeline->Rect(pos.x + halfSize.x - halfSlSize, pos.y + halfSize.y - halfSlSize, slSize, slSize, 1.0f - partSize, 1.0f, 1.0f - partSize, 1.0f, 0.0f, Color::White(), tex); // TopRight
-		pipeline->Rect(pos.x + halfSize.x - halfSlSize, pos.y - halfSize.y + halfSlSize, slSize, slSize, 1.0f - partSize, 1.0f, 0.0f, partSize, 0.0f, Color::White(), tex); // BottomRight
+		pipeline->Rect(pos.x + halfSize.x - halfSlSize, pos.y + halfSize.y - halfSlSize, slSize, slSize, 1.0f - partSize, 1.0f, 1.0f - partSize, 1.0f, 0.0f, m_color, tex); // TopRight
+		pipeline->Rect(pos.x + halfSize.x - halfSlSize, pos.y - halfSize.y + halfSlSize, slSize, slSize, 1.0f - partSize, 1.0f, 0.0f, partSize, 0.0f, m_color, tex); // BottomRight
 
-		pipeline->Rect(pos.x, pos.y, size.x - twoSlSize, size.y - twoSlSize, partSize, 1.0f - partSize, partSize, 1.0f - partSize, 0.0f, Color::White(), tex);
+		pipeline->Rect(pos.x, pos.y, size.x - twoSlSize, size.y - twoSlSize, partSize, 1.0f - partSize, partSize, 1.0f - partSize, 0.0f, m_color, tex);
 	} else {
 		if (m_frameCount > 0) {
 			int textureIndex;
 			if (GetStateManager()->GetState() == States::PLAY) {
 				textureIndex = (int)(GetApp()->GetTotalFrameTime() / (1000.0f * m_frameTime)) % m_frameCount;
 				textureIndex += m_frameOffset;
-			}
-			else {
+			} else {
 				textureIndex = m_frameOffset;
 			}
 			float row = m_numberOfRows - (textureIndex / m_numberOfRows) - 1;

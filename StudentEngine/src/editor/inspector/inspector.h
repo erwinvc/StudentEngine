@@ -1,7 +1,6 @@
 #pragma once
 
 class StreamedTexture;
-
 class InspectorDrawer {
 private:
 	static float PrepareLine(String_t& name) {
@@ -13,13 +12,13 @@ public:
 	//static bool Header(const String& name) { return ImGui::CollapsingHeader(name.c_str()); }
 	static bool Header(String_t name) { return ImGui::CollapsingHeader(name); }
 	static void Text(String_t name, String_t text);
-	static bool EditText(String_t name, String& text);
-	static bool Float(String_t name, float& vec);
-	static bool Vec2(String_t name, Vector2& vec);
-	static bool Vec3(String_t name, Vector3& vec);
-	static void Color(String_t name, ::Color& color);
-	static bool Combo(String_t name, int* item, String_t const items[], int itemCount);
-	static void Texture(String_t name, StreamedTexture* texture);
+	static bool EditText(GameObject* gameObject, String_t name, String& text);
+	static bool Float(GameObject* gameObject, String_t name, float& vec);
+	static bool Vec2(GameObject* gameObject, String_t name, Vector2& vec);
+	static bool Vec3(GameObject* gameObject, String_t name, Vector3& vec);
+	static bool Color(GameObject* gameObject, String_t name, ::Color& color);
+	static bool Combo(GameObject* gameObject, String_t name, int* item, String_t const items[], int itemCount);
+	static void Texture(GameObject* gameObject, String_t name, StreamedTexture* texture);
 	
 };
 

@@ -59,15 +59,17 @@ void EditState::EditorControls(const TimeStep& time) {
 	if (!GetEditorWindow()->IsMouseInViewport() || dragging) return;
 	if (ButtonJustDown(VK_MOUSE_MIDDLE)) dragging = true;
 
-	if (m_scene->m_hierarchy.UpdateSelected(time, m_scene->GetCursorWorldPosition())) return;
-
 	GameObject* selected = m_scene->m_hierarchy.GetSelected();
 	if (selected) {
 		if (KeyJustDown(VK_DELETE) && !GetEditorWindow()->IsVIPObject(selected)) {
-			m_scene->m_hierarchy.GetSelected()->Destroy();
+			Undo::Record(selected);
+			Undo::FinishRecording(true);
+			selected->Destroy();
 			m_scene->m_hierarchy.SetSelected(nullptr);
 		}
 	}
+	
+	if (m_scene->m_hierarchy.UpdateSelected(time, m_scene->GetCursorWorldPosition())) return;
 
 	if (ButtonDoubleClicked(VK_MOUSE_LEFT)) {
 		GameObject* dcObj = m_scene->GetGameObjectUnderMouse();

@@ -42,7 +42,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	//Moving
 	if (g_moving && !ButtonDown(VK_MOUSE_LEFT)) {
 		g_moving = false;
-		Undo::FinishRecording();
+		Undo::FinishRecording(false);
 	}
 	if (g_moving) {
 		if (g_selectedArrow == 0) {
@@ -82,7 +82,7 @@ bool EditorGameObject::Update(GameObject* gameObject, const TimeStep& time, Vect
 	//Resizing
 	if (g_draggingCorner && !ButtonDown(VK_MOUSE_LEFT)) {
 		g_draggingCorner = false;
-		Undo::FinishRecording();
+		Undo::FinishRecording(false);
 	}
 	if (g_draggingCorner) {
 		if (KeyJustDown(LALT) || KeyJustUp(LALT)) transform.m_position = g_draggingPositionBackup;

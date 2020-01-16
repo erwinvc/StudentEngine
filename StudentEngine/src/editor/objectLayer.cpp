@@ -4,7 +4,7 @@ void ObjectLayer::AddGameObject(GameObject* obj, String layer) {
 
 }
 
-void ObjectLayer::RemoveObject(GameObject * obj) {
+void ObjectLayer::RemoveObject(GameObject* obj) {
 	if (FindObjectByName(obj->m_name)) {
 		m_objects.erase(remove(m_objects.begin(), m_objects.end(), obj), m_objects.end());
 	} else {
@@ -22,6 +22,7 @@ void ObjectLayer::Update(const TimeStep& time) {
 void ObjectLayer::Draw(RenderingPipeline* pipeline, GameObject* selected) {
 	for (auto gObj : m_objects) {
 		if (gObj->m_destroyNextFrame) {
+			if (GetEditorScene()->GetHierarchy().GetSelected() == gObj) GetEditorScene()->GetHierarchy().SetSelected(nullptr);
 			m_objects.erase(remove(m_objects.begin(), m_objects.end(), gObj), m_objects.end());
 			delete gObj;
 			continue;
@@ -41,6 +42,17 @@ GameObject* ObjectLayer::FindObjectByName(const String& name) {
 
 	return nullptr;
 }
+
+GameObject* ObjectLayer::FindObjectByID(int id) {
+	for (int i = 0; i < m_objects.size(); i++) {
+		if (m_objects[i]->m_id == id) {
+			return m_objects[i];
+		}
+	}
+
+	return nullptr;
+}
+
 
 
 void ObjectLayer::Clear() {

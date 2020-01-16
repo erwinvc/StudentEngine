@@ -18,9 +18,9 @@ void GameObject::ToJson(nlohmann::json& j) const {
 		{ "transform", m_transform }
 	};
 
-	if (m_parent) {
-		j["parent"] = m_parent->m_name;
-	}
+	//if (m_parent) {
+	//	j["parent"] = m_parent->m_name;
+	//}
 }
 
 void GameObject::FromJson(const nlohmann::json& j) {
@@ -32,7 +32,7 @@ void GameObject::FromJson(const nlohmann::json& j) {
 	j.at("sprite").get_to(newObject->m_sprite);
 	j.at("transform").get_to(newObject->m_transform);
 
-	if (j.find("parent") != j.end()) {
-		j.at("parent").get_to(m_parentNameFromJson);
-	}
+	//if (j.find("parent") != j.end()) {
+	//	j.at("parent").get_to(m_parentNameFromJson);
+	//}
 }

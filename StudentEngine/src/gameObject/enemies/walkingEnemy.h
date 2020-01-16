@@ -4,7 +4,7 @@ class WalkingEnemy : public EnemyObject
 {
 private:
 	int m_walkingDirection = 1;
-	float m_movementSpeed = 0.1;
+	float m_movementSpeed = 0.1f;
 
 	friend EnemyObject;
 public:

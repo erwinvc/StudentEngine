@@ -51,9 +51,11 @@ void App::Initialize() {
 	m_window->SetIcon(Icon("icon32"));
 
 	m_assetManager = new AssetManager();
-	GetStateManager()->Initialize();
 	GetImGuiManager()->Initialize(GetApp()->GetWindow());
 
+	GetStateManager()->Initialize();
+
+	
 	m_pipeline = new RenderingPipeline();
 	m_pipeline->Initialize();
 
@@ -63,6 +65,7 @@ void App::Initialize() {
 	GetGLFiberManager()->AddFiber("Tween", [] {});
 
 	m_window->Show();
+
 	m_initialized = true;
 	m_timer = Timer();
 

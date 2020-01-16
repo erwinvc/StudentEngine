@@ -27,6 +27,10 @@ public:
 	GameObject* FindObjectByName(const String& name) {
 		return m_hierarchy.FindObjectByName(name, true);
 	}
+	
+	GameObject* FindObjectByID(int id) {
+		return m_hierarchy.FindObjectByID(id);
+	}
 
 	Vector2	GetCursorWorldPosition() {
 		return m_cursorWorldPosition;

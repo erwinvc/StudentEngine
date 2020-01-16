@@ -13,12 +13,16 @@ public:
 	int m_frameOffset = 0;
 	float m_frameTime = 0;
 
-	void InspectorDraw() {
+	void InspectorDraw(GameObject* gameObject) {
 		if (InspectorDrawer::Header("Sprite")) {
-			InspectorDrawer::Texture("Texture", m_texture);
-			InspectorDrawer::Color("Color", m_color);
-			InspectorDrawer::Vec3("Atlas Values", m_atlasValues);
+			InspectorDrawer::Texture(gameObject, "Texture", m_texture);
+			InspectorDrawer::Color(gameObject, "Color", m_color);
+			InspectorDrawer::Vec3(gameObject, "Atlas Values", m_atlasValues);
 		}
+	}
+
+	bool Compare(const Sprite& other) {
+		return m_color == other.m_color && m_texture->GetTexture()->GetHandle() == other.m_texture->GetTexture()->GetHandle();
 	}
 
 	virtual void Draw(RenderingPipeline* pipeline, const Transform& transform);

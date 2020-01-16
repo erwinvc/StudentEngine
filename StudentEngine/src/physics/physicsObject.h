@@ -22,6 +22,10 @@ public:
 		return m_gameObject;
 	}
 
+	bool Compare(const PhysicsObject& other) {
+		return true;
+	}
+
 	void Update(const TimeStep& time);
 
 	bool CheckCollision(float xa, float ya);
