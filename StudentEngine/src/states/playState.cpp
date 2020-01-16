@@ -50,6 +50,7 @@ void PlayState::EnterState() {
 void PlayState::ExitState() {
 	Camera& cameraObject = *GetApp()->GetPipeline()->GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_editorCamera);
+	GetAudioManager()->StopAll();
 
 	LOG("[~GStates~x] Exited ~1%s~x state", typeid(*this).name());
 }

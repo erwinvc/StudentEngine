@@ -6,7 +6,12 @@ private:
 public:
 	void Initialize();
 	void Cleanup();
-	void Play(Audio* audio);
+	void Play(GameObject* owner, Audio* audio);
+	void Stop(GameObject* owner, Audio* audio);
+	void StopAll();
+	void Pause(GameObject* owner, Audio* audio);
+	void Unpause(GameObject* owner, Audio* audio);
+	bool IsPlaying(GameObject* owner, Audio* audio);
 };
 
 static AudioManager* GetAudioManager() {

@@ -41,8 +41,12 @@ void LoadingState::Initialize() {
 
 	GameObject::SetValidTextures("Player", { "GreyCat", "BrownCat" });
 
-	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BloopSound", "res/assets/audio/bloop.wav"));
-	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("SampleSound", "res/assets/audio/sample.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("GrassWalkSound", "res/assets/audio/grass_walk.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("CatMeowSound", "res/assets/audio/cat_meow.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("CoinPickupSound", "res/assets/audio/coin_pickup.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("PowerupPickupSound", "res/assets/audio/powerup_pickup.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("PowerupActiveSound", "res/assets/audio/powerup_active.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("BackgroundMusic", "res/assets/audio/background_music.mp3"));
 
 	//for (auto& file : std::filesystem::recursive_directory_iterator("res/Assets")) {
 	//	if (file.path().extension().string().compare(".png") == 0) {
