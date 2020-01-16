@@ -13,6 +13,9 @@ GameObject* CoinPickup::Copy() {
 }
 
 void CoinPickup::OnPickup() {
-	GetAudioManager()->Play(this, GetAssetManager()->Get<Audio>("CoinPickupSound"));
-	static_cast<PlayState*>(GetStateManager()->GetState())->AdjustScore(5);
+	if (!m_collected) {
+		GetAudioManager()->Play(this, GetAssetManager()->Get<Audio>("CoinPickupSound"));
+		static_cast<PlayState*>(GetStateManager()->GetState())->AdjustScore(5);
+		m_collected = true;
+	}
 }

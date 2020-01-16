@@ -289,12 +289,17 @@ void EditorWindow::CreateEditorWindows() {
 
 	ImGui::PopFont();
 	ImGui::PopStyleVar(3);
-
+	
 	if (ImGui::BeginPopupModal("New project", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("Are you sure you want to discard your changes?");
 		ImGui::Separator();
-		if (ImGui::Button("Yes")) {
+		if (ImGui::Button("Yes, create an empty project")) {
 			GetEditor()->ResetScene();
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Yes, open the example scene")) {
+			GetEditor()->ResetScene(true);
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
