@@ -8,6 +8,7 @@ private:
 	Camera* m_playCamera;
 	bool m_restarting;
 	bool m_gameover;
+	bool m_finished;
 	bool m_paused;
 	int m_playerScore = 0;
 public:
@@ -25,4 +26,5 @@ public:
 	void AdjustScore(int value);
 	void Restart();
 	void GameOver();
+	void Victory();
 };

@@ -148,7 +148,10 @@ void EditorWindow::CreateDockingSpace() {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -9.0f));
+	if (m_inEditorMode)
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -9.0f));
+	else
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -13.0f));
 
 	ImGui::Begin("Dock", nullptr, window_flags);
 

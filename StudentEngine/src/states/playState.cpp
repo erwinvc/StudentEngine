@@ -16,6 +16,7 @@ void PlayState::Update(const TimeStep& time) {
 		m_restarting = false;
 		m_gameover = false;
 		m_paused = false;
+		m_finished = false;
 		m_playerScore = 0;
 		m_playCamera->SetTarget(m_scene->GetHierarchy().FindObjectByName("Player", true));
 	}
@@ -67,6 +68,9 @@ void PlayState::OnImGui() {
 	if (m_gameover) {
 		ImGui::OpenPopup("Game Over!");
 		m_gameover = false;
+	} else if (m_finished) {
+		ImGui::OpenPopup("Victory");
+		m_finished = false;
 	}
 
 	if (ImGui::BeginPopupModal("Game Over!", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -76,11 +80,13 @@ void PlayState::OnImGui() {
 			m_restarting = true;
 			ImGui::CloseCurrentPopup();
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Back to Edit Mode")) {
-			m_paused = false;
-			GetEditorWindow()->ToggleEditMode();
-			GetStateManager()->SetState(States::EDIT);
+		ImGui::EndPopup();
+	}
+	if (ImGui::BeginPopupModal("Victory", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text(Format_t("Congratulations! You've finished the level and got %i points.", m_playerScore));
+		ImGui::Separator();
+		if (ImGui::Button("Replay")) {
+			m_restarting = true;
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::EndPopup();
@@ -113,4 +119,8 @@ void PlayState::Restart() {
 void PlayState::GameOver() {
 	m_paused = true;
 	m_gameover = true;
+}
+void PlayState::Victory() {
+	m_paused = true;
+	m_finished = true;
 }
