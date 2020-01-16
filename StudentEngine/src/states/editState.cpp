@@ -20,11 +20,15 @@ void EditState::ResetScene(bool fullReset) {
 		ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
 			->SetSize(Vector2(2048.0f, 128.0f))
 			->SetPosition(Vector2(960.0f, 224.0f));
+
 		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
 			->SetPosition(Vector2(352.0f, 320.0f));
 
 		ObjectFactory::CreateObject(EditorObjectType::PICKUP_POWERUP, "Pickup Green")
 			->SetPosition(Vector2(704.0f, 320.0f));
+
+		ObjectFactory::CreateObject(EditorObjectType::ENEMY_STATIC, "Static Enemy")
+			->SetPosition(Vector2(800.0f, 320.0f));
 	}
 
 	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
