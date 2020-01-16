@@ -2,7 +2,7 @@
 
 class PickupObject : public GameObject {
 private:
-	bool m_collected = false;
+	bool m_collected;
 public:
 	PickupObject(const String& name);
 	virtual EditorObjectType GetObjectType() const override;
