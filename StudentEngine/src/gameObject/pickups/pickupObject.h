@@ -1,6 +1,8 @@
 #pragma once
 
 class PickupObject : public GameObject {
+private:
+	bool m_collected = false;
 public:
 	PickupObject(const String& name);
 	virtual EditorObjectType GetObjectType() const override;

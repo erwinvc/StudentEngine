@@ -3,7 +3,6 @@
 class CoinPickup : public PickupObject
 {
 public:
-	bool m_collected = false;
 	CoinPickup(const String& name);
 	EditorObjectType GetObjectType() const override;
 	GameObject* Copy() override;

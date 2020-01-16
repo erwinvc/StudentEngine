@@ -5,11 +5,14 @@ PickupObject::PickupObject(const String& name) : GameObject(name, true) {
 	SetAtlasValues(4, 4, 0.125f);
 	SetOnCollision([](GameObject* self, GameObject* other, CollisionType type) {
 		if (other->IsOfType<PlayerObject>()) {
-			self->Destroy();
-			static_cast<PickupObject*>(self)->OnPickup();
+			if (!((PickupObject*)self)->m_collected) {
+				self->Destroy();
+				static_cast<PickupObject*>(self)->OnPickup();
+				((PickupObject*)self)->m_collected = true;
+			}
 		}
 		return false;
-		});
+	});
 	m_layer = "Pickups";
 }
 
