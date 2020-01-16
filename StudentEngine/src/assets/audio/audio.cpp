@@ -25,6 +25,5 @@ int Audio::GetHandle(GameObject* owner) {
 }
 
 void Audio::SetLooping(bool loop) {
-	LOG("%f", m_wav.getLoopPoint());
 	m_wav.setLooping(loop);
 }

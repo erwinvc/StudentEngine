@@ -19,7 +19,7 @@ GameObject* EnemyObject::Copy() {
 
 void EnemyObject::OnCollision(GameObject* self, GameObject* other, CollisionType type) {
 	if (other->IsOfType<PlayerObject>()) {
-		if (type == CollisionType::TOP) {
+		if (type == CollisionType::TOP || static_cast<PlayerObject*>(other)->GetInvinciblity() == true) {
 			self->Destroy();
 		}
 		else {

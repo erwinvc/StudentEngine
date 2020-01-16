@@ -126,3 +126,7 @@ PlayerObject* PlayerObject::SetInvinciblity(bool invincible) {
 	}
 	return this;
 }
+
+bool PlayerObject::GetInvinciblity() {
+	return m_invincible;
+}
