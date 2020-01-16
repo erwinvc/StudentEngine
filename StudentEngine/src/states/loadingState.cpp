@@ -31,6 +31,13 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("SquareGizmo", "res/assets/textures/squareGizmo.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Test Texture", "res/assets/textures/test.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Logo", "res/assets/textures/testlogo.png", TextureParameters(RGBA, RGBA, NEAREST)));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-idle", "res/assets/textures/player1-idle.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-runLeft", "res/assets/textures/player1-runLeft.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-runRight", "res/assets/textures/player1-runRight.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-jumpLeft", "res/assets/textures/player1-jumpLeft.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-jumpRight", "res/assets/textures/player1-jumpRight.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-fallLeft", "res/assets/textures/player1-fallLeft.png"));
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("PlayerOne-fallRight", "res/assets/textures/player1-fallRight.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreyCat", "res/assets/textures/greycat.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BrownCat", "res/assets/textures/browncat.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("RedCat", "res/assets/textures/redcat.png"));
@@ -39,10 +46,10 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreenPickup", "res/assets/textures/greenPickup.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Goal", "res/assets/textures/goal.png"));
 
-	GameObject::SetValidTextures("Player", { "GreyCat", "BrownCat" });
+	GameObject::SetValidTextures("Player", { "PlayerOne-idle", "GreyCat", "BrownCat" });
 
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("GrassWalkSound", "res/assets/audio/grass_walk.wav"));
-	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("CatMeowSound", "res/assets/audio/cat_meow.wav"));
+	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("JumpSound", "res/assets/audio/jump_sound.wav"));
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("CoinPickupSound", "res/assets/audio/coin_pickup.wav"));
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("PowerupPickupSound", "res/assets/audio/powerup_pickup.wav"));
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("PowerupActiveSound", "res/assets/audio/powerup_active.wav"));

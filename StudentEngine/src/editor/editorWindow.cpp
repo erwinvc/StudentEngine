@@ -49,6 +49,11 @@ void EditorWindow::OnImGui() {
 		CreateTemporaryPlayMode();
 	}
 
+	if (ImGui::IsMouseDoubleClicked(0) && GetEditorScene()->GetGameObjectUnderMouse() != nullptr) {
+		GetEditorScene()->GetHierarchy().SetSelected(GetEditorScene()->GetGameObjectUnderMouse());
+		m_openedInspector = true;
+	}
+
 	OnRightClickSelected();
 }
 
@@ -143,7 +148,10 @@ void EditorWindow::CreateDockingSpace() {
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -9.0f));
+	if (m_inEditorMode)
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -9.0f));
+	else
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-5.0f, -13.0f));
 
 	ImGui::Begin("Dock", nullptr, window_flags);
 
@@ -163,7 +171,7 @@ void EditorWindow::CreateDockingSpace() {
 
 			m_dockspaceCenter = dockspace_id;
 			m_dockspaceRight = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Right, 0.2f, nullptr, &m_dockspaceCenter);
-			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.15f, nullptr, &m_dockspaceCenter);
+			m_dockspaceLeft = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Left, 0.14f, nullptr, &m_dockspaceCenter);
 			m_dockspaceBottom = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Down, 0.2f, nullptr, &m_dockspaceCenter);
 			m_dockspaceUp = ImGui::DockBuilderSplitNode(m_dockspaceCenter, ImGuiDir_Up, 0.172f, nullptr, &m_dockspaceCenter);
 			m_dockspaceLeftBottom = ImGui::DockBuilderSplitNode(m_dockspaceLeft, ImGuiDir_Down, 0.4f, nullptr, &m_dockspaceLeft);
@@ -351,17 +359,23 @@ void EditorWindow::CreateEditorWindows() {
 		CreateItemDrag(EditorObjectType::TERRAIN);
 		OnItemTooltip("Create walkable terrain for characters to walk on");
 
+		ImGui::SameLine();
+
 		if (ImGui::Button("Coin Pickup", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::PICKUP_COIN);
 		OnItemTooltip("Create a coin pickup that gives the player points");
 
-		if (ImGui::Button("Powerup Pickup", ImVec2(100, 100))) {}
+
+		if (ImGui::Button("Powerup", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::PICKUP_POWERUP);
 		OnItemTooltip("Create a powerup pickup that gives the player temporary invincibility against enemies");
+
+		ImGui::SameLine();
 
 		if (ImGui::Button("Static Enemy", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::ENEMY_STATIC);
 		OnItemTooltip("Create a static enemy the player is able to jump on to defeat");
+
 
 		if (ImGui::Button("Walking Enemy", ImVec2(100, 100))) {}
 		CreateItemDrag(EditorObjectType::ENEMY_WALKING);
@@ -481,6 +495,10 @@ void EditorWindow::CreateViewport() {
 void EditorWindow::InstantiateDragging(bool externalSource) {
 	m_dragSourceExternal = externalSource;
 	m_draggingItem = true;
+}
+
+void EditorWindow::ToggleEditMode() {
+	m_inEditorMode = !m_inEditorMode;
 }
 
 void EditorWindow::SetupEditorStyle(bool bStyleDark, float alpha) {

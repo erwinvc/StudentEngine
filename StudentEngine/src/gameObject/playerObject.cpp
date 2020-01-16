@@ -4,7 +4,18 @@ bool m_isJumping = false;
 
 PlayerObject::PlayerObject(const String& name) : GameObject(name, true) {
 	SetSize(Vector2(64, 64));
-	SetTexture(GetAssetManager()->Get<StreamedTexture>("GreyCat"));
+	SetAtlasValues(4, 4, 0.125f);
+
+	m_idle = GetAssetManager()->Get<StreamedTexture>("PlayerOne-idle");
+	m_runLeft = GetAssetManager()->Get<StreamedTexture>("PlayerOne-runLeft");
+	m_runRight = GetAssetManager()->Get<StreamedTexture>("PlayerOne-runRight");
+	m_jumpLeft = GetAssetManager()->Get<StreamedTexture>("PlayerOne-jumpLeft");
+	m_jumpRight = GetAssetManager()->Get<StreamedTexture>("PlayerOne-jumpRight");
+	m_fallLeft = GetAssetManager()->Get<StreamedTexture>("PlayerOne-fallLeft");
+	m_fallRight = GetAssetManager()->Get<StreamedTexture>("PlayerOne-fallRight");
+
+	SetTexture(m_idle);
+
 	SetMovementSpeed(0.5);
 	m_layer = "Foreground";
 	m_invincible = false;
@@ -27,9 +38,13 @@ void PlayerObject::Update(const TimeStep& time) {
 	m_physicsObject.m_velocity.x *= decay;
 
 	Audio* walkSound = GetAssetManager()->Get<Audio>("GrassWalkSound");
-	Audio* jumpSound = GetAssetManager()->Get<Audio>("CatMeowSound");
+	Audio* jumpSound = GetAssetManager()->Get<Audio>("JumpSound");
 
 	if (GetKeyboard()->KeyDown('A')) {
+		if (m_usingMultiSheet && m_physicsObject.m_isGrounded) {
+			SetAtlasValues(6, 6, 0.125f);
+			SetTexture(m_runLeft);
+		}
 		if (!GetAudioManager()->IsPlaying(this, walkSound)) {
 			GetAudioManager()->Play(this, walkSound);
 		}
@@ -37,6 +52,10 @@ void PlayerObject::Update(const TimeStep& time) {
 	}
 
 	if (GetKeyboard()->KeyDown('D')) {
+		if (m_usingMultiSheet && m_physicsObject.m_isGrounded) {
+			SetAtlasValues(6, 6, 0.125f);
+			SetTexture(m_runRight);
+		}
 		if (!GetAudioManager()->IsPlaying(this, walkSound)) {
 			GetAudioManager()->Play(this, walkSound);
 		}
@@ -45,6 +64,10 @@ void PlayerObject::Update(const TimeStep& time) {
 
 	if ((!GetKeyboard()->KeyDown('D') && !GetKeyboard()->KeyDown('A')) || !m_physicsObject.m_isGrounded) {
 		GetAudioManager()->Stop(this, walkSound);
+		if (m_usingMultiSheet && m_physicsObject.m_isGrounded) {
+			SetAtlasValues(4, 4, 0.125f);
+			SetTexture(m_idle);
+		}
 	}
 
 	if (m_physicsObject.m_isGrounded && KeyJustDown(VK_SPACE)) {
@@ -52,9 +75,26 @@ void PlayerObject::Update(const TimeStep& time) {
 		m_physicsObject.m_velocity.y = 20;
 		m_physicsObject.m_isGrounded = false;
 		m_isJumping = true;
+		if (m_usingMultiSheet) {
+			SetAtlasValues(8, 8, 0.125f);
+			if (m_physicsObject.m_velocity.x < 0)
+				SetTexture(m_jumpLeft);
+			else
+				SetTexture(m_jumpRight);
+		}
 	}
 
 	if (!KeyDown(VK_SPACE)) m_isJumping = false;
+
+	if (!m_physicsObject.m_isGrounded && m_physicsObject.m_velocity < 0) {
+		if (m_usingMultiSheet) {
+			SetAtlasValues(2, 2, 0.125f);
+			if (m_physicsObject.m_velocity.x < 0)
+				SetTexture(m_fallLeft);
+			else
+				SetTexture(m_fallRight);
+		}
+	}
 
 	if (!m_physicsObject.m_isGrounded && KeyDown(VK_SPACE) && m_isJumping) {
 		if (m_physicsObject.m_velocity.y > 0) {
@@ -84,7 +124,7 @@ void PlayerObject::Update(const TimeStep& time) {
 		}
 	}
 
-	if (m_transform.m_position.y < -2500) static_cast<PlayState*>(GetStateManager()->GetState())->Restart();
+	if (m_transform.m_position.y < -2500) static_cast<PlayState*>(GetStateManager()->GetState())->GameOver();
 
 	m_physicsObject.Update(time);
 }
@@ -107,6 +147,16 @@ void PlayerObject::InspectorDraw() {
 		GetAssetSelect()->PrepareValidTextures("Player", [&](AssetBase* asset) {
 			GameObject* selectedObject = GetEditorScene()->GetHierarchy().GetSelected();
 			if (selectedObject->IsOfType<PlayerObject>()) {
+				m_usingMultiSheet = (asset->GetName() == String("PlayerOne-idle"));
+
+				if (m_usingMultiSheet) {
+					SetAtlasValues(4, 4, 0.125f);
+				} else {
+					// Necessary to reset the sprite
+					m_sprite = Sprite();
+					SetAtlasValues(1, 0, 0);
+				}
+
 				static_cast<PlayerObject*>(selectedObject->SetTexture((StreamedTexture*)asset));
 			}
 			});

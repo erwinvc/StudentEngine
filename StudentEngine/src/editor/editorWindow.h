@@ -63,6 +63,7 @@ public:
 	void InstantiateDragging(bool externalSource);
 	bool IsInDragPlacement() { return m_dragPlacement; }
 	void SetDragPlacement(bool value) { m_dragPlacement = value; }
+	void ToggleEditMode();
 	
 	//bool CurrentlyDragging() { return m_draggingItem; }
 	//void SetCurrentlyDragging(bool value) { m_draggingItem = value; }

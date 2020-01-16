@@ -8,7 +8,7 @@ void HierarchyObject::OnImGui() {
 	if (ImGui::TreeNode(title.c_str())) {
 		open = true;
 		RightClick(NULL, true);
-		FolderExtra();
+		//FolderExtra();
 		for (int c = 0; c < m_layer->m_objects.size(); c++) {
 			DisplayChild(m_layer->m_objects[c]);
 		}
@@ -17,9 +17,9 @@ void HierarchyObject::OnImGui() {
 	}
 
 	//To allow for item dragging & to prevent double icon from appearing over a folder
-	if (!open) {
+	/*if (!open) {
 		FolderExtra();
-	}
+	}*/
 }
 
 void HierarchyObject::FolderExtra() {
