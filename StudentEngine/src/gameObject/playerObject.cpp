@@ -38,7 +38,7 @@ void PlayerObject::Update(const TimeStep& time) {
 	m_physicsObject.m_velocity.x *= decay;
 
 	Audio* walkSound = GetAssetManager()->Get<Audio>("GrassWalkSound");
-	Audio* jumpSound = GetAssetManager()->Get<Audio>("CatMeowSound");
+	Audio* jumpSound = GetAssetManager()->Get<Audio>("JumpSound");
 
 	if (GetKeyboard()->KeyDown('A')) {
 		if (m_usingMultiSheet && m_physicsObject.m_isGrounded) {
