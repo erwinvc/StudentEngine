@@ -21,18 +21,35 @@ void EditState::ResetScene(bool fullReset) {
 			->SetSize(Vector2(2048.0f, 128.0f))
 			->SetPosition(Vector2(960.0f, 224.0f));
 
-		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
-			->SetPosition(Vector2(352.0f, 320.0f));
+		ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Flying Island")
+			->SetSize(Vector2(512.0f, 64.0f))
+			->SetPosition(Vector2(1045.0f, 400.0f));
 
-		ObjectFactory::CreateObject(EditorObjectType::PICKUP_POWERUP, "Pickup Green")
+		ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Flying Island")
+			->SetSize(Vector2(512.0f, 64.0f))
+			->SetPosition(Vector2(1445.0f, 600.0f));
+
+		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
+			->SetPosition(Vector2(1445.0f, 664.0f));
+
+		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
+			->SetPosition(Vector2(1400.0f, 664.0f));
+		
+		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
 			->SetPosition(Vector2(704.0f, 320.0f));
 
+		ObjectFactory::CreateObject(EditorObjectType::PICKUP_POWERUP, "Pickup Green")
+			->SetPosition(Vector2(1600.0f, 320.0f));
+
 		ObjectFactory::CreateObject(EditorObjectType::ENEMY_STATIC, "Static Enemy")
-			->SetPosition(Vector2(800.0f, 320.0f));
+			->SetPosition(Vector2(1376.0f, 320.0f));
+
+		ObjectFactory::CreateObject(EditorObjectType::ENEMY_WALKING, "Walking Enemy")
+			->SetPosition(Vector2(1233.0f, 475.0f));
 	}
 
 	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
-		->SetPosition(Vector2(192.0f, 352.0f));
+		->SetPosition(Vector2(192.0f, 320.0f));
 
 	ObjectFactory::CreateObject(EditorObjectType::GOAL, "Goal")
 		->SetPosition(Vector2(1536.0f, 320.0f));

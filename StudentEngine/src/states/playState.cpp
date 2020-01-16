@@ -103,8 +103,8 @@ void PlayState::OnHUD() {
 	String scoreText = Format("%s%i", "Score: ", m_playerScore);
 	ImGui::GetOverlayDrawList()->AddText(
 		ImGui::GetIO().Fonts->Fonts[2],		//Grabbing the special HUD font that's larger for better quality. Changing the Font order around will mess this up.
-		ImGui::GetFontSize()*2.0f, 
-		AnchorPoints::GetAnchor(Anchors::TOPLEFT, ImVec2(50, 75)), 
+		ImGui::GetFontSize()*4.0f,
+		ImGui::GetCurrentWindowRead()->Pos + ImVec2(20, 20), 
 		IM_COL32(255, 255, 255, 255), 
 		scoreText.c_str());
 }
