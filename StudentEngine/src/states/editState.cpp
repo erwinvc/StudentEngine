@@ -35,7 +35,7 @@ void EditState::ResetScene(bool fullReset) {
 
 		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
 			->SetPosition(Vector2(1400.0f, 664.0f));
-		
+
 		ObjectFactory::CreateObject(EditorObjectType::PICKUP_COIN, "Pickup Blue")
 			->SetPosition(Vector2(704.0f, 320.0f));
 
@@ -47,6 +47,10 @@ void EditState::ResetScene(bool fullReset) {
 
 		ObjectFactory::CreateObject(EditorObjectType::ENEMY_WALKING, "Walking Enemy")
 			->SetPosition(Vector2(1233.0f, 475.0f));
+	} else {
+		ObjectFactory::CreateObject(EditorObjectType::TERRAIN, "Terrain")
+			->SetSize(Vector2(64.0f, 128.0f))
+			->SetPosition(Vector2(192.0f, 224.0f));
 	}
 
 	ObjectFactory::CreateObject(EditorObjectType::PLAYER, "Player")
@@ -149,11 +153,9 @@ void EditState::Draw(RenderingPipeline* pipeline) {
 	//Utils::DoTimedFunction(&TIMER, 250, [count] {LOG("%d", count); });
 }
 
-void EditState::PostDraw(RenderingPipeline* pipeline) {
-}
+void EditState::PostDraw(RenderingPipeline* pipeline) {}
 
-void EditState::PostImGuiDraw(RenderingPipeline* pipeline) {
-}
+void EditState::PostImGuiDraw(RenderingPipeline* pipeline) {}
 
 
 void EditState::EnterState() {

@@ -309,7 +309,7 @@ void EditorWindow::CreateEditorWindows() {
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Yes, open the example scene")) {
-			GetEditor()->ResetScene(true);
+			GetEditor()->ResetScene(false);
 			ApplyLayers();
 			ImGui::CloseCurrentPopup();
 		}
