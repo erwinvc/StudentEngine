@@ -109,6 +109,8 @@ void PlayerObject::Update(const TimeStep& time) {
 
 	// Invincibility
 	if (m_invincible) {
+		if ((int) ( 100 * GetApp()->GetTotalFrameTime()) % 2 == 0)
+			GetParticleSystem()->Add(m_transform.m_position.x, m_transform.m_position.y, Math::RandomFloat(-5, 5), Math::RandomFloat(10, 15), 0.125f, Math::RandomFloat(10, 18), Math::RandomFloat(10, 18), 0.01f, Math::RandomFloat(300, 800), 0, Color::RandomPrimary());
 		Audio* powerupSound = GetAssetManager()->Get<Audio>("PowerupActiveSound");
 		if (!GetAudioManager()->IsPlaying(this, powerupSound)) {
 			GetAudioManager()->Pause(this, backgroundMusic);
@@ -159,7 +161,7 @@ void PlayerObject::InspectorDraw() {
 
 				static_cast<PlayerObject*>(selectedObject->SetTexture((StreamedTexture*)asset));
 			}
-			});
+		});
 		GetAssetSelect()->Open();
 	}
 }

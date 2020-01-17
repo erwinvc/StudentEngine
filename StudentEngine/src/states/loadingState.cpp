@@ -45,7 +45,8 @@ void LoadingState::Initialize() {
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("BluePickup", "res/assets/textures/bluePickup.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("GreenPickup", "res/assets/textures/greenPickup.png"));
 	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Goal", "res/assets/textures/goal.png"));
-
+	GetAssetManager()->AddToLoadQueue(new TextureLoadJob("Particles", "res/assets/textures/particles.png"));
+	
 	GameObject::SetValidTextures("Player", { "PlayerOne-idle", "GreyCat", "BrownCat" });
 
 	GetAssetManager()->AddToLoadQueue(new AudioLoadJob("GrassWalkSound", "res/assets/audio/grass_walk.wav"));
@@ -75,6 +76,7 @@ void LoadingState::Initialize() {
 void LoadingState::Update(const TimeStep& time) {
 	m_animationFrame = 3 - (int)(time.TotalTime() / 100) % 4;
 	if (GetAssetManager()->GetActiveJobs() == 0 && !m_fade/* && KeyJustDown(VK_SPACE)*/) {
+		GetApp()->GetPipeline()->GetParticleSystem()->m_texture = GetAssetManager()->Get<StreamedTexture>("Particles");
 		Tween::To(m_transparency, 0.0f, 1500.0f)->SetEase(Ease::INEXPO)->SetOnComplete([] {GetStateManager()->SetState(States::EDIT); });
 		m_fade = true;
 	}

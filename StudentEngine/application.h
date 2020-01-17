@@ -62,4 +62,5 @@ public:
 inline App* GetApp() { return App::g_app; }
 inline Camera* GetCamera() { return GetApp()->GetPipeline()->GetCamera(); }
 inline AssetManager* GetAssetManager() { return GetApp()->GetAssetManager(); }
+inline ParticleSystem* GetParticleSystem() { return GetApp()->GetPipeline()->GetParticleSystem(); }
 inline GLCallbackManager* GetGLCallbackManager() { return GetApp()->GetGLCallbackManager(); }

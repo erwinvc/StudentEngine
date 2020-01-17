@@ -10,11 +10,13 @@ void RenderingPipeline::Initialize() {
 	m_activeCamera = m_mainCamera;
 	m_quad = MeshGenerator::Quad();
 	m_spriteRenderer = new SpriteRenderer(GetAssetManager()->GetNullTexture());
+	m_particleSystem = new ParticleSystem();
 	m_initialized = true;
 }
 
 void RenderingPipeline::Update(const TimeStep time) {
 	m_activeCamera->Update(time);
+	m_particleSystem->Update(time);
 }
 void RenderingPipeline::Begin() {
 	GLUtils::EnableBlending();
@@ -25,6 +27,7 @@ void RenderingPipeline::Begin() {
 }
 
 void RenderingPipeline::EndSpriteRenderer() {
+	m_particleSystem->Draw(this);
 	m_finalFBO->Bind();
 	m_finalFBO->Clear();
 	m_spriteRenderer->End();
@@ -46,5 +49,6 @@ void RenderingPipeline::OnImGui() {
 RenderingPipeline::~RenderingPipeline() {
 	delete m_mainCamera;
 	delete m_spriteRenderer;
+	delete m_particleSystem;
 	delete m_quad;
 }

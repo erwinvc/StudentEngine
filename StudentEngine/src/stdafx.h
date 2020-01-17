@@ -116,7 +116,6 @@ using namespace std;
 #include "graphics/buffers/indexBuffer.h"
 #include "graphics/buffers/vertexBuffer.h"
 #include "graphics/buffers/vertexArray.h"
-#include "graphics/particleSystem.h"
 
 #include "assets/assetWatcher.h"
 
@@ -138,6 +137,7 @@ using namespace std;
 #include "graphics/camera/camera.h"
 #include "graphics/camera/orthographicCamera.h"
 #include "graphics/renderingPipeline.h"
+#include "graphics/particleSystem.h"
 
 #include "imgui/imGuiManager.h"
 

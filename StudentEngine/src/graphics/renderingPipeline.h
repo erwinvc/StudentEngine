@@ -1,5 +1,6 @@
 #pragma once
 
+class ParticleSystem;
 class RenderingPipeline {
 private:
 	bool m_initialized = false;
@@ -10,6 +11,7 @@ private:
 	Camera* m_activeCamera;
 	Mesh* m_quad;
 	SpriteRenderer* m_spriteRenderer;
+	ParticleSystem* m_particleSystem;
 	FrameBuffer* m_finalFBO;
 	Texture* m_finalTexture;
 
@@ -32,6 +34,7 @@ public:
 	bool Initialized() { return m_initialized; }
 
 	Camera* GetCamera() { return m_activeCamera; }
+	ParticleSystem* GetParticleSystem() { return m_particleSystem; }
 	void SetCamera(Camera* camera) { m_activeCamera = camera; }
 
 	Mesh* GetQuad() { return m_quad; }
@@ -39,11 +42,11 @@ public:
 	inline void LineRect(Rectangle& rect, Color& color = Color::White(), float lineSize = 1.0f) {
 		m_spriteRenderer->LineRect(rect, color, lineSize * m_activeCamera->GetZoom());
 	}
-	
+
 	inline void Rect(Rectangle& rect, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr, const Vector3 atlasValues = Vector3(1, 0, 0)) {
 		m_spriteRenderer->Rect(rect.x, rect.y, rect.w, rect.h, rotation, color, texture, atlasValues);
 	}
-	
+
 	inline void Rect(float x, float y, float w, float h, float rotation = 0, const Color& color = Color::White(), const StreamedTexture* texture = nullptr, const Vector3 atlasValues = Vector3(1, 0, 0)) {
 		m_spriteRenderer->Rect(x, y, w, h, rotation, color, texture, atlasValues);
 	}
