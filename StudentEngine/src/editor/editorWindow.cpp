@@ -236,6 +236,7 @@ void EditorWindow::CreateEditorWindows() {
 			if (FileSystem::DoesFileExist(result.m_file)) {
 				nlohmann::json hierarchyJson = FileSystem::LoadJsonFromFile(result.m_file);
 				hierarchyJson.get<Hierarchy>();
+				Undo::Clear();
 
 				//for (auto& layer : GetEditorScene()->GetHierarchy().m_layers) {
 				//	for (auto& obj : layer->m_objects) {

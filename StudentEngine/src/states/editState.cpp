@@ -13,6 +13,7 @@ void EditState::Initialize() {
 }
 
 void EditState::ResetScene(bool fullReset) {
+	Undo::Clear();
 	m_scene->GetHierarchy().Clear();
 	m_scene->GetHierarchy().Initialize();
 

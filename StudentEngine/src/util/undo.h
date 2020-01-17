@@ -43,6 +43,12 @@ public:
 		g_currentListIndex = m_list.Size();
 	}
 
+	static void Clear() {
+		while (m_list.Size() > 0) {
+			m_list.RemoveLast();
+		}
+	}
+
 	static void Record(GameObject* gameObject) {
 		if (m_recording) {
 			LOG_WARN("[Undo] Already recording!");
@@ -103,7 +109,7 @@ public:
 				GameObject* obj = GetEditorScene()->FindObjectByID(collection.m_id);
 				if (obj) *obj = collection.m_baseObject;
 			}
-			
+
 			g_currentListIndex--;
 		}
 		while (g_newListIndex - g_currentListIndex > 0) { //Redo

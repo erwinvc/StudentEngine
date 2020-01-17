@@ -116,7 +116,7 @@ namespace Math {
 	inline bool Within(int valMin, int valMax, int min, int max) {
 		return valMin <= max && valMax >= min;
 	}
-	
+
 	inline float RandomFloat(float min, float max) {
 		float r = (float)rand() / (float)RAND_MAX;
 		return r * (max - min) + min;
@@ -145,6 +145,12 @@ namespace Math {
 		float y = sinPhi * sinTheta;
 		float z = cosPhi;
 		return { x, y, z };
+	}
+
+	inline Vector2 PointOnDisk(float radius) {
+		float theta = TWO_PI * RandomFloat(0, 1);
+		float r = radius * sqrt(RandomFloat(0, 1));
+		return Vector2(r * cos(theta), r * sin(theta));
 	}
 
 	inline Vector3 RandomOnUnitSphere() {

@@ -6,7 +6,7 @@ private:
 	vector<GameObject> editorGameObjects;
 	Camera* m_editorCamera;
 	Camera* m_playCamera;
-	bool m_restarting;
+	bool m_restarting = false;
 	bool m_gameover;
 	bool m_finished;
 	bool m_paused;

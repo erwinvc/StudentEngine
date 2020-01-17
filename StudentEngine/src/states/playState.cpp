@@ -46,7 +46,7 @@ void PlayState::EnterState() {
 	m_playerScore = 0;
 	m_paused = false;
 	m_gameover = false;
-
+	m_finished = false;
 	m_editorCamera = GetCamera();
 	GetApp()->GetPipeline()->SetCamera(m_playCamera);
 	GameObject* player = m_scene->GetHierarchy().FindObjectByName("Player", true);

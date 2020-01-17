@@ -5,13 +5,15 @@ GoalObject::GoalObject(const String& name) : GameObject(name, false) {
 	SetTexture(GetAssetManager()->Get<StreamedTexture>("Goal"));
 	SetOnCollision([](GameObject* self, GameObject* other, CollisionType type) {
 		if (other->IsOfType<PlayerObject>()) {
-			for (int i = 0; i < 200; i++)
-				GetParticleSystem()->Add(self->m_transform.m_position.x, self->m_transform.m_position.y, Math::RandomFloat(-5, 5), Math::RandomFloat(-5, 5), 0.0f, Math::RandomFloat(15, 15), Math::RandomFloat(15, 15), 0.0f, Math::RandomFloat(1000, 1500), 0, Color::Mix(Color(240.0f / 255.0f, 230.0f / 255.0f, 140.0f / 255.0f), Color(255.0f / 255.0f, 165.0f / 255.0f, 0), Math::RandomFloat(0, 1)));
+			for (int i = 0; i < 200; i++) {
+				Vector2 point = Math::PointOnDisk(5);
+				GetParticleSystem()->Add(self->m_transform.m_position.x, self->m_transform.m_position.y, point.x, point.y, 0.0f, Math::RandomFloat(15, 15), Math::RandomFloat(15, 15), 0.0f, Math::RandomFloat(1000, 1500), 0, Color::Mix(Color(240.0f / 255.0f, 230.0f / 255.0f, 140.0f / 255.0f), Color(255.0f / 255.0f, 165.0f / 255.0f, 0), Math::RandomFloat(0, 1)));
+			}
 
 			static_cast<PlayState*>(GetStateManager()->GetState())->Victory();
 		}
 		return true;
-		});
+	});
 }
 
 EditorObjectType GoalObject::GetObjectType() const {
