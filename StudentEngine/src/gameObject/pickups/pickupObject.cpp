@@ -7,8 +7,8 @@ PickupObject::PickupObject(const String& name) : GameObject(name, true) {
 		if (other->IsOfType<PlayerObject>()) {
 			PickupObject* pickupObject = static_cast<PickupObject*>(self);
 			if (!pickupObject->m_collected) {
-				pickupObject->Destroy();
 				pickupObject->OnPickup();
+				pickupObject->Destroy();
 				pickupObject->m_collected = true;
 			}
 		}

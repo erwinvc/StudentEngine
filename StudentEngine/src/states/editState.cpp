@@ -80,7 +80,7 @@ void EditState::EditorControls(const TimeStep& time) {
 	GameObject* selected = m_scene->m_hierarchy.GetSelected();
 	if (selected) {
 		if (!GetEditorWindow()->IsVIPObject(selected) && KeyJustDown('X') && KeyDown(LCTRL)) {
-			GameObject* obj = ObjectFactory::CreateObject(EditorObjectType::GAMEOBJECT, selected->m_name);
+			GameObject* obj = ObjectFactory::CreateObject(selected->GetObjectType(), selected->m_name);
 			int id = obj->m_id;
 			*obj = *selected;
 			obj->m_id = id;
